@@ -1,0 +1,355 @@
+nvidia-settings (195.36.08-0ubuntu2) lucid; urgency=low
+
+  * debian/patches/03_do_not_exit_on_no_scanout.patch:
+    - Do not fail if the driver doesn't support the NV_CTRL_NO_SCANOUT
+      property (LP: #539196).
+
+ -- Alberto Milone <alberto.milone@canonical.com>  Tue, 06 Apr 2010 19:50:01 +0200
+
+nvidia-settings (195.36.08-0ubuntu1) lucid; urgency=low
+
+  * New upstream release:
+    - Fixed an X server crash caused by starting nvidia-settings while
+      X was not on the active VT.
+    - Fixed an nvidia-settings bug that produced many "Bad argument"
+      warning messages when running nvidia-settings --query all.
+  * Drop patches 03_xf86vidmode-rampsize-check.patch and
+    04_include_xf86vmproto.patch as the problem is fixed
+    in the upstream code now.
+
+
+ -- Alberto Milone <alberto.milone@canonical.com>  Fri, 05 Mar 2010 11:19:05 +0100
+
+nvidia-settings (190.53-0ubuntu1) lucid; urgency=low
+
+  * New upstream release (LP: #417410).
+  * debian/control:
+    - Add build dependency on cdbs.
+    - Remove build dependency on dpatch.
+    - Add lpia architecture.
+    - Depend on screen-resolution-extra >= 0.12.
+  * debian/patches/02_nvidia-settings-format-string.patch:
+    - Patch from Mandriva to pass formatted strings to gtk dialogs (thus
+      reducing gtk warnings).
+  * debian/patches/03_xf86vidmode-rampsize-check.patch:
+    - Fix FTBFS with recent versions of XF86VidMode.
+  * debian/patches/04_include_xf86vmproto.patch:
+   - Include xf86vmproto.h so as to get back XF86VidModeGetGammaRampSize().
+  * debian/patches/05_polkit.patch:
+    - Add support for PolicyKit so that nvidia-settings doesn't require
+      that users call it with sudo to edit xorg.conf (LP: #200868)
+      (requires screen-resolution-extra >= 0.12).
+  * debian/rules:
+    - Switch to CDBS.
+    - Do not provide a desktop file. The different nvidia packages will
+      deal with it.
+
+ -- Alberto Milone <alberto.milone@canonical.com>  Sun, 10 Jan 2010 12:12:42 +0100
+
+nvidia-settings (180.25-0ubuntu1) jaunty; urgency=low
+
+  * New upstream release (LP: #315667)
+  * debian/patches/02_add_missing_serverlayout.dpatch: drop patch
+
+ -- Alberto Milone (tseliot) <albertomilone@alice.it>  Sat, 31 Jan 2009 17:21:51 +0100
+
+nvidia-settings (177.78-0ubuntu2.1) intrepid-proposed; urgency=low
+
+  * debian/rules: Add missing dpatch unpatching on clean.
+  * Add debian/patches/02_add_missing_serverlayout.dpatch:
+    - Prevent nvidia-settings from crashing when no ServerLayout section is
+      found in the xorg.conf (LP: #286424).
+
+ -- Alberto Milone (tseliot) <albertomilone@alice.it>  Sat, 01 Nov 2008 13:12:40 +0100
+
+nvidia-settings (177.78-0ubuntu2) intrepid; urgency=low
+
+  * Restore ROOT=$(DESTDIR) in the Makefile 
+
+ -- Alberto Milone (tseliot) <albertomilone@alice.it>  Mon, 13 Oct 2008 15:16:15 +0200
+
+nvidia-settings (177.78-0ubuntu1) intrepid; urgency=low
+
+  * New upstream release
+    - Do not add RgbPath to the Files section of xorg.conf
+      (LP: #274866)
+  * debian/copyright:
+    - Restore detailed version of the license (cf. debian #494388)
+
+ -- Alberto Milone (tseliot) <albertomilone@alice.it>  Wed, 08 Oct 2008 18:24:16 +0200
+
+nvidia-settings (173.14.09-1ubuntu3) intrepid; urgency=low
+
+  [ Alberto Milone (tseliot) ]
+  * Comment out gtk_widget_modify_fg and gtk_widget_modify_bg in 
+    src/gtk+-2.x/ctkglx.c 
+
+  [ Mario Limonciello ]
+  * Add dpatch patching support so that Alberto's previous patch is
+    not lost in newer upstream versions.
+
+ -- Alberto Milone (tseliot) <albertomilone@alice.it>  Thu, 28 Aug 2008 22:56:28 +0200
+
+nvidia-settings (173.14.09-1ubuntu2) intrepid; urgency=low
+
+  * debian/rules: force -fPIC in CFLAGS for xnvctrl library.
+
+ -- Stefan Potyra <sistpoty@ubuntu.com>  Sun, 10 Aug 2008 12:52:07 +0200
+
+nvidia-settings (173.14.09-1ubuntu1) intrepid; urgency=low
+
+  * Merge from unstable, remaining changes:
+    - debian/copyright: updated, add MIT license (cf. debian #494388).
+    - debian/rules, debian/nvidia-settings.desktop: install desktop file
+      (cf. debian #317993). Also add usr/share/applications to dirs.
+    - drop Recommends on nvidia-glx, instead the nvidia drivers will
+      recommend nvidia-settings.
+    - update build depends of xutils and xlibmesa-gl-dev.
+    - update debian/rules to clean also XF86Config-parser directory
+      (cf. debian: #494456).
+    Dropped:
+    - patch against src/gtk+-2.x/ctkwindow.c: solved upstream.
+    - separate package libxnvctrl-dev (caused a major diversion, not so 
+      much nicer to keep it).
+    - updating standards-version
+    - debhelper bump (it should build fine with v4).
+  * debian/control:
+    - add Conflicts against libxnvctrl-dev, which is dropped with this 
+      upload and used to contain the static library/header files that
+      are now found in nvidia-settings itself.
+
+ -- Stefan Potyra <sistpoty@ubuntu.com>  Sat, 09 Aug 2008 22:33:28 +0200
+
+nvidia-settings (173.14.09-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Randall Donald <rdonald@debian.org>  Tue, 24 Jun 2008 10:41:09 -0700
+
+nvidia-settings (169.07-1) unstable; urgency=low
+
+  * New upstream release
+  * reinclude nvctrl headers (closes: #434885)
+  * depend on nvidia-glx (169.07). there are legacy versions now too.
+
+ -- Randall Donald <rdonald@debian.org>  Sun, 23 Dec 2007 17:07:10 -0800
+
+nvidia-settings (1.0+20080304-0ubuntu3) intrepid; urgency=low
+
+  [ Alberto Milone (tseliot) ]
+  * Remove Recommends and Conflicts from nvidia-settings. Each NVIDIA driver
+    will Recommend nvidia-settings instead.
+
+  [ Mario Limonciello ]
+  * debian/control:
+    - Modify build depends from obsoleted packages xutils and xlibmesa-gl-dev
+    - Bump standards version.
+
+ -- Mario Limonciello <mario_limonciello@dell.com>  Tue, 08 Jul 2008 13:13:05 -0500
+
+nvidia-settings (1.0+20080304-0ubuntu2) intrepid; urgency=low
+
+  * src/gtk+-2.x/ctkwindow.c:
+    - Set selection to default to first item when opening (LP: #198503)
+
+ -- Mario Limonciello <superm1@ubuntu.com>  Wed, 04 Jun 2008 22:21:40 -0500
+
+nvidia-settings (1.0+20080304-0ubuntu1) hardy; urgency=low
+
+  * New upstream version. (LP: #198484)
+    - Fixes errors writing out xorg.conf
+      (LP: #194528,195241,195302,197568,198215)
+
+ -- Mario Limonciello <mario_limonciello@dell.com>  Tue, 04 Mar 2008 13:50:58 -0600
+
+nvidia-settings (1.0+20071221-0ubuntu5) hardy; urgency=low
+
+  *  Add versioned nvidia-glx-legacy to Recommends and Conflicts
+
+ -- Emmet Hikory <persia@ubuntu.com>  Sat, 16 Feb 2008 10:38:08 +0900
+
+nvidia-settings (1.0+20071221-0ubuntu4) hardy; urgency=low
+
+  * debian/control: add versioned conflicts to older nvidia-glx and
+    nvidia-glx-new for the binary package nvidia-settings. The older
+    conflicted versions shipped the nvidia-settings application as
+    well.
+  * Add nvidia-glx-new as alternate recommends in debian/control.
+  * debian/control: (re)add versions to the recommends.
+  * debian/rules: don't create usr/lib for nvidia-settings (seems like
+    I initially added that wrongly when dropping nvidia-settings 
+    binary package).
+
+ -- Stefan Potyra <sistpoty@ubuntu.com>  Fri, 15 Feb 2008 22:30:12 +0100
+
+nvidia-settings (1.0+20071221-0ubuntu3) hardy; urgency=low
+
+  * Drop version from nvidia-glx recommends for virtual package support
+
+ -- Emmet Hikory <persia@ubuntu.com>  Sat, 16 Feb 2008 04:36:10 +0900
+
+nvidia-settings (1.0+20071221-0ubuntu2) hardy; urgency=low
+
+  * Enable nvidia-settings binary package again, since the binary
+    was dropped from nvidia-glx* in favor of this opensource version.
+  * Add nvidia-settings.desktop, set the category to System;Settings;.
+  * rules: clean src/XF86Config-parser.
+  * control: libxnvctrl-dev section libdevel -> contrib/libdevel.
+
+ -- Timo Aaltonen <tepsipakki@ubuntu.com>  Wed, 13 Feb 2008 16:52:16 +0200
+
+nvidia-settings (1.0+20071221-0ubuntu1) hardy; urgency=low
+
+  * New upstream version (aka 169.07).
+  * debian/control: Mangle maintainer/XSBC-Original-Maintainer according to
+    spec.
+  * debian/control: add libxnvctrl-dev package, which contains the headers
+    and the static library.
+  * move current debian/* to package specific places:
+    - debian/dirs -> removed (cannot handle non-existant package with
+      debhelper)
+    - debian/menu -> debian/nvidia-settings.menu
+    - debian/docs -> debian/nvidia-settings.doc, debian/libxnvctrl-dev.docs,
+      splitting off the relevant files.
+  * debian/rules: install libXNVCtrl.a to libxnvctrl-dev package.
+  * debian/rules: install the headers NVCtrl.h and NVCtrlLib.h to
+    the libxnvctrl-dev package (cf. LP bug #59945).
+    Also create necessary directories.
+  * bump debhelper recommends to version 5:
+    - debian/compat updated
+    - debian/control: tighten debhelper build-depends version.
+  * debian/README.ubuntu: new file, explaining the ubuntu changes.
+  * debian/examples -> debian/libxnvctrl.examples, because the examples
+    only apply to libXNVCtrl.a.
+  * debian/control: comment out nvidia-settings package:
+    The nvidia-settings binary is provided by linux-restricted-modules,
+    so there's no need to ship it from this package.
+  * debian/rules: force remove the directories from nvidia-settings in
+    clean rule.
+  * debian/copyright: updated, adjusted to list all other licensed files
+    as well.
+
+ -- Stefan Potyra <sistpoty@ubuntu.com>  Fri, 08 Feb 2008 23:38:35 +0100
+
+nvidia-settings (1.0+20070502-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Randall Donald <rdonald@debian.org>  Sat, 12 May 2007 14:34:59 -0700
+
+nvidia-settings (1.0+20060919-1) unstable; urgency=low
+
+  * New upstream release (20060919)
+  * include /usr/lib/libXNVCtrl.a (closes: #375191)
+
+ -- Randall Donald <rdonald@debian.org>  Sat,  7 Oct 2006 14:31:44 -0700
+
+nvidia-settings (1.0+20060516-1) unstable; urgency=low
+
+  * add build depend on m4. (closes: #369661)
+  * New upstream (nvidia-settings-1.0.tar.gz 05/16/06 )
+
+ -- Randall Donald <rdonald@debian.org>  Fri,  2 Jun 2006 23:21:01 -0700
+
+nvidia-settings (1.0+20060404-1) unstable; urgency=low
+
+  * New upstream (nvidia-settings-1.0.tar.gz  04/04/06)
+  * fix for xorg7 (closes: #366243)
+
+ -- Randall Donald <rdonald@debian.org>  Wed, 17 May 2006 19:21:28 -0700
+
+nvidia-settings (1.0+20051122-1) unstable; urgency=low
+
+  * New upstream. (nvidia-settings-1.0-11-22-05.tar.gz) 
+
+ -- Randall Donald <rdonald@debian.org>  Wed, 28 Dec 2005 14:10:15 -0800
+
+nvidia-settings (1.0+20050729-1) unstable; urgency=low
+
+  * New upstream.
+  * update standards version: 3.6.2
+  * correct fsf address
+
+ -- Randall Donald <rdonald@debian.org>  Mon,  7 Nov 2005 10:54:24 -0800
+
+nvidia-settings (1.0+20050525-2.2) unstable; urgency=low
+
+  * Non-maintainer upload
+  * corrected X11R6_LIB_DIR for x86_64 (closes: #321295, #327337)
+
+ -- tony mancill <tmancill@debian.org>  Fri, 30 Sep 2005 08:44:56 -0700
+
+nvidia-settings (1.0+20050525-2.1) unstable; urgency=low
+
+  * Non-maintainer upload
+  * adds build-depends on libxv-dev (closes: #324594)
+
+ -- tony mancill <tmancill@debian.org>  Sun, 11 Sep 2005 10:49:58 -0700
+
+nvidia-settings (1.0+20050525-2) unstable; urgency=low
+
+  * Change build-depends from xlibs-static-dev to libxxf86vm-dev 
+    (closes: #318814)
+  
+ -- Randall Donald <rdonald@debian.org>  Tue, 19 Jul 2005 13:56:09 -0700
+
+nvidia-settings (1.0+20050525-1) unstable; urgency=low
+
+  * upstream from May 25 2005
+  * add date to version name. (how about that for an idea, duh)
+
+ -- Randall Donald <rdonald@debian.org>  Mon, 20 Jun 2005 15:19:10 -0700
+
+nvidia-settings (1.0+3-1) unstable; urgency=low
+
+  * upstream from 03/22/05
+  * add libxrandr-dev and xlibmesa-gl-dev to build depends
+
+ -- Randall Donald <rdonald@debian.org>  Sat,  2 Apr 2005 04:51:20 +0000
+
+nvidia-settings (1.0+2-3) unstable; urgency=low
+
+  * patch for rebuilding libXNVCtrl.a runtime. Thanks
+    to Tollef Fog Heen <tfheen@raw.no> (closes: 265640)
+  * change arch to only those supported by nvidia.
+
+ -- Randall Donald <rdonald@debian.org>  Sat, 13 Nov 2004 12:41:47 -0800
+
+nvidia-settings (1.0+2-2) unstable; urgency=low
+
+  * Build against libs in unstable, not experimental. (closes: #280221) 
+
+ -- Randall Donald <rdonald@debian.org>  Mon,  8 Nov 2004 02:29:31 -0800
+
+nvidia-settings (1.0+2-1) unstable; urgency=low
+
+  * New upstream from Nov 5, 2004. 
+
+ -- Randall Donald <rdonald@debian.org>  Sun,  7 Nov 2004 00:02:46 -0800
+
+nvidia-settings (1.0+1-1) unstable; urgency=low
+
+  * New upstream (minor quit dialog change) but no new upstream
+    version number.
+
+ -- Randall Donald <rdonald@debian.org>  Thu,  5 Aug 2004 13:52:07 -0700
+
+nvidia-settings (1.0-3) unstable; urgency=low
+
+  * Fix Author(s) :p
+  * install debian menu. 
+
+ -- Randall Donald <rdonald@debian.org>  Sat,  3 Jul 2004 19:09:17 -0700
+
+nvidia-settings (1.0-2) unstable; urgency=low
+
+  * Fix Build-Depends 
+
+ -- Randall Donald <rdonald@debian.org>  Wed, 30 Jun 2004 22:39:18 -0700
+
+nvidia-settings (1.0-1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Randall Donald <rdonald@debian.org>  Wed, 30 Jun 2004 16:45:52 -0700
+
