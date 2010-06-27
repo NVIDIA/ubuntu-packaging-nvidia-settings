@@ -1,3 +1,15 @@
+nvidia-settings (256.35-0ubuntu1) maverick; urgency=low
+
+  * New upstream release:
+    - Fixed a bug that caused nvidia-settings to crash when rendering
+      its thermal gauge widget if the range of valid values for the
+      thermal sensor was empty.
+    - Improved Thermal Settings reporting in nvidia-settings to
+      accurately reflect hardware configurations with multiple thermal
+      sensors.
+
+ -- Alberto Milone <alberto.milone@canonical.com>  Sun, 27 Jun 2010 18:23:53 +0200
+
 nvidia-settings (195.36.08-0ubuntu2) lucid; urgency=low
 
   * debian/patches/03_do_not_exit_on_no_scanout.patch:
