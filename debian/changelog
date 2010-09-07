@@ -1,3 +1,14 @@
+nvidia-settings (256.53-0ubuntu1) maverick; urgency=low
+
+  * New upstream release:
+    - Update to the new release so that it matches the latest release
+      of nvidia-current.
+  * debian/control:
+    - Bump Standards-Version.
+    - Add Vcs-Git and Vcs-Browser.
+
+ -- Alberto Milone <alberto.milone@canonical.com>  Tue, 07 Sep 2010 12:19:37 +0200
+
 nvidia-settings (256.35-0ubuntu1) maverick; urgency=low
 
   * New upstream release:
