@@ -1,0 +1,13 @@
+diff --git a/Makefile b/Makefile
+index 0b4d202..bb9781f 100644
+--- a/Makefile
++++ b/Makefile
+@@ -53,7 +53,7 @@ ifndef GTK_CFLAGS
+ endif
+ 
+ ifndef GTK_LDFLAGS
+-  GTK_LDFLAGS         := $(shell $(PKG_CONFIG) --libs gtk+-2.0)
++  GTK_LDFLAGS         := $(shell $(PKG_CONFIG) --libs gtk+-2.0) -ldl
+ endif
+ 
+ 
