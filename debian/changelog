@@ -1,3 +1,10 @@
+nvidia-settings (260.19.21-0ubuntu2) natty; urgency=low
+
+  * Add debian/patches/06_layout_drop_down.patch: screen layout dialog box
+    replaced by a drop-down list, thanks to Bert Van Vreckem (LP: #604525).
+
+ -- Kees Cook <kees@ubuntu.com>  Mon, 06 Dec 2010 14:47:44 -0800
+
 nvidia-settings (260.19.21-0ubuntu1) natty; urgency=low
 
   * New upstream release.
