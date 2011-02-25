@@ -1,3 +1,11 @@
+nvidia-settings (260.19.21-0ubuntu3) natty; urgency=low
+
+  * Drop patch debian/patches/06_layout_drop_down.patch: Causes regression
+    when used with unity.
+    (Closes LP: #692677, reopens #604525)
+
+ -- Bryce Harrington <bryce@ubuntu.com>  Mon, 03 Jan 2011 13:08:19 -0800
+
 nvidia-settings (260.19.21-0ubuntu2) natty; urgency=low
 
   * Add debian/patches/06_layout_drop_down.patch: screen layout dialog box
