@@ -1,8 +1,10 @@
-nvidia-settings (275.09.07-0ubuntu1) UNRELEASED; urgency=low
+nvidia-settings (275.09.07-0ubuntu1) oneiric; urgency=low
 
-  * 
+  * New upstream release:
+    - Fixed a bug that caused nvidia-settings to crash while saving the
+      X configuration file on some Linux distributions.
 
- -- Alberto Milone <alberto.milone@canonical.com>  Wed, 15 Jun 2011 16:43:01 +0200
+ -- Alberto Milone <alberto.milone@canonical.com>  Wed, 15 Jun 2011 16:52:24 +0200
 
 nvidia-settings (270.41.19-0ubuntu1) oneiric; urgency=low
 
