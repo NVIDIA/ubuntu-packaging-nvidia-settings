@@ -1,3 +1,9 @@
+nvidia-settings (275.09.07-0ubuntu2) UNRELEASED; urgency=low
+
+  * 
+
+ -- Alberto Milone <alberto.milone@canonical.com>  Wed, 13 Jul 2011 15:58:17 +0200
+
 nvidia-settings (275.09.07-0ubuntu1) oneiric; urgency=low
 
   * New upstream release:
