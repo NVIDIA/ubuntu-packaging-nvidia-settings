@@ -1,7 +1,6 @@
 #!/usr/bin/make -f
 #
-# Copyright (C) 2009 Canonical Services Ltd
-# Copyright (C) 2009 Alberto Milone
+# Copyright (C) 2009 Canonical Ltd.
 
 include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/simple-patchsys.mk
