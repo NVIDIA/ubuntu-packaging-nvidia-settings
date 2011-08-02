@@ -1,0 +1,35 @@
+#!/bin/sh
+# Copyright (C) 2011 Canonical Ltd
+# Authors: Alberto Milone
+set -e
+
+PACKAGE_NAME=#PKGNAME#
+
+case "$1" in
+    configure)
+        # Deal with alternatives
+        update-alternatives --force \
+            --install #SYSCONFDIR#/ld.so.conf.d/nvidia_settings.conf nvidia_settings_conf #LDSOCONF# #ALTPRIORITY# \
+            --slave #MANDIR#/nvidia-settings.1.gz man_nvidiasettings.gz #MANDIR#/alt-#PKGNAME#.1.gz \
+            --slave #BINDIR#/nvidia-settings nvidia_settings #PKGBINDIR#/nvidia-settings \
+            --slave #INCLUDEDIR#/NVCtrl nvctrl_include #PKGINCLUDEDIR#/NVCtrl
+
+        # ldconfig needs to be run immediately as we're changing /etc/ld.so.conf.d/ with
+        # alternatives.
+        LDCONFIG_NOTRIGGER=y ldconfig
+
+        # Trigger gmenu so that the icons will show up in the menu
+        dpkg-trigger --by-package=$PACKAGE_NAME gmenucache || true
+
+        ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+            echo "postinst called with unknown argument \`$1'" >&2
+            exit 1
+    ;;
+esac
+
+#DEBHELPER#

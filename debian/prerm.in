@@ -1,0 +1,22 @@
+#!/bin/sh
+# prerm script for #PKGNAME#
+#
+# Copyright (C) 2011 Canonical Ltd
+# Authors: Alberto Milone
+
+
+PACKAGE_NAME=#PKGNAME#
+
+case "$1" in
+	remove)
+		update-alternatives --remove nvidia_setting_conf #LDSOCONF#
+
+		# Trigger gmenu so as to update the gnome menu
+		dpkg-trigger --by-package=$PACKAGE_NAME gmenucache || true
+
+		# explicit ldconfig due to alternatives
+		ldconfig
+	;;
+esac
+
+#DEBHELPER#

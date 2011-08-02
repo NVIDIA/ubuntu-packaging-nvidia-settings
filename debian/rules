@@ -6,16 +6,65 @@ include /usr/share/cdbs/1/rules/debhelper.mk
 include /usr/share/cdbs/1/rules/simple-patchsys.mk
 
 PKG_name    := nvidia-settings
+PKG_version := $(shell dpkg-parsechangelog | awk -F' ' '/^Version:/ {print $$2}' | awk -F- '{print $$1}')
+PKG_source  := $(shell dpkg-parsechangelog | sed -n 's/^Source: //p')
+bindir      := /usr/bin
 libdir      := /usr/lib
 includedir  := /usr/include
+PKG_bindir  := $(libdir)/$(PKG_name)/bin
+PKG_libdir  := $(libdir)/$(PKG_name)
+PKG_includedir := $(PKG_libdir)include
+datadir              := /usr/share
+PKG_datadir          := $(datadir)/$(PKG_name)
+libdir               := /usr/lib
+includedir           := /usr/include
+sysconfdir           := /etc
+PKG_libdir           := $(libdir)/$(PKG_name)
+PKG_bindir           := $(PKG_libdir)/bin
+PKG_deskdir          := $(PKG_datadir)
+PKG_configdir        := $(PKG_libdir)
+ld_so_conf_dir       := $(PKG_configdir)
+ld_so_conf_file      := ld.so.conf
+ld_so_conf_path      := $(ld_so_conf_dir)/$(ld_so_conf_file)
+mandir               := /usr/share/man/man1
 
-configure/$(PKG_name)::
+
+.PHONY: regen-from-templates
+regen-from-templates:
+	#Create important strings
+	for i in control \
+		dirs \
+		postrm \
+		postinst \
+		prerm; do \
+                sed -e "s|#LIBDIR#|$(libdir)|g"         \
+                        -e "s|#BINDIR#|$(bindir)|g"         \
+                        -e "s|#VERSION#|$(PKG_version)|g"   \
+                        -e "s|#SYSCONFDIR#|$(sysconfdir)|g" \
+                        -e "s|#MANDIR#|$(mandir)|g" \
+                        -e "s|#LDSOCONF#|$(ld_so_conf_path)|g" \
+                        -e "s|#ALTPRIORITY#|$(alt_priority)|g" \
+                        -e "s|#DATADIR#|$(datadir)|g" \
+                        -e "s|#PKGDESKDIR#|$(PKG_deskdir)|g" \
+                        -e "s|#PKGDATADIR#|$(PKG_datadir)|g" \
+                        -e "s|#PKGCONFIGDIR#|$(PKG_configdir)|g" \
+                        -e "s|#PKGBINDIR#|$(PKG_bindir)|g" \
+                        -e "s|#PKGLIBDIR#|$(PKG_libdir)|g" \
+                        -e "s|#PKGNAME#|$(PKG_name)|g" \
+                        -e "s|#SRCNAME#|$(PKG_source)|g" \
+                        -e "s|#INCLUDEDIR#|$(includedir)|g" \
+                        -e "s|#PKGINCLUDEDIR#|$(PKG_includedir)|g" \
+                        debian/$$i.in > debian/$$i;      \
+        done
+
+
+configure/$(PKG_name):: regen-from-templates
 	$(MAKE) -C src/libXNVCtrl EXTINCSRC=/usr/include/X11/extensions \
 		CFLAGS="$(CFLAGS) -fPIC"
 	$(MAKE)
 
 
-clean::
+clean:: regen-from-templates
 	-$(MAKE) -C src/libXNVCtrl distclean 2>/dev/null
 	-$(MAKE) clean
 	if [ -e src/XF86Config-parser/Makefile ]; then \
@@ -23,8 +72,17 @@ clean::
 	fi
 
 binary-install/$(PKG_name)::
-	$(MAKE) prefix=$(CURDIR)/debian/$(PKG_name)/usr install
-	dh_install -p$(PKG_name) src/libXNVCtrl/libXNVCtrl.a	"$(libdir)"
-	dh_install -p$(PKG_name) src/libXNVCtrl/NVCtrl.h		"$(includedir)/NVCtrl"
-	dh_install -p$(PKG_name) src/libXNVCtrl/NVCtrlLib.h		"$(includedir)/NVCtrl"
+	$(MAKE) prefix=$(CURDIR)/debian/$(PKG_name)$(PKG_libdir) install
+	dh_install -p$(PKG_name) src/libXNVCtrl/libXNVCtrl.a    "$(PKG_libdir)"
+	dh_install -p$(PKG_name) src/libXNVCtrl/NVCtrl.h        "$(PKG_includedir)/NVCtrl"
+	dh_install -p$(PKG_name) src/libXNVCtrl/NVCtrlLib.h     "$(PKG_includedir)/NVCtrl"
 
+	# ld.so.conf
+	dh_installdirs -p$(PKG_name) "$(ld_so_conf_dir)"
+	echo "$(PKG_libdir)" >	"$(CURDIR)/debian/$(PKG_name)$(ld_so_conf_path)"
+
+	# Rename the man pages in order to use alternatives
+	for file in $(CURDIR)/debian/$(PKG_name)$(mandir)/*.gz; do \
+		mv $$file $(CURDIR)/debian/$(PKG_name)$(mandir)/`basename $$file | \
+		sed 's/nvidia-settings/alt-$(PKG_name)/'`; \
+	done
