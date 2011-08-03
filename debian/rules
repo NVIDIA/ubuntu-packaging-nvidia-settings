@@ -2,9 +2,6 @@
 #
 # Copyright (C) 2009 Canonical Ltd.
 
-include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/simple-patchsys.mk
-
 PKG_name    := nvidia-settings
 PKG_version := $(shell dpkg-parsechangelog | awk -F' ' '/^Version:/ {print $$2}' | awk -F- '{print $$1}')
 PKG_source  := $(shell dpkg-parsechangelog | sed -n 's/^Source: //p')
@@ -58,20 +55,29 @@ regen-from-templates:
         done
 
 
-configure/$(PKG_name):: regen-from-templates
+build: regen-from-templates
+	dh_quilt_patch
+
 	$(MAKE) -C src/libXNVCtrl EXTINCSRC=/usr/include/X11/extensions \
 		CFLAGS="$(CFLAGS) -fPIC"
 	$(MAKE)
+	dh build
 
 
-clean:: regen-from-templates
+clean: regen-from-templates
 	-$(MAKE) -C src/libXNVCtrl distclean 2>/dev/null
 	-$(MAKE) clean
 	if [ -e src/XF86Config-parser/Makefile ]; then \
 		$(MAKE) -C src/XF86Config-parser clean; \
 	fi
 
-binary-install/$(PKG_name)::
+	rm -Rf $(CURDIR)/_out
+
+	dh_quilt_unpatch
+
+	dh clean
+
+binary-arch:
 	$(MAKE) prefix=$(CURDIR)/debian/$(PKG_name)$(PKG_libdir) install
 	dh_install -p$(PKG_name) src/libXNVCtrl/libXNVCtrl.a    "$(PKG_libdir)"
 	dh_install -p$(PKG_name) src/libXNVCtrl/NVCtrl.h        "$(PKG_includedir)/NVCtrl"
@@ -81,8 +87,19 @@ binary-install/$(PKG_name)::
 	dh_installdirs -p$(PKG_name) "$(ld_so_conf_dir)"
 	echo "$(PKG_libdir)" >	"$(CURDIR)/debian/$(PKG_name)$(ld_so_conf_path)"
 
+	#Run the normal stuff
+	dh binary-arch
+
+binary: binary-arch binary-indep ;
+	#Run the normal stuff
+	dh binary
+
+override_dh_installman:
+	dh_installman
+
 	# Rename the man pages in order to use alternatives
-	for file in $(CURDIR)/debian/$(PKG_name)$(mandir)/*.gz; do \
-		mv $$file $(CURDIR)/debian/$(PKG_name)$(mandir)/`basename $$file | \
-		sed 's/nvidia-settings/alt-$(PKG_name)/'`; \
-	done
+	mv $(CURDIR)/debian/$(PKG_name)$(PKG_libdir)/share/man/man1/nvidia-settings.1.gz \
+	$(CURDIR)/debian/$(PKG_name)$(PKG_libdir)/share/man/man1/alt-$(PKG_name).1.gz
+
+%:
+	dh $@ --with quilt

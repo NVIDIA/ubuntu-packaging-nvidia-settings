@@ -1,0 +1,4 @@
+01_allow_dark_themes.dpatch
+02_nvidia-settings-format-string.patch
+04_nvidia-settings_natty_ftbs.patch
+05_add_polkit_support.patch
