@@ -25,6 +25,8 @@ ld_so_conf_file      := ld.so.conf
 ld_so_conf_path      := $(ld_so_conf_dir)/$(ld_so_conf_file)
 mandir               := /usr/share/man/man1
 
+# Priority of the alternative
+alt_priority         := 9700
 
 .PHONY: regen-from-templates
 regen-from-templates:
