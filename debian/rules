@@ -10,7 +10,7 @@ libdir      := /usr/lib
 includedir  := /usr/include
 PKG_bindir  := $(libdir)/$(PKG_name)/bin
 PKG_libdir  := $(libdir)/$(PKG_name)
-PKG_includedir := $(PKG_libdir)include
+PKG_includedir := $(PKG_libdir)/include
 datadir              := /usr/share
 PKG_datadir          := $(datadir)/$(PKG_name)
 libdir               := /usr/lib
@@ -24,6 +24,7 @@ ld_so_conf_dir       := $(PKG_configdir)
 ld_so_conf_file      := ld.so.conf
 ld_so_conf_path      := $(ld_so_conf_dir)/$(ld_so_conf_file)
 mandir               := /usr/share/man/man1
+PKG_mandir           := $(PKG_libdir)/share/man/man1
 
 # Priority of the alternative
 alt_priority         := 9700
@@ -41,6 +42,7 @@ regen-from-templates:
                         -e "s|#VERSION#|$(PKG_version)|g"   \
                         -e "s|#SYSCONFDIR#|$(sysconfdir)|g" \
                         -e "s|#MANDIR#|$(mandir)|g" \
+                        -e "s|#PKGMANDIR#|$(PKG_mandir)|g" \
                         -e "s|#LDSOCONF#|$(ld_so_conf_path)|g" \
                         -e "s|#ALTPRIORITY#|$(alt_priority)|g" \
                         -e "s|#DATADIR#|$(datadir)|g" \
