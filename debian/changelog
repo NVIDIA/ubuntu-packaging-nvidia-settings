@@ -1,8 +1,8 @@
-nvidia-settings (280.13-0ubuntu2) UNRELEASED; urgency=low
+nvidia-settings (280.13-0ubuntu2) oneiric; urgency=low
 
-  * 
+  * Make sure that dh_auto_install calls make with the right arguments.
 
- -- Alberto Milone <alberto.milone@canonical.com>  Fri, 05 Aug 2011 13:21:23 +0200
+ -- Alberto Milone <alberto.milone@canonical.com>  Fri, 05 Aug 2011 14:19:18 +0200
 
 nvidia-settings (280.13-0ubuntu1) oneiric; urgency=low
 
