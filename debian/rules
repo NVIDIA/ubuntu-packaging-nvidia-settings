@@ -82,7 +82,8 @@ clean: regen-from-templates
 	dh clean
 
 binary-arch:
-	$(MAKE) prefix=$(CURDIR)/debian/$(PKG_name)$(PKG_libdir) install
+	dh_auto_install -- prefix=$(CURDIR)/debian/$(PKG_name)$(PKG_libdir)
+	#$(MAKE) prefix=$(CURDIR)/debian/$(PKG_name)$(PKG_libdir) install
 	dh_install -p$(PKG_name) src/libXNVCtrl/libXNVCtrl.a    "$(PKG_libdir)"
 	dh_install -p$(PKG_name) src/libXNVCtrl/NVCtrl.h        "$(PKG_includedir)/NVCtrl"
 	dh_install -p$(PKG_name) src/libXNVCtrl/NVCtrlLib.h     "$(PKG_includedir)/NVCtrl"
@@ -97,6 +98,9 @@ binary-arch:
 binary: binary-arch binary-indep ;
 	#Run the normal stuff
 	dh binary
+
+override_dh_auto_install:
+	dh_auto_install -- prefix=$(CURDIR)/debian/$(PKG_name)$(PKG_libdir)
 
 override_dh_installman:
 	dh_installman
