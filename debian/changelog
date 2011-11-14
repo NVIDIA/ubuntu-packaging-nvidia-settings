@@ -1,3 +1,9 @@
+nvidia-settings (285.05.09-0ubuntu1) UNRELEASED; urgency=low
+
+  * 
+
+ -- Alberto Milone <alberto.milone@canonical.com>  Mon, 14 Nov 2011 17:03:02 +0100
+
 nvidia-settings (280.13-0ubuntu4) precise; urgency=low
 
   * Ubuntu has a control.in so last change didn't work.
