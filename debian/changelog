@@ -1,8 +1,8 @@
-nvidia-settings (285.05.09-0ubuntu1) UNRELEASED; urgency=low
+nvidia-settings (285.05.09-0ubuntu1) precise; urgency=low
 
-  * 
+  * New upstream release.
 
- -- Alberto Milone <alberto.milone@canonical.com>  Mon, 14 Nov 2011 17:03:02 +0100
+ -- Alberto Milone <alberto.milone@canonical.com>  Mon, 14 Nov 2011 17:05:48 +0100
 
 nvidia-settings (280.13-0ubuntu4) precise; urgency=low
 
