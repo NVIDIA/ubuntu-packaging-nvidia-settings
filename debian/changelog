@@ -1,3 +1,9 @@
+nvidia-settings (280.13-0ubuntu3) precise; urgency=low
+
+  * Add python-gtk2 and pkg-config dependencies (LP: #721453)
+
+ -- Mackenzie Morgan <maco.m@ubuntu.com>  Mon, 17 Oct 2011 13:18:23 -0400
+
 nvidia-settings (280.13-0ubuntu2) oneiric; urgency=low
 
   * Make sure that dh_auto_install calls make with the right arguments.
