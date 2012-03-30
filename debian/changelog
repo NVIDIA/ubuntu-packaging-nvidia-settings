@@ -1,8 +1,8 @@
-nvidia-settings (295.33-0ubuntu1) UNRELEASED; urgency=low
+nvidia-settings (295.33-0ubuntu1) precise; urgency=low
 
-  * 
+  * New upstream release.
 
- -- Alberto Milone <alberto.milone@canonical.com>  Fri, 30 Mar 2012 14:18:04 +0200
+ -- Alberto Milone <alberto.milone@canonical.com>  Fri, 30 Mar 2012 14:23:10 +0200
 
 nvidia-settings (295.20-0ubuntu1) precise; urgency=low
 
