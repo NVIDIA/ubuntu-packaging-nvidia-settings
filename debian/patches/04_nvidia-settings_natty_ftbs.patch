@@ -1,8 +1,7 @@
-diff --git a/Makefile b/Makefile
-index 0b4d202..bb9781f 100644
---- a/Makefile
-+++ b/Makefile
-@@ -53,7 +53,7 @@ ifndef GTK_CFLAGS
+diff -Nurp nvidia-settings.orig/src/Makefile nvidia-settings/src/Makefile
+--- nvidia-settings.orig/src/Makefile	2012-05-02 17:06:02.000000000 +0200
++++ nvidia-settings/src/Makefile	2012-05-17 09:09:32.341638054 +0200
+@@ -51,7 +51,7 @@ ifndef GTK_CFLAGS
  endif
  
  ifndef GTK_LDFLAGS
