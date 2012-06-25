@@ -1,8 +1,13 @@
-nvidia-settings (302.17-0ubuntu1) UNRELEASED; urgency=low
+nvidia-settings (302.17-0ubuntu1) quantal; urgency=low
 
-  * 
+  * New upstream release.
+  * Refresh 04_nvidia-settings_natty_ftbs.patch.
+  * Drop 02_nvidia-settings-format-string.patch which
+    is now upstream.
+  * debian/rules:
+    - Make sure to install the new sources correctly.
 
- -- Alberto Milone <alberto.milone@canonical.com>  Mon, 25 Jun 2012 16:05:09 +0200
+ -- Alberto Milone <alberto.milone@canonical.com>  Mon, 25 Jun 2012 16:31:12 +0200
 
 nvidia-settings (295.33-0ubuntu1) precise; urgency=low
 
