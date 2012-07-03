@@ -58,8 +58,8 @@ regen-from-templates:
                         debian/$$i.in > debian/$$i;      \
         done
 
-
-build: regen-from-templates
+build: build-arch
+build-arch: regen-from-templates
 	dh_quilt_patch
 
 	$(MAKE) -C src/libXNVCtrl EXTINCSRC=/usr/include/X11/extensions \

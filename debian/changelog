@@ -1,3 +1,9 @@
+nvidia-settings (302.17-0ubuntu2) quantal; urgency=low
+
+  * Rename build to build-arch and make build depend on build-arch.
+
+ -- Adam Conrad <adconrad@ubuntu.com>  Mon, 02 Jul 2012 17:18:24 -0600
+
 nvidia-settings (302.17-0ubuntu1) quantal; urgency=low
 
   * New upstream release.
