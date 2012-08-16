@@ -1,6 +1,7 @@
-nvidia-settings (302.17-0ubuntu3) precise; urgency=low
+nvidia-settings (302.17-0ubuntu3) quantal; urgency=low
 
-  * debian/control: Changed a typo in the package description; changed 'of' to 'for' (LP: #306178)
+  * debian/control: Fixed a typo in the package description: changed 'of' to 'for'
+    (LP: #306178)
 
  -- Donald Siuchninski <dsiuchninski@gmail.com>  Sun, 29 Jul 2012 22:19:32 -0500
 
