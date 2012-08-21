@@ -15,7 +15,7 @@ Architecture: i386 amd64 lpia
 Depends: python-gtk2, pkg-config, screen-resolution-extra (>= 0.12), ${shlibs:Depends}
 Conflicts: libxnvctrl-dev
 Replaces: libxnvctrl-dev
-Description:  Tool of configuring the NVIDIA graphics driver
+Description:  Tool for configuring the NVIDIA graphics driver
  The nvidia-settings utility is a tool for configuring the NVIDIA
  Linux graphics driver.  It operates by communicating with the NVIDIA
  X driver, querying and updating state as appropriate.  This
