@@ -1,8 +1,23 @@
-nvidia-settings (304.43-0ubuntu1) UNRELEASED; urgency=low
+nvidia-settings (304.43-0ubuntu1) quantal; urgency=low
 
-  * 
+  * New upstream release (LP: #1037483):
+    - Updated nvidia-settings to use RandR per-CRTC gamma
+      control, when available. When controlling an X
+      server with support for RandR 1.2, nvidia-settings
+      will display the color correction widget as a tab
+      within each display device page, instead of a
+      per-X screen color correction page.
+    - Added the ability to select and move X screens in
+      the "X Server Display Configuration" page of
+      nvidia-settings via Ctrl-(Left)Click + Drag.
+    - Fixed a bug that prevented the display palette
+      from being updated immediately after an application
+      called XStoreColors.
+    - Fixed a bug that caused gnome-settings-daemon to
+      revert display configuration changes made by
+      nvidia-settings.
 
- -- Alberto Milone <alberto.milone@canonical.com>  Tue, 28 Aug 2012 13:26:30 +0200
+ -- Alberto Milone <alberto.milone@canonical.com>  Tue, 28 Aug 2012 14:01:47 +0200
 
 nvidia-settings (302.17-0ubuntu2) quantal; urgency=low
 
