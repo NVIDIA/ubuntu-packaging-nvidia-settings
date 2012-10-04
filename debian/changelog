@@ -26,6 +26,13 @@ nvidia-settings (304.43-0ubuntu1) quantal; urgency=low
 
  -- Alberto Milone <alberto.milone@canonical.com>  Tue, 28 Aug 2012 14:01:47 +0200
 
+nvidia-settings (302.17-0ubuntu3) quantal; urgency=low
+
+  * debian/control: Fixed a typo in the package description: changed 'of' to 'for'
+    (LP: #306178)
+
+ -- Donald Siuchninski <dsiuchninski@gmail.com>  Sun, 29 Jul 2012 22:19:32 -0500
+
 nvidia-settings (302.17-0ubuntu2) quantal; urgency=low
 
   * Rename build to build-arch and make build depend on build-arch.
