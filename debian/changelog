@@ -1,8 +1,11 @@
-nvidia-settings (304.51-0ubuntu1) UNRELEASED; urgency=low
+nvidia-settings (304.51-0ubuntu1) quantal; urgency=low
 
-  * 
+  * New upstream release:
+    - Fixed a bug that sometimes caused the display layout area
+      of the nvidia-settings control panel to be laid out
+      incorrectly.
 
- -- Alberto Milone <alberto.milone@canonical.com>  Thu, 04 Oct 2012 12:58:12 +0200
+ -- Alberto Milone <alberto.milone@canonical.com>  Thu, 04 Oct 2012 12:58:33 +0200
 
 nvidia-settings (304.43-0ubuntu2) quantal; urgency=low
 
