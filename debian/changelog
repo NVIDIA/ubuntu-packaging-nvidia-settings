@@ -1,8 +1,10 @@
-nvidia-settings (304.51-0ubuntu2) UNRELEASED; urgency=low
+nvidia-settings (304.51-0ubuntu2) quantal; urgency=low
 
-  * 
+  * debian/control.in:
+    - Conflict with/replace/provide other flavours
+      (LP: #1061659).
 
- -- Alberto Milone <alberto.milone@canonical.com>  Fri, 12 Oct 2012 12:28:31 +0200
+ -- Alberto Milone <alberto.milone@canonical.com>  Fri, 12 Oct 2012 12:56:09 +0200
 
 nvidia-settings (304.51-0ubuntu1) quantal; urgency=low
 
