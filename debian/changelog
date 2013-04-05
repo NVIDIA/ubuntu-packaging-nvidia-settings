@@ -1,8 +1,13 @@
-nvidia-settings (304.88-0ubuntu0.1) UNRELEASED; urgency=low
+nvidia-settings (304.88-0ubuntu0.1) quantal-security; urgency=low
 
-  * 
+  * SECURITY UPDATE: ARGB Cursor Buffer Overflow in "NoScanout" Mode
+    - CVE-2013-0131
 
- -- Alberto Milone <alberto.milone@canonical.com>  Fri, 05 Apr 2013 16:57:48 +0200
+  [ Alberto Milone ]
+  * New upstream release:
+    - Match the ABI in the 304.88 release.
+
+ -- Alberto Milone <alberto.milone@canonical.com>  Fri, 05 Apr 2013 17:09:45 +0200
 
 nvidia-settings (304.51-0ubuntu2) quantal; urgency=low
 
