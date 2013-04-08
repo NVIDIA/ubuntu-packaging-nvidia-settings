@@ -100,7 +100,7 @@ binary: binary-arch binary-indep ;
 	dh binary
 
 override_dh_auto_install:
-	dh_auto_install -- prefix=$(CURDIR)/debian/$(PKG_name)$(PKG_libdir)
+	dh_auto_install -- PREFIX=$(CURDIR)/debian/$(PKG_name)$(PKG_libdir)
 
 override_dh_installman:
 	dh_installman
