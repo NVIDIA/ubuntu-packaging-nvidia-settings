@@ -5,7 +5,7 @@ XSBC-Original-Maintainer: Debian NVIDIA Maintainers <pkg-nvidia-devel@lists.alio
 Maintainer: Ubuntu MOTU Developers <ubuntu-motu@lists.ubuntu.com>
 Uploaders: Randall Donald <rdonald@debian.org>
 Build-Depends: debhelper (>= 7), m4, libgtk2.0-dev, libxext-dev, xutils-dev, libxrandr-dev,
- libgl1-mesa-dev | libgl-dev, libxxf86vm-dev, libxv-dev, quilt
+ libgl1-mesa-dev | libgl-dev, libxxf86vm-dev, libxv-dev, libvdpau-dev, quilt
 Standards-Version: 3.8.0
 Vcs-Git: git://github.com/tseliot/nvidia-settings.git
 Vcs-Browser: http://github.com/tseliot/nvidia-settings
@@ -13,7 +13,7 @@ Vcs-Browser: http://github.com/tseliot/nvidia-settings
 Package: #PKGNAME#
 Architecture: i386 amd64 lpia
 Depends: python-gtk2, pkg-config, screen-resolution-extra (>= 0.12),
- ${shlibs:Depends}, ${misc:Depends}
+ libvdpau1, ${shlibs:Depends}, ${misc:Depends}
 Conflicts: libxnvctrl-dev, nvidia-settings-updates,
  nvidia-settings-experimental-304, nvidia-settings-experimental-310
 Replaces: libxnvctrl-dev, nvidia-settings-updates,
