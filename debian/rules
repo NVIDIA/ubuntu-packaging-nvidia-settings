@@ -25,9 +25,21 @@ ld_so_conf_file      := ld.so.conf
 ld_so_conf_path      := $(ld_so_conf_dir)/$(ld_so_conf_file)
 mandir               := /usr/share/man/man1
 PKG_mandir           := $(PKG_libdir)/share/man/man1
+url                  := http://cgit.freedesktop.org/~aplattner/nvidia-settings/snapshot
+tarball              := nvidia-settings-$(PKG_version).tar.gz
+file_url             := $(url)/$(tarball)
+
 
 # Priority of the alternative
 alt_priority         := 9700
+
+.PHONY: download-sources
+download-sources:
+	# Remove any previous extracted tarball
+	find . -maxdepth 1 \( ! -iname 'debian' ! -iname '.*' ! -iname '..*' \) | xargs rm -rf
+	# Downloads the new tarball from NVIDIA's website
+	wget -c $(file_url) -P ../
+	tar -xzvf ../$(tarball) --strip 1
 
 .PHONY: regen-from-templates
 regen-from-templates:
