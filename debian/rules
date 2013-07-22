@@ -81,7 +81,7 @@ build-arch: regen-from-templates
 
 
 clean: regen-from-templates
-	-$(MAKE) -C src/libXNVCtrl distclean 2>/dev/null
+	-$(MAKE) -C src/libXNVCtrl clean 2>/dev/null
 	-$(MAKE) clean
 	if [ -e src/XF86Config-parser/Makefile ]; then \
 		$(MAKE) -C src/XF86Config-parser clean; \
