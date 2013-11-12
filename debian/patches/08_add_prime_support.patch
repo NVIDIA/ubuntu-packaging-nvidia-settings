@@ -1,0 +1,694 @@
+From 01c9bec91e5f4b46a77984352692cdef8a0da6ea Mon Sep 17 00:00:00 2001
+From: Alberto Milone <alberto.milone@canonical.com>
+Date: Mon, 21 Oct 2013 15:20:18 +0200
+Subject: [PATCH 1/1] Add support for PRIME GPU switching
+
+---
+ src/gtk+-2.x/ctkprime.c  |  540 ++++++++++++++++++++++++++++++++++++++++++++++
+ src/gtk+-2.x/ctkprime.h  |   77 +++++++
+ src/gtk+-2.x/ctkwindow.c |   10 +
+ src/src.mk               |    2 +
+ 4 files changed, 629 insertions(+)
+ create mode 100644 src/gtk+-2.x/ctkprime.c
+ create mode 100644 src/gtk+-2.x/ctkprime.h
+
+diff --git a/src/gtk+-2.x/ctkprime.c b/src/gtk+-2.x/ctkprime.c
+new file mode 100644
+index 0000000..517b60c
+--- /dev/null
++++ b/src/gtk+-2.x/ctkprime.c
+@@ -0,0 +1,540 @@
++/*
++ * nvidia-settings: A tool for configuring the NVIDIA X driver on Unix
++ * and Linux systems.
++ *
++ * Copyright (C) 2013 Canonical Ltd.
++ *
++ * Author: Alberto Milone <alberto.milone@canonical.com>
++ *
++ * Based on ctkxvideo.c:
++ * - Copyright (C) 2004 NVIDIA Corporation.
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms and conditions of the GNU General Public License,
++ * version 2, as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses>.
++ */
++
++#include <stdlib.h>
++#include <stdio.h>
++#include <string.h>
++#include <gtk/gtk.h>
++
++#include "ctkbanner.h"
++
++#include "ctkprime.h"
++#include "ctkscale.h"
++
++#include "ctkhelp.h"
++
++
++static void prime_changed(GtkWidget *widget, gpointer user_data);
++
++static GtkWidget *prime_radio_button_add(CtkPrime *ctk_prime,
++                                         GtkWidget *prev_radio,
++                                         char *label,
++                                         gchar *value,
++                                         int index);
++
++static void
++prime_update_radio_buttons(CtkPrime *ctk_prime, gint value);
++
++static void prime_changed(GtkWidget *widget, gpointer user_data);
++
++static void prime_radio_button_enabled_add(CtkPrime *ctk_prime,
++                                                        gint add_device_mask);
++
++#define FRAME_PADDING 5
++
++
++/* Create an error message dialog */
++static void ctk_display_error_msg(GtkWidget *parent, gchar * msg)
++{
++    GtkWidget *dlg;
++
++    if (msg) {
++        nv_error_msg("%s", msg);
++
++        if (parent) {
++            dlg = gtk_message_dialog_new
++            (GTK_WINDOW(parent),
++             GTK_DIALOG_DESTROY_WITH_PARENT,
++             GTK_MESSAGE_ERROR,
++             GTK_BUTTONS_OK,
++             "%s", msg);
++            gtk_dialog_run(GTK_DIALOG(dlg));
++            gtk_widget_destroy(dlg);
++        }
++    }
++}
++
++
++/* Create an info message dialog */
++static void ctk_display_info_msg(GtkWidget *parent, gchar * msg)
++{
++    GtkWidget *dlg;
++
++    if (msg) {
++        nv_warning_msg("%s", msg);
++
++        if (parent) {
++            dlg = gtk_message_dialog_new
++            (GTK_WINDOW(parent),
++             GTK_DIALOG_DESTROY_WITH_PARENT,
++             GTK_MESSAGE_INFO,
++             GTK_BUTTONS_OK,
++             "%s", msg);
++            gtk_dialog_run(GTK_DIALOG(dlg));
++            gtk_widget_destroy(dlg);
++        }
++    }
++}
++
++
++/* See if the hardware is supported */
++static gboolean is_supported(void) {
++    gchar *command = "/usr/bin/prime-supported /dev/stderr";
++    int supported = 1;
++    gboolean status;
++    int exit_status = 0;
++    gchar *output = NULL;
++    gchar *error_str = NULL;
++    GError *error = NULL;
++    status = g_spawn_command_line_sync(command, &output, &error_str, &exit_status, &error);
++
++    if (!status) {
++        g_warning("PRIME: %s", error->message);
++
++        if (output)
++            g_free(output);
++        if (error_str)
++            g_free(error_str);
++        if (error)
++            g_error_free(error);
++
++        return status;
++    }
++
++    if (output)
++        output[strlen(output) - 1] = '\0';
++
++    if (strlen(error_str) > 0) {
++        error_str[strlen(error_str) - 1] = '\0';
++        g_message("PRIME: %s", error_str);
++
++    }
++
++    supported = (strcmp(output, "yes") == 0);
++
++    if (output)
++        g_free(output);
++
++    if (error_str)
++        g_free(error_str);
++
++    if (error)
++        g_error_free(error);
++
++    return supported;
++}
++
++
++/* Get the active GPU */
++static gboolean get_active_gpu(gchar **gpu) {
++    gchar *command = "/usr/bin/prime-select query";
++    gboolean status;
++    int exit_status = 0;
++    gchar *output = NULL;
++    gchar *error_str = NULL;
++    GError *error = NULL;
++    status = g_spawn_command_line_sync(command, &output, &error_str, &exit_status, &error);
++
++    if (!status) {
++        /* If we get here, something seriously broken */
++        g_error("PRIME error: %s", error->message);
++        if (output)
++            g_free(output);
++
++        if (error_str)
++            g_free(error_str);
++
++        if (error)
++            g_error_free(error);
++
++        return status;
++    }
++
++    if (output) {
++        output[strlen(output) - 1] = '\0';
++        *gpu = g_strdup(output);
++    }
++
++    if (output)
++        g_free(output);
++
++    if (error_str)
++        g_free(error_str);
++
++    if (error)
++        g_error_free(error);
++
++    return status;
++}
++
++
++/* Check if a PRIME mode is enabled */
++static gboolean is_mode_enabled(gchar *mode) {
++    gboolean status;
++    gchar *gpu = NULL;
++
++    get_active_gpu(&gpu);
++
++    g_message("PRIME: detected gpu: \"%s\"", gpu);
++
++    status = (strcmp(mode, gpu) == 0);
++
++    g_free(gpu);
++
++    return status;
++}
++
++
++/* Set the PRIME profile */
++static gboolean set_mode(gchar *mode, gchar **error_msg, gint *exit_status) {
++
++    gchar *command = NULL;
++    command = g_strconcat("python /usr/share/screen-resolution-extra/nvidia-prime.py ",
++                          mode, NULL);
++    gboolean status;
++    gchar *output = NULL;
++    gchar *error_str = NULL;
++    GError *error = NULL;
++    status = g_spawn_command_line_sync(command, &output, &error_str, exit_status, &error);
++    g_free(command);
++
++    if (!status) {
++        if (error->message) {
++            *error_msg = g_strdup(error->message);
++        }
++        if (output)
++            g_free(output);
++
++        if (error_str)
++            g_free(error_str);
++
++        if (error)
++            g_error_free(error);
++
++        return status;
++    }
++
++    if (exit_status != 0) {
++        error_str[strlen(error_str) - 1] = '\0';
++        *error_msg = g_strdup(error_str);
++    }
++
++    if (output)
++        g_free(output);
++
++    if (error_str)
++        g_free(error_str);
++
++    if (error)
++        g_error_free(error);
++
++    return status;
++}
++
++
++GType ctk_prime_get_type(void)
++{
++    static GType ctk_prime_type = 0;
++
++    if (!ctk_prime_type) {
++        static const GTypeInfo ctk_prime_info = {
++            sizeof (CtkPrimeClass),
++            NULL, /* base_init */
++            NULL, /* base_finalize */
++            NULL, /* class_init */
++            NULL, /* class_finalize */
++            NULL, /* class_data */
++            sizeof(CtkPrime),
++            0, /* n_preallocs */
++            NULL, /* instance_init */
++            NULL  /* value_table */
++        };
++
++        ctk_prime_type = g_type_register_static
++            (GTK_TYPE_VBOX, "CtkPrime", &ctk_prime_info, 0);
++    }
++
++    return ctk_prime_type;
++}
++
++
++/*
++ * Create a radio button and plug it
++ * into the prime radio group.
++ */
++static GtkWidget *prime_radio_button_add(CtkPrime *ctk_prime,
++                                         GtkWidget *prev_radio,
++                                         char *label,
++                                         gchar *value,
++                                         int index)
++{
++    GtkWidget *radio;
++
++    if (prev_radio) {
++        radio = gtk_radio_button_new_with_label_from_widget
++            (GTK_RADIO_BUTTON(prev_radio), label);
++    } else {
++        radio = gtk_radio_button_new_with_label(NULL, label);
++    }
++
++    gtk_box_pack_start(GTK_BOX(ctk_prime->prime_button_box),
++                       radio, FALSE, FALSE, 0);
++
++    g_object_set_data(G_OBJECT(radio), "prime", value);
++
++    g_signal_connect(G_OBJECT(radio), "toggled",
++                     G_CALLBACK(prime_changed),
++                     (gpointer) ctk_prime);
++
++    ctk_prime->prime_buttons[index] = radio;
++
++    return radio;
++}
++
++
++static void
++prime_update_radio_buttons(CtkPrime *ctk_prime, gint value)
++{
++    GtkWidget *b, *button = NULL;
++    int i;
++
++    button = ctk_prime->prime_buttons[value];
++    if (!button) return;
++
++    /* turn off signal handling for all the sync buttons */
++    for (i = 0; i < 24; i++) {
++        b = ctk_prime->prime_buttons[i];
++        if (!b) continue;
++
++        g_signal_handlers_block_by_func
++            (G_OBJECT(b), G_CALLBACK(prime_changed),
++             (gpointer) ctk_prime);
++    }
++
++    /* set the appropriate button active */
++    gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(button), TRUE);
++
++    /* turn on signal handling for all the sync buttons */
++    for (i = 0; i < 24; i++) {
++        b = ctk_prime->prime_buttons[i];
++        if (!b) continue;
++
++        g_signal_handlers_unblock_by_func
++            (G_OBJECT(b), G_CALLBACK(prime_changed),
++             (gpointer) ctk_prime);
++    }
++}
++
++
++/*
++ * Callback function for changes to the
++ * prime radio button group;
++ */
++static void prime_changed(GtkWidget *widget, gpointer user_data)
++{
++    CtkPrime *ctk_prime = CTK_PRIME(user_data);
++    gboolean enabled;
++    gchar *value;
++    gint number;
++
++    gboolean success;
++    gchar *error_msg = NULL;
++    gint exit_status = 0;
++
++    enabled = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
++
++    if (enabled) {
++
++        user_data = g_object_get_data(G_OBJECT(widget), "prime");
++
++        /* We use "value" to know what to select */
++        value = (gchar*)user_data;
++
++        /* Call the switcher */
++        success = set_mode(value, &error_msg, &exit_status);
++
++        /* Get the parent widget */
++        GtkWidget *parent;
++        parent = ctk_get_parent_window(GTK_WIDGET(ctk_prime));
++
++        /* if gspawn succeeded */
++        if (success) {
++            /* Did it really succeed though? */
++            int status;
++            status = WEXITSTATUS(exit_status);
++
++            if (status == 0) {
++                /* Show a dialog to suggest to log out */
++                ctk_display_info_msg(parent,
++                    "Please log out and log back in to apply the changes");
++            } else {
++                if (status != 5) {
++                    /* Show an error only if the user did not
++                     * cancel the operation
++                     */
++                    ctk_display_error_msg(parent, error_msg);
++                }
++
++                /* Set the radio button to the previous position */
++                number = (strcmp(value, "nvidia") == 0 ? 1 : 0);
++                prime_update_radio_buttons(ctk_prime, number);
++            }
++        } else {
++            /* Something's wrong with gspawn */
++
++            /* Show an error dialog */
++            ctk_display_error_msg(parent, error_msg);
++
++            /* Set the radio button to the previous position */
++            number = (strcmp(value, "nvidia") == 0 ? 1 : 0);
++            prime_update_radio_buttons(ctk_prime, number);
++        }
++
++        /* Free any error output */
++        if (error_msg)
++            g_free(error_msg);
++
++
++    }
++}
++
++
++/* Constructor for the Prime widget */
++GtkWidget* ctk_prime_new(CtkConfig *ctk_config)
++{
++    GObject *object;
++    CtkPrime *ctk_prime;
++    GtkWidget *banner;
++    GtkWidget *frame;
++    GtkWidget *alignment;
++    GtkWidget *vbox;
++
++    /*
++     * before we do anything else, determine if PRIME is supported
++     */
++    int supported;
++    supported = is_supported();
++    g_message("PRIME: is it supported? %s", (supported ? "yes" : "no"));
++
++    if (! supported)
++        return NULL;
++
++    /* create the Prime widget */
++    object = g_object_new(CTK_TYPE_PRIME, NULL);
++    ctk_prime = CTK_PRIME(object);
++
++    ctk_prime->ctk_config = ctk_config;
++
++    gtk_box_set_spacing(GTK_BOX(ctk_prime), 10);
++
++    /* Set the banner */
++    banner = ctk_banner_image_new(BANNER_ARTWORK_GPU);
++    gtk_box_pack_start(GTK_BOX(object), banner, FALSE, FALSE, 0);
++
++    /* Create two radiobuttons for the two power profiles */
++    GtkWidget *radio[24], *prev_radio;
++    frame = gtk_frame_new("Select the GPU you would like to use");
++    gtk_box_pack_start(GTK_BOX(object), frame, FALSE, FALSE, 0);
++
++    vbox = gtk_vbox_new(FALSE, 5);
++    gtk_container_set_border_width(GTK_CONTAINER(vbox), FRAME_PADDING);
++    gtk_container_add(GTK_CONTAINER(frame), vbox);
++    ctk_prime->prime_button_box = vbox;
++
++    /* Button for NVIDIA */
++    radio[0] = prime_radio_button_add(ctk_prime,
++                                      NULL,
++                                      "NVIDIA (Performance Mode)",
++                                      "nvidia",
++                                      0);
++
++    /* Set the tooltip for NVIDIA */
++    ctk_config_set_tooltip(ctk_config, radio[0],
++                           "Enabling this option ensures the best "
++                           "graphics performance. This option is "
++                           "applied after a log out.");
++
++
++    /* Button for Intel */
++    radio[1] = prime_radio_button_add(ctk_prime,
++                                      radio[0],
++                                      "Intel (Power Saving Mode)",
++                                      "intel",
++                                      1);
++    /* Set the tooltip for NVIDIA */
++    ctk_config_set_tooltip(ctk_config, radio[1],
++                           "Enabling this option ensures the best "
++                           "battery life. This option is "
++                           "applied after a log out.");
++
++    /* Get the current GPU in use from the switcher*/
++    gchar *current_gpu = NULL;
++    get_active_gpu(&current_gpu);
++
++    int current_button = (strcmp(current_gpu, "nvidia") == 0) ?
++                         0 : 1;
++    g_free(current_gpu);
++
++    /* Enable the button which matches the current
++     * configuration
++     */
++    prime_update_radio_buttons(ctk_prime, current_button);
++
++    alignment = gtk_alignment_new(1, 1, 0, 0);
++    gtk_box_pack_start(GTK_BOX(object), alignment, TRUE, TRUE, 0);
++
++    /* finally, show the widget */
++
++    gtk_widget_show_all(GTK_WIDGET(ctk_prime));
++
++    return GTK_WIDGET(ctk_prime);
++
++}
++
++
++GtkTextBuffer *ctk_prime_create_help(GtkTextTagTable *table,
++                                      CtkPrime *ctk_prime)
++{
++    GtkTextIter i;
++    GtkTextBuffer *b;
++
++    b = gtk_text_buffer_new(table);
++
++    gtk_text_buffer_get_iter_at_offset(b, &i, 0);
++
++    ctk_help_title(b, &i, "PRIME Profiles Help");
++
++    ctk_help_para(b, &i, "The Prime Profiles page gives "
++                          "you control over which GPU you "
++                          "desire to use.");
++
++    ctk_help_para(b, &i, "It is recommended that you "
++                         "select NVIDIA for the best performance, "
++                         "and Intel for the best battery life.");
++
++    ctk_help_finish(b);
++
++    return b;
++}
++
+diff --git a/src/gtk+-2.x/ctkprime.h b/src/gtk+-2.x/ctkprime.h
+new file mode 100644
+index 0000000..bf25a09
+--- /dev/null
++++ b/src/gtk+-2.x/ctkprime.h
+@@ -0,0 +1,77 @@
++/*
++ * nvidia-settings: A tool for configuring the NVIDIA X driver on Unix
++ * and Linux systems.
++ *
++ * Copyright (C) 2013 Canonical Ltd.
++ *
++ * Author: Alberto Milone <alberto.milone@canonical.com>
++ *
++ * Based on ctkxvideo.h:
++ * - Copyright (C) 2004 NVIDIA Corporation.
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms and conditions of the GNU General Public License,
++ * version 2, as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but WITHOUT
++ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
++ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
++ * more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program.  If not, see <http://www.gnu.org/licenses>.
++ */
++
++#ifndef __CTK_PRIME_H__
++#define __CTK_PRIME_H__
++
++#include "ctkconfig.h"
++#include "ctkevent.h"
++
++G_BEGIN_DECLS
++
++#define CTK_TYPE_PRIME (ctk_prime_get_type())
++
++#define CTK_PRIME(obj) \
++    (G_TYPE_CHECK_INSTANCE_CAST ((obj), CTK_TYPE_PRIME, CtkPrime))
++
++#define CTK_PRIME_CLASS(klass) \
++    (G_TYPE_CHECK_CLASS_CAST ((klass), CTK_TYPE_PRIME, CtkPrimeClass))
++
++#define CTK_IS_PRIME(obj) \
++    (G_TYPE_CHECK_INSTANCE_TYPE ((obj), CTK_TYPE_PRIME))
++
++#define CTK_IS_PRIME_CLASS(class) \
++    (G_TYPE_CHECK_CLASS_TYPE ((klass), CTK_TYPE_PRIME))
++
++#define CTK_PRIME_GET_CLASS(obj) \
++    (G_TYPE_INSTANCE_GET_CLASS ((obj), CTK_TYPE_PRIME, CtkPrimeClass))
++
++
++typedef struct _CtkPrime       CtkPrime;
++typedef struct _CtkPrimeClass  CtkPrimeClass;
++
++struct _CtkPrime
++{
++    GtkVBox parent;
++
++    CtkConfig *ctk_config;
++
++    GtkWidget *prime_buttons[24];
++    GtkWidget *prime_button_box;
++};
++
++struct _CtkPrimeClass
++{
++    GtkVBoxClass parent_class;
++};
++
++GType       ctk_prime_get_type  (void) G_GNUC_CONST;
++GtkWidget*  ctk_prime_new       (CtkConfig *);
++
++/* GtkTextBuffer *ctk_prime_create_help(GtkTextTagTable *, CtkPrime *); */
++
++G_END_DECLS
++
++#endif /* __CTK_PRIME_H__ */
++
+diff --git a/src/gtk+-2.x/ctkwindow.c b/src/gtk+-2.x/ctkwindow.c
+index 7ade747..5387ced 100644
+--- a/src/gtk+-2.x/ctkwindow.c
++++ b/src/gtk+-2.x/ctkwindow.c
+@@ -46,6 +46,7 @@
+ #include "ctkcolorcorrection.h"
+ #include "ctkcolorcorrectionpage.h"
+ #include "ctkxvideo.h"
++#include "ctkprime.h"
+ #include "ctkopengl.h"
+ #include "ctkglx.h"
+ #include "ctkmultisample.h"
+@@ -1021,6 +1022,15 @@ GtkWidget *ctk_window_new(ParsedAttribute *p, ConfigProperties *conf,
+                  ctk_3d_vision_pro_select, ctk_3d_vision_pro_unselect);
+     }
+ 
++
++    /* PRIME settings  */
++    widget = ctk_prime_new(ctk_config);
++    if (widget) {
++        help = ctk_prime_create_help(tag_table, CTK_PRIME(widget));
++        add_page(widget, help, ctk_window, NULL, NULL, "PRIME Profiles",
++                 NULL, NULL, NULL);
++    }
++
+     /* app profile configuration */
+     widget = ctk_app_profile_new(ctk_config);
+ 
+diff --git a/src/src.mk b/src/src.mk
+index 327b41b..2d45d2f 100644
+--- a/src/src.mk
++++ b/src/src.mk
+@@ -219,6 +219,7 @@ GTK_SRC += gtk+-2.x/ctkapcrulemodel.c
+ GTK_SRC += gtk+-2.x/ctkcolorcontrols.c
+ GTK_SRC += gtk+-2.x/ctk3dvisionpro.c
+ GTK_SRC += gtk+-2.x/ctkvdpau.c
++GTK_SRC += gtk+-2.x/ctkprime.c
+ 
+ NVIDIA_SETTINGS_SRC += $(GTK_SRC)
+ 
+@@ -270,6 +271,7 @@ GTK_EXTRA_DIST += gtk+-2.x/ctkapcrulemodel.h
+ GTK_EXTRA_DIST += gtk+-2.x/ctkcolorcontrols.h
+ GTK_EXTRA_DIST += gtk+-2.x/ctk3dvisionpro.h
+ GTK_EXTRA_DIST += gtk+-2.x/ctkvdpau.h
++GTK_EXTRA_DIST += gtk+-2.x/ctkprime.h
+ 
+ NVIDIA_SETTINGS_EXTRA_DIST += $(GTK_EXTRA_DIST)
+ 
+-- 
+1.7.9.5
+

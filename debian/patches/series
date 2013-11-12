@@ -2,3 +2,4 @@
 06_remove_local_prefix.patch
 04_nvidia-settings_natty_ftbs.patch
 05_add_polkit_support.patch
+08_add_prime_support.patch
