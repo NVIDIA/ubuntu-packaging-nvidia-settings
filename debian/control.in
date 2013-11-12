@@ -11,7 +11,7 @@ Vcs-Git: git://github.com/tseliot/nvidia-settings.git
 Vcs-Browser: http://github.com/tseliot/nvidia-settings
 
 Package: #PKGNAME#
-Architecture: i386 amd64 lpia
+Architecture: i386 amd64
 Depends: python-gtk2, pkg-config, screen-resolution-extra (>= 0.12),
  libvdpau1, ${shlibs:Depends}, ${misc:Depends}
 Conflicts: libxnvctrl-dev, nvidia-settings-updates,
@@ -29,3 +29,16 @@ Description:  Tool for configuring the NVIDIA graphics driver
  Values such as brightness and gamma, XVideo attributes, temperature,
  and OpenGL settings can be queried and configured via nvidia-settings.
 
+Package: nvidia-settings-319
+Architecture: i386 amd64
+Depends: #PKGNAME#
+Description: Transitional package for nvidia-settings-319
+ This is a transitional package for nvidia-settings-319, and can be
+ safely removed after the installation is complete.
+
+Package: nvidia-settings-319-updates
+Architecture: i386 amd64
+Depends: #PKGNAME#
+Description: Transitional package for nvidia-settings-319-updates
+ This is a transitional package for nvidia-settings-319-updates, and
+ can be safely removed after the installation is complete.
