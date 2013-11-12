@@ -1,4 +1,3 @@
 06_remove_local_prefix.patch
 04_nvidia-settings_natty_ftbs.patch
-01_allow_dark_themes.dpatch
 05_add_polkit_support.patch
