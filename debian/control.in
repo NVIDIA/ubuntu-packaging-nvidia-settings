@@ -12,7 +12,7 @@ Vcs-Browser: http://github.com/tseliot/nvidia-settings
 
 Package: #PKGNAME#
 Architecture: i386 amd64
-Depends: python-gtk2, pkg-config, screen-resolution-extra (>= 0.12),
+Depends: pkg-config, screen-resolution-extra (>= 0.12),
  libvdpau1, ${shlibs:Depends}, ${misc:Depends}
 Conflicts: libxnvctrl-dev, nvidia-settings-binary
 Replaces: libxnvctrl-dev, nvidia-settings-binary
