@@ -29,27 +29,63 @@ Description:  Tool for configuring the NVIDIA graphics driver
 Package: nvidia-settings-319
 Architecture: i386 amd64
 Depends: #PKGNAME#
-Description: Transitional package for nvidia-settings-319
- This is a transitional package for nvidia-settings-319, and can be
+Description: Transitional package for nvidia-settings
+ This is a transitional package for nvidia-settings, and can be
  safely removed after the installation is complete.
 
 Package: nvidia-settings-319-updates
 Architecture: i386 amd64
 Depends: #PKGNAME#
-Description: Transitional package for nvidia-settings-319-updates
- This is a transitional package for nvidia-settings-319-updates, and
- can be safely removed after the installation is complete.
+Description: Transitional package for nvidia-settings
+ This is a transitional package for nvidia-settings, and can be
+ safely removed after the installation is complete.
+
+Package: nvidia-settings-313-updates
+Architecture: i386 amd64
+Depends: #PKGNAME#
+Description: Transitional package for nvidia-settings
+ This is a transitional package for nvidia-settings, and can be
+ safely removed after the installation is complete.
+
+Package: nvidia-settings-310
+Architecture: i386 amd64
+Depends: #PKGNAME#
+Description: Transitional package for nvidia-settings
+ This is a transitional package for nvidia-settings, and can be
+ safely removed after the installation is complete.
+
+Package: nvidia-settings-310-updates
+Architecture: i386 amd64
+Depends: #PKGNAME#
+Description: Transitional package for nvidia-settings
+ This is a transitional package for nvidia-settings, and can be
+ safely removed after the installation is complete.
 
 Package: nvidia-settings-304
 Architecture: i386 amd64
 Depends: #PKGNAME#
-Description: Transitional package for nvidia-settings-304
- This is a transitional package for nvidia-settings-304, and can be
+Description: Transitional package for nvidia-settings
+ This is a transitional package for nvidia-settings, and can be
  safely removed after the installation is complete.
 
 Package: nvidia-settings-304-updates
 Architecture: i386 amd64
 Depends: #PKGNAME#
-Description: Transitional package for nvidia-settings-304-updates
- This is a transitional package for nvidia-settings-304-updates, and
- can be safely removed after the installation is complete.
+Description: Transitional package for nvidia-settings
+ This is a transitional package for nvidia-settings, and can be
+ safely removed after the installation is complete.
+
+Package: nvidia-settings-experimental-304
+Architecture: i386 amd64
+Depends: #PKGNAME#
+Description: Transitional package for nvidia-settings
+ This is a transitional package for nvidia-settings, and can be
+ safely removed after the installation is complete.
+
+Package: nvidia-settings-updates
+Architecture: i386 amd64
+Depends: #PKGNAME#
+Description: Transitional package for nvidia-settings
+ This is a transitional package for nvidia-settings, and can be
+ safely removed after the installation is complete.
+
