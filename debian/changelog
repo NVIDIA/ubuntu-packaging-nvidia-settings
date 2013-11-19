@@ -1,8 +1,22 @@
-nvidia-settings (331.20-0ubuntu1) UNRELEASED; urgency=low
+nvidia-settings (331.20-0ubuntu1) trusty; urgency=low
 
-  * 
+  * Unify the different flavours under this one.
+  * debian/control.in:
+    - Add ${misc:Depends}.
+    - Build depend on libvdpau-dev and depend on libvdpau1.
+    - Create transitional packages for 319, 319-updates, 313-updates,
+      310, 310-updates, 304, 304-updates, experimental-304, updates.
+    - Remove lpia.
+    - Drop dependency on python-gtk2.
+    - Conflict/replace/provide nvidia-settings-binary.
+  * debian/patches/series:
+    - Do not apply 01_allow_dark_themes.dpatch.
+  * debian/rules:
+    - Pass the destdir argument in uppercase to match the variable.
+    - Add download-sources target.
+    - Clean action in rules to target "clean" instead of "distclean".
 
- -- Alberto Milone <alberto.milone@canonical.com>  Mon, 18 Nov 2013 15:14:35 +0100
+ -- Alberto Milone <alberto.milone@canonical.com>  Tue, 19 Nov 2013 12:38:42 +0100
 
 nvidia-settings (304.88-0ubuntu0.1) quantal-security; urgency=low
 
