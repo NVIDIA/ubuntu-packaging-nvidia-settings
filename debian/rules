@@ -3,35 +3,11 @@
 # Copyright (C) 2009 Canonical Ltd.
 
 PKG_name    := nvidia-settings
-PKG_version := $(shell dpkg-parsechangelog | awk -F' ' '/^Version:/ {print $$2}' | awk -F- '{print $$1}')
-PKG_source  := $(shell dpkg-parsechangelog | sed -n 's/^Source: //p')
-bindir      := /usr/bin
 libdir      := /usr/lib
 includedir  := /usr/include
-PKG_bindir  := $(libdir)/$(PKG_name)/bin
-PKG_libdir  := $(libdir)/$(PKG_name)
-PKG_includedir := $(PKG_libdir)/include
-datadir              := /usr/share
-PKG_datadir          := $(datadir)/$(PKG_name)
-libdir               := /usr/lib
-includedir           := /usr/include
-sysconfdir           := /etc
-PKG_libdir           := $(libdir)/$(PKG_name)
-PKG_bindir           := $(PKG_libdir)/bin
-PKG_deskdir          := $(PKG_datadir)
-PKG_configdir        := $(PKG_libdir)
-ld_so_conf_dir       := $(PKG_configdir)
-ld_so_conf_file      := ld.so.conf
-ld_so_conf_path      := $(ld_so_conf_dir)/$(ld_so_conf_file)
-mandir               := /usr/share/man/man1
-PKG_mandir           := $(PKG_libdir)/share/man/man1
 url                  := http://cgit.freedesktop.org/~aplattner/nvidia-settings/snapshot
 tarball              := nvidia-settings-$(PKG_version).tar.gz
 file_url             := $(url)/$(tarball)
-
-
-# Priority of the alternative
-alt_priority         := 9700
 
 .PHONY: download-sources
 download-sources:
@@ -41,53 +17,23 @@ download-sources:
 	wget -c $(file_url) -P ../
 	tar -xzvf ../$(tarball) --strip 1
 
-.PHONY: regen-from-templates
-regen-from-templates:
-	#Create important strings
-	for i in control \
-		dirs \
-		postrm \
-		postinst \
-		prerm; do \
-                sed -e "s|#LIBDIR#|$(libdir)|g"         \
-                        -e "s|#BINDIR#|$(bindir)|g"         \
-                        -e "s|#VERSION#|$(PKG_version)|g"   \
-                        -e "s|#SYSCONFDIR#|$(sysconfdir)|g" \
-                        -e "s|#MANDIR#|$(mandir)|g" \
-                        -e "s|#PKGMANDIR#|$(PKG_mandir)|g" \
-                        -e "s|#LDSOCONF#|$(ld_so_conf_path)|g" \
-                        -e "s|#ALTPRIORITY#|$(alt_priority)|g" \
-                        -e "s|#DATADIR#|$(datadir)|g" \
-                        -e "s|#PKGDESKDIR#|$(PKG_deskdir)|g" \
-                        -e "s|#PKGDATADIR#|$(PKG_datadir)|g" \
-                        -e "s|#PKGCONFIGDIR#|$(PKG_configdir)|g" \
-                        -e "s|#PKGBINDIR#|$(PKG_bindir)|g" \
-                        -e "s|#PKGLIBDIR#|$(PKG_libdir)|g" \
-                        -e "s|#PKGNAME#|$(PKG_name)|g" \
-                        -e "s|#SRCNAME#|$(PKG_source)|g" \
-                        -e "s|#INCLUDEDIR#|$(includedir)|g" \
-                        -e "s|#PKGINCLUDEDIR#|$(PKG_includedir)|g" \
-                        debian/$$i.in > debian/$$i;      \
-        done
-
 build: build-arch
-build-arch: regen-from-templates
+build-arch:
 	dh_quilt_patch
 
 	$(MAKE) -C src/libXNVCtrl EXTINCSRC=/usr/include/X11/extensions \
-		CFLAGS="$(CFLAGS) -fPIC" PREFIX=$(PKG_libdir)
+		CFLAGS="$(CFLAGS) -fPIC"
 	$(MAKE)
 	dh build
 
-
-clean: regen-from-templates
+clean:
 	-$(MAKE) -C src/libXNVCtrl clean 2>/dev/null
 	-$(MAKE) clean
 	if [ -e src/XF86Config-parser/Makefile ]; then \
 		$(MAKE) -C src/XF86Config-parser clean; \
 	fi
 
-	rm -Rf $(CURDIR)/_out
+	rm -Rf $(CURDIR)/_out */_out
 
 	dh_quilt_unpatch
 
@@ -95,14 +41,10 @@ clean: regen-from-templates
 
 binary-arch:
 	#dh_auto_install -- prefix=$(CURDIR)/debian/$(PKG_name)$(PKG_libdir)
-	$(MAKE) PREFIX=$(CURDIR)/debian/$(PKG_name)$(PKG_libdir) install
-	dh_install -p$(PKG_name) src/libXNVCtrl/libXNVCtrl.a    "$(PKG_libdir)"
-	dh_install -p$(PKG_name) src/libXNVCtrl/NVCtrl.h        "$(PKG_includedir)/NVCtrl"
-	dh_install -p$(PKG_name) src/libXNVCtrl/NVCtrlLib.h     "$(PKG_includedir)/NVCtrl"
-
-	# ld.so.conf
-	dh_installdirs -p$(PKG_name) "$(ld_so_conf_dir)"
-	echo "$(PKG_libdir)" >	"$(CURDIR)/debian/$(PKG_name)$(ld_so_conf_path)"
+	$(MAKE) PREFIX=$(CURDIR)/debian/$(PKG_name)/usr install
+	dh_install -p$(PKG_name) src/libXNVCtrl/libXNVCtrl.a    "$(libdir)"
+	dh_install -p$(PKG_name) src/libXNVCtrl/NVCtrl.h        "$(includedir)/NVCtrl"
+	dh_install -p$(PKG_name) src/libXNVCtrl/NVCtrlLib.h     "$(includedir)/NVCtrl"
 
 	#Run the normal stuff
 	dh binary-arch
@@ -112,17 +54,11 @@ binary: binary-arch binary-indep ;
 	dh binary
 
 override_dh_auto_install:
-	dh_auto_install -- DESTDIR=$(CURDIR)/debian/$(PKG_name)$(PKG_libdir)
-
-override_dh_installman:
-	dh_installman
-
-	# Rename the man pages in order to use alternatives
-	mv $(CURDIR)/debian/$(PKG_name)$(PKG_libdir)/share/man/man1/nvidia-settings.1.gz \
-	$(CURDIR)/debian/$(PKG_name)$(PKG_libdir)/share/man/man1/alt-$(PKG_name).1.gz
+	dh_auto_install -- DESTDIR=$(CURDIR)/debian/$(PKG_name)
 
 override_dh_usrlocal:
 	rm -Rf $(CURDIR)/debian/$(PKG_name)/usr/local
 
 %:
 	dh $@ --with quilt
+
