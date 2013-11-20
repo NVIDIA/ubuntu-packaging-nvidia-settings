@@ -1,8 +1,10 @@
-nvidia-settings (331.20-0ubuntu2) UNRELEASED; urgency=low
+nvidia-settings (331.20-0ubuntu2) trusty; urgency=low
 
-  * 
+  * debian/patches/07_remove_features_for_legacy.patch:
+    - Do not expose features that are not available in the legacy
+      drivers.
 
- -- Alberto Milone <alberto.milone@canonical.com>  Wed, 20 Nov 2013 13:38:40 +0100
+ -- Alberto Milone <alberto.milone@canonical.com>  Wed, 20 Nov 2013 16:46:02 +0100
 
 nvidia-settings (331.20-0ubuntu1) trusty; urgency=low
 
