@@ -53,6 +53,9 @@ binary: binary-arch binary-indep ;
 	#Run the normal stuff
 	dh binary
 
+override_dh_compress:
+	dh_compress --exclude=.c --exclude=.mk
+
 override_dh_auto_install:
 	dh_auto_install -- DESTDIR=$(CURDIR)/debian/$(PKG_name)
 
