@@ -1,0 +1,125 @@
+From dc73a1e2c767c25a7891bb5f03a673707d773af6 Mon Sep 17 00:00:00 2001
+From: Alberto Milone <alberto.milone@canonical.com>
+Date: Tue, 19 Nov 2013 18:36:00 +0100
+Subject: [PATCH 1/1] Remove some features in the legacy drivers
+
+---
+ src/gtk+-2.x/ctkwindow.c |   60 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 60 insertions(+)
+
+diff --git a/src/gtk+-2.x/ctkwindow.c b/src/gtk+-2.x/ctkwindow.c
+index 7ade747..d3669b5 100644
+--- a/src/gtk+-2.x/ctkwindow.c
++++ b/src/gtk+-2.x/ctkwindow.c
+@@ -374,6 +374,50 @@ static gboolean has_randr_gamma(NvCtrlAttributeHandle *handle)
+     return ((ret == NvCtrlSuccess) && (val == 1));
+ }
+ 
++
++static void get_major_minor(char *version, int *major, int *minor)
++{
++    char* token;
++    char* copy;
++    char* tofree;
++    int i;
++    copy = strdup(version);
++
++    if (copy != NULL) {
++        tofree = copy;
++
++        for (i=0; (token = strsep(&copy, ".")) != NULL; i++) {
++            if (i == 0)
++                *major = atoi(token);
++            else
++                *minor = atoi(token);
++        }
++
++        free(tofree);
++    }
++}
++
++
++static void get_driver_version(NvCtrlAttributeHandle *handle,
++                               int *major, int *minor)
++{
++    gchar *driver_version = NULL;
++    Bool ret;
++    ret = NvCtrlGetStringAttribute(handle,
++                                   NV_CTRL_STRING_NVIDIA_DRIVER_VERSION,
++                                   &driver_version);
++    if (ret != NvCtrlSuccess) {
++        driver_version = NULL;
++    }
++    else {
++        get_major_minor(driver_version, major, minor);
++        XFree(driver_version);
++        return;
++    }
++    major = minor = 0;
++}
++
++
+ /*
+  * ctk_window_new() - create a new CtkWindow widget
+  */
+@@ -560,6 +604,9 @@ GtkWidget *ctk_window_new(ParsedAttribute *p, ConfigProperties *conf,
+     ctk_window->page = NULL;
+ 
+ 
++    int driver_major, driver_minor;
++    driver_major = driver_minor = 0;
++
+     /* X Server info & configuration */
+ 
+     if (h->targets[X_SCREEN_TARGET].n) {
+@@ -581,6 +628,8 @@ GtkWidget *ctk_window_new(ParsedAttribute *p, ConfigProperties *conf,
+             }
+         }
+         if (screen_handle) {
++            /* Use the handle to get the driver version */
++            get_driver_version(screen_handle, &driver_major, &driver_minor);
+ 
+             /* X Server information */
+             
+@@ -717,6 +766,7 @@ GtkWidget *ctk_window_new(ParsedAttribute *p, ConfigProperties *conf,
+         }
+ 
+ 
++        if (driver_major >= 319) {
+         /* VDPAU Information */
+         child = ctk_vdpau_new(screen_handle, ctk_config, ctk_event);
+         if (child) {
+@@ -724,6 +774,7 @@ GtkWidget *ctk_window_new(ParsedAttribute *p, ConfigProperties *conf,
+             add_page(child, help, ctk_window, &iter, NULL, "VDPAU Information",
+                      NULL, NULL, NULL);
+         }
++        }
+         
+         /* gvo (Graphics To Video Out) */
+         
+@@ -1021,6 +1072,13 @@ GtkWidget *ctk_window_new(ParsedAttribute *p, ConfigProperties *conf,
+                  ctk_3d_vision_pro_select, ctk_3d_vision_pro_unselect);
+     }
+ 
++
++    /* We show this section in two cases:
++     * 1) when the driver is not in use (hybrid graphics)
++     * 2) when the driver release >= 319
++     */
++    if (driver_major == 0 || driver_major >= 319) {
++
+     /* app profile configuration */
+     widget = ctk_app_profile_new(ctk_config);
+ 
+@@ -1028,6 +1086,8 @@ GtkWidget *ctk_window_new(ParsedAttribute *p, ConfigProperties *conf,
+              ctk_window, NULL, NULL, "Application Profiles",
+              NULL, NULL, NULL);
+ 
++    }
++
+     /* nvidia-settings configuration */
+ 
+     add_page(GTK_WIDGET(ctk_window->ctk_config),
+-- 
+1.7.9.5
+
