@@ -1,8 +1,17 @@
-nvidia-settings (331.20-0ubuntu3) UNRELEASED; urgency=low
+nvidia-settings (331.20-0ubuntu3) trusty; urgency=low
 
-  * 
+  * debian/dirs, debian/install,
+    debian/nvidia-settings-autostart.desktop,
+    debian/nvidia-settings.desktop:
+    - Install the icon and the desktop files.
+  * debian/rules:
+    - Do not compress .c and .mk files.
+  * debian/control.in, debian/postinst.in, debian/postrm.in,
+    debian/prerm.in, debian/rules:
+    - Drop alternatives, as we only have one nvidia-settings
+      for all the driver flavours.
 
- -- Alberto Milone <alberto.milone@canonical.com>  Wed, 20 Nov 2013 17:30:35 +0100
+ -- Alberto Milone <alberto.milone@canonical.com>  Fri, 22 Nov 2013 09:35:14 +0100
 
 nvidia-settings (331.20-0ubuntu2) trusty; urgency=low
 
