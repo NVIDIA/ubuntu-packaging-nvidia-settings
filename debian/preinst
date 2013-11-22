@@ -20,6 +20,7 @@ case "$1" in
     install|upgrade)
     # Remove leftover from alternatives based nvidia-settings
     if [ -e /etc/alternatives/nvidia_settings_conf ]; then
+        update-alternatives --quiet --remove-all nvidia_settings_conf || true
         rm -Rf /usr/lib/nvidia-settings
     fi
     ;;
