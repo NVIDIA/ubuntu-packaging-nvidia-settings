@@ -3,3 +3,4 @@
 06_remove_local_prefix.patch
 07_remove_features_for_legacy.patch
 08_add_prime_support.patch
+09_do_not_complain_if_nvidia_is_missing.patch
