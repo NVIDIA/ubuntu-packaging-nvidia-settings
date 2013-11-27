@@ -1,8 +1,20 @@
-nvidia-settings (331.20-0ubuntu5) UNRELEASED; urgency=low
+nvidia-settings (331.20-0ubuntu5) trusty; urgency=low
 
-  * 
+  * debian/patches/series:
+    - Reorder patches
+  * debian/patches/08_add_prime_support.patch:
+    - Add support for PRIME switching. An additional
+      tab provides support for switching between GPUs.
+      This is only visible if nvidia-prime (>= 0.5) is
+      installed and reports that the system supports
+      hybrid graphics. No hard dependency on nvidia-prime
+      is therefore required.
+  * debian/patches/09_do_not_complain_if_nvidia_is_missing.patch:
+    - Disable the warning dialog since it suggests to run
+      nvidia-xconfig, which we don't need. This would also break
+      PRIME.
 
- -- Alberto Milone <alberto.milone@canonical.com>  Fri, 22 Nov 2013 15:43:21 +0100
+ -- Alberto Milone <alberto.milone@canonical.com>  Wed, 27 Nov 2013 12:23:23 +0100
 
 nvidia-settings (331.20-0ubuntu4) trusty; urgency=low
 
