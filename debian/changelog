@@ -1,8 +1,11 @@
-nvidia-settings (331.20-0ubuntu7) UNRELEASED; urgency=low
+nvidia-settings (331.20-0ubuntu7) trusty; urgency=low
 
-  * 
+  * Revert previous upload.
+  * debian/patches/08_add_prime_support.patch:
+    - Add a missing prototype for ctk_prime_create_help(), and
+      include ctkutils.h in ctkprime.c.
 
- -- Alberto Milone <alberto.milone@canonical.com>  Mon, 13 Jan 2014 15:31:26 +0100
+ -- Alberto Milone <alberto.milone@canonical.com>  Mon, 13 Jan 2014 15:33:19 +0100
 
 nvidia-settings (331.20-0ubuntu6) trusty; urgency=low
 
