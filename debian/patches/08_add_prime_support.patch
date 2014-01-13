@@ -1,23 +1,23 @@
-From 01c9bec91e5f4b46a77984352692cdef8a0da6ea Mon Sep 17 00:00:00 2001
+From 127e3ca40d062c1b91ea0431d0c4715a8e624827 Mon Sep 17 00:00:00 2001
 From: Alberto Milone <alberto.milone@canonical.com>
 Date: Mon, 21 Oct 2013 15:20:18 +0200
 Subject: [PATCH 1/1] Add support for PRIME GPU switching
 
 ---
- src/gtk+-2.x/ctkprime.c  |  540 ++++++++++++++++++++++++++++++++++++++++++++++
+ src/gtk+-2.x/ctkprime.c  |  518 ++++++++++++++++++++++++++++++++++++++++++++++
  src/gtk+-2.x/ctkprime.h  |   77 +++++++
  src/gtk+-2.x/ctkwindow.c |   10 +
  src/src.mk               |    2 +
- 4 files changed, 629 insertions(+)
+ 4 files changed, 607 insertions(+)
  create mode 100644 src/gtk+-2.x/ctkprime.c
  create mode 100644 src/gtk+-2.x/ctkprime.h
 
 diff --git a/src/gtk+-2.x/ctkprime.c b/src/gtk+-2.x/ctkprime.c
 new file mode 100644
-index 0000000..517b60c
+index 0000000..e0890f4
 --- /dev/null
 +++ b/src/gtk+-2.x/ctkprime.c
-@@ -0,0 +1,540 @@
+@@ -0,0 +1,518 @@
 +/*
 + * nvidia-settings: A tool for configuring the NVIDIA X driver on Unix
 + * and Linux systems.
@@ -48,7 +48,7 @@ index 0000000..517b60c
 +#include <gtk/gtk.h>
 +
 +#include "ctkbanner.h"
-+
++#include "ctkutils.h"
 +#include "ctkprime.h"
 +#include "ctkscale.h"
 +
@@ -72,28 +72,6 @@ index 0000000..517b60c
 +                                                        gint add_device_mask);
 +
 +#define FRAME_PADDING 5
-+
-+
-+/* Create an error message dialog */
-+static void ctk_display_error_msg(GtkWidget *parent, gchar * msg)
-+{
-+    GtkWidget *dlg;
-+
-+    if (msg) {
-+        nv_error_msg("%s", msg);
-+
-+        if (parent) {
-+            dlg = gtk_message_dialog_new
-+            (GTK_WINDOW(parent),
-+             GTK_DIALOG_DESTROY_WITH_PARENT,
-+             GTK_MESSAGE_ERROR,
-+             GTK_BUTTONS_OK,
-+             "%s", msg);
-+            gtk_dialog_run(GTK_DIALOG(dlg));
-+            gtk_widget_destroy(dlg);
-+        }
-+    }
-+}
 +
 +
 +/* Create an info message dialog */
@@ -560,7 +538,7 @@ index 0000000..517b60c
 +
 diff --git a/src/gtk+-2.x/ctkprime.h b/src/gtk+-2.x/ctkprime.h
 new file mode 100644
-index 0000000..bf25a09
+index 0000000..b6312a9
 --- /dev/null
 +++ b/src/gtk+-2.x/ctkprime.h
 @@ -0,0 +1,77 @@
@@ -635,7 +613,7 @@ index 0000000..bf25a09
 +GType       ctk_prime_get_type  (void) G_GNUC_CONST;
 +GtkWidget*  ctk_prime_new       (CtkConfig *);
 +
-+/* GtkTextBuffer *ctk_prime_create_help(GtkTextTagTable *, CtkPrime *); */
++GtkTextBuffer *ctk_prime_create_help(GtkTextTagTable *, CtkPrime *);
 +
 +G_END_DECLS
 +
