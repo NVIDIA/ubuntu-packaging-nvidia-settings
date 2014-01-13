@@ -1,8 +1,9 @@
-diff -Nurp nvidia-settings-190.53.orig/src/gtk+-2.x/ctkdisplayconfig-utils.c nvidia-settings-190.53/src/gtk+-2.x/ctkdisplayconfig-utils.c
---- nvidia-settings-190.53.orig/src/gtk+-2.x/ctkdisplayconfig-utils.c	2009-12-09 06:18:39.000000000 +0100
-+++ nvidia-settings-190.53/src/gtk+-2.x/ctkdisplayconfig-utils.c	2009-12-30 15:04:53.089702717 +0100
-@@ -2762,6 +2762,77 @@ static void update_banner(XConfigPtr con
-     
+Index: nvidia-settings-331.20/src/gtk+-2.x/ctkdisplayconfig-utils.c
+===================================================================
+--- nvidia-settings-331.20.orig/src/gtk+-2.x/ctkdisplayconfig-utils.c	2013-12-09 11:17:17.277728141 -0500
++++ nvidia-settings-331.20/src/gtk+-2.x/ctkdisplayconfig-utils.c	2013-12-09 11:19:05.140799971 -0500
+@@ -3968,6 +3968,77 @@
+ 
  } /* update_banner() */
  
 +/** ubuntu save_xconfig_file() ******************************
@@ -31,7 +32,7 @@ diff -Nurp nvidia-settings-190.53.orig/src/gtk+-2.x/ctkdisplayconfig-utils.c nvi
 +    if (!buf || !filename) goto done;
 +
 +    backup_filename = g_strdup_printf("%s.backup", filename);
-+    
++
 +    /* Write out the X config file to a temporary file */
 +    temp_filename = g_strdup_printf("/tmp/nvidia-settings.XXXXXX");
 +    temp_fd = mkstemp(temp_filename);
@@ -50,11 +51,11 @@ diff -Nurp nvidia-settings-190.53.orig/src/gtk+-2.x/ctkdisplayconfig-utils.c nvi
 +                          NULL);
 +    polkit_status = (g_spawn_command_line_sync(command, NULL, NULL, &status, NULL) && status == 0);
 +    g_free(command);
-+    
++
 +    /* Remove the temporary file */
 +    unlink(temp_filename);
 +    g_free(temp_filename);
-+    
++
 +    if (!polkit_status) {
 +        err_msg = g_strdup_printf("Unable to open X config file '%s' for writing.",
 +                                  filename);
@@ -62,7 +63,7 @@ diff -Nurp nvidia-settings-190.53.orig/src/gtk+-2.x/ctkdisplayconfig-utils.c nvi
 +    }
 +
 +    ret = 1;
-+    
++
 + done:
 +    /* Display any errors that might have occured */
 +    if (err_msg) {
@@ -73,18 +74,18 @@ diff -Nurp nvidia-settings-190.53.orig/src/gtk+-2.x/ctkdisplayconfig-utils.c nvi
 +
 +    g_free(backup_filename);
 +    return ret;
-+    
++
 +} /* save_xconfig_file() */
 +
  
  
  /** save_xconfig_file() **********************************************
-@@ -2782,6 +2853,9 @@ static int save_xconfig_file(SaveXConfDl
+@@ -3988,6 +4059,9 @@
  
      int ret = 0;
  
 +    ret = ubuntu_save_xconfig_file(dlg, filename, buf, mode);
-+    
++
 +    return ret;
  
      if (!buf || !filename) goto done;

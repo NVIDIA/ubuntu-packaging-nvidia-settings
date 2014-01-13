@@ -1,7 +1,8 @@
-diff -Nurp nvidia-settings.orig/src/Makefile nvidia-settings/src/Makefile
---- nvidia-settings.orig/src/Makefile	2012-05-02 17:06:02.000000000 +0200
-+++ nvidia-settings/src/Makefile	2012-05-17 09:09:32.341638054 +0200
-@@ -51,7 +51,7 @@ ifndef GTK_CFLAGS
+Index: nvidia-settings-331.20/src/Makefile
+===================================================================
+--- nvidia-settings-331.20.orig/src/Makefile	2013-11-06 11:29:44.000000000 -0500
++++ nvidia-settings-331.20/src/Makefile	2013-12-09 11:16:50.070936284 -0500
+@@ -49,7 +49,7 @@
  endif
  
  ifndef GTK_LDFLAGS
@@ -9,4 +10,4 @@ diff -Nurp nvidia-settings.orig/src/Makefile nvidia-settings/src/Makefile
 +  GTK_LDFLAGS         := $(shell $(PKG_CONFIG) --libs gtk+-2.0) -ldl
  endif
  
- 
+ ifndef VDPAU_CFLAGS
