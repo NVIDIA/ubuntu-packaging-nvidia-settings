@@ -7,16 +7,18 @@ Subject: [PATCH 1/1] utils.mk: remove local from prefix
  utils.mk |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Index: nvidia-settings-331.20/utils.mk
-===================================================================
---- nvidia-settings-331.20.orig/utils.mk	2013-11-06 11:29:44.000000000 -0500
-+++ nvidia-settings-331.20/utils.mk	2013-12-09 11:17:00.686748804 -0500
-@@ -139,7 +139,7 @@
+diff --git a/utils.mk b/utils.mk
+index b912f98..336007f 100644
+--- a/utils.mk
++++ b/utils.mk
+@@ -126,7 +126,7 @@ endif
  # the source tarball
  ##############################################################################
- 
+
 -PREFIX ?= /usr/local
 +PREFIX ?= /usr
- 
+
  BINDIR = $(DESTDIR)$(PREFIX)/bin
  MANDIR = $(DESTDIR)$(PREFIX)/share/man/man1
+--
+1.7.9.5
