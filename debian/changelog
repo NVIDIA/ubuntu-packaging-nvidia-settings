@@ -1,3 +1,9 @@
+nvidia-settings (331.20-0ubuntu7) UNRELEASED; urgency=low
+
+  * 
+
+ -- Alberto Milone <alberto.milone@canonical.com>  Mon, 13 Jan 2014 15:31:26 +0100
+
 nvidia-settings (331.20-0ubuntu6) trusty; urgency=low
 
   * d/patches/08_...: Add missing preprocessor directives, resolving
