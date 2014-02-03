@@ -208,7 +208,7 @@ index 0000000..e0890f4
 +static gboolean set_mode(gchar *mode, gchar **error_msg, gint *exit_status) {
 +
 +    gchar *command = NULL;
-+    command = g_strconcat("python /usr/share/screen-resolution-extra/nvidia-prime.py ",
++    command = g_strconcat("python3 /usr/share/screen-resolution-extra/nvidia-prime.py ",
 +                          mode, NULL);
 +    gboolean status;
 +    gchar *output = NULL;

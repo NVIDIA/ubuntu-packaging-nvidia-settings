@@ -41,7 +41,7 @@ diff -Nurp nvidia-settings-190.53.orig/src/gtk+-2.x/ctkdisplayconfig-utils.c nvi
 +    /* Backup the the X config file (if any) and write out the X config
 +     * file from the temporary file
 +     */
-+    command = g_strconcat("python ",
++    command = g_strconcat("python3 ",
 +                          nvidia_polkit,
 +                          " --write-from=",
 +                          temp_filename,
