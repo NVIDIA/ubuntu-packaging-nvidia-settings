@@ -1,3 +1,9 @@
+nvidia-settings (331.20-0ubuntu8) UNRELEASED; urgency=low
+
+  * 
+
+ -- Alberto Milone <alberto.milone@canonical.com>  Mon, 03 Feb 2014 13:04:41 +0100
+
 nvidia-settings (331.20-0ubuntu7) trusty; urgency=low
 
   * Revert previous upload.
