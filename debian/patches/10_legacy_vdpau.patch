@@ -1,0 +1,32 @@
+--- a/src/gtk+-2.x/ctkvdpau.c
++++ b/src/gtk+-2.x/ctkvdpau.c
+@@ -167,11 +167,13 @@
+         {"H264",             VDP_DECODER_PROFILE_H264_BASELINE, 0x04},
+         {"H264",                 VDP_DECODER_PROFILE_H264_MAIN, 0x04},
+         {"H264",                 VDP_DECODER_PROFILE_H264_HIGH, 0x04},
++#ifdef VDP_DECODER_PROFILE_H264_CONSTRAINED_BASELINE
+         {"H264", VDP_DECODER_PROFILE_H264_CONSTRAINED_BASELINE, 0x04},
+         {"H264",             VDP_DECODER_PROFILE_H264_EXTENDED, 0x04},
+         {"H264",     VDP_DECODER_PROFILE_H264_PROGRESSIVE_HIGH, 0x04},
+         {"H264",     VDP_DECODER_PROFILE_H264_CONSTRAINED_HIGH, 0x04},
+         {"H264",  VDP_DECODER_PROFILE_H264_HIGH_444_PREDICTIVE, 0x04},
++#endif
+         {"VC1",                 VDP_DECODER_PROFILE_VC1_SIMPLE, 0x08},
+         {"VC1"  ,                 VDP_DECODER_PROFILE_VC1_MAIN, 0x08},
+         {"VC1",               VDP_DECODER_PROFILE_VC1_ADVANCED, 0x08},
+@@ -480,6 +482,7 @@
+         {"H264 Baseline",      VDP_DECODER_PROFILE_H264_BASELINE,      0},
+         {"H264 Main",          VDP_DECODER_PROFILE_H264_MAIN,          0},
+         {"H264 High",          VDP_DECODER_PROFILE_H264_HIGH,          0},
++#ifdef VDP_DECODER_PROFILE_H264_CONSTRAINED_BASELINE
+         {"H264 Constrained Baseline",
+                                VDP_DECODER_PROFILE_H264_CONSTRAINED_BASELINE, 0},
+         {"H264 Extended",      VDP_DECODER_PROFILE_H264_EXTENDED,      0},
+@@ -489,6 +492,7 @@
+                                VDP_DECODER_PROFILE_H264_CONSTRAINED_HIGH, 0},
+         {"H264 High 4:4:4 Predictive",
+                                VDP_DECODER_PROFILE_H264_HIGH_444_PREDICTIVE, 0},
++#endif
+         {"VC1 Simple",         VDP_DECODER_PROFILE_VC1_SIMPLE,         0},
+         {"VC1 Main",           VDP_DECODER_PROFILE_VC1_MAIN,           0},
+         {"VC1 Advanced",       VDP_DECODER_PROFILE_VC1_ADVANCED,       0},
