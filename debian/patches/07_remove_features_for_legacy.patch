@@ -73,14 +73,14 @@ index 7ade747..d3669b5 100644
  
      if (h->targets[X_SCREEN_TARGET].n) {
 @@ -581,6 +628,8 @@ GtkWidget *ctk_window_new(ParsedAttribute *p, ConfigProperties *conf,
-             }
-         }
-         if (screen_handle) {
+ 
+         server_target = NvCtrlGetDefaultTargetByType(system, X_SCREEN_TARGET);
+         if (server_target) {
 +            /* Use the handle to get the driver version */
-+            get_driver_version(screen_handle, &driver_major, &driver_minor);
++            get_driver_version(server_target, &driver_major, &driver_minor);
  
              /* X Server information */
-             
+ 
 @@ -717,6 +766,7 @@ GtkWidget *ctk_window_new(ParsedAttribute *p, ConfigProperties *conf,
          }
  
@@ -94,9 +94,9 @@ index 7ade747..d3669b5 100644
                       NULL, NULL, NULL);
          }
 +        }
-         
+ 
          /* gvo (Graphics To Video Out) */
-         
+ 
 @@ -1021,6 +1072,13 @@ GtkWidget *ctk_window_new(ParsedAttribute *p, ConfigProperties *conf,
                   ctk_3d_vision_pro_select, ctk_3d_vision_pro_unselect);
      }

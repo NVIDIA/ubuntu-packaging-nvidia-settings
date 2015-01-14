@@ -17,7 +17,7 @@ index 3ee395f..69b67c7 100644
              break;
          }
      }
--    
+-
 +#if 0
      if (!has_nv_control) {
          GtkWidget *dlg;
