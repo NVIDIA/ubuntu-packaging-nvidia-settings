@@ -1,8 +1,30 @@
-nvidia-settings (346.35-0ubuntu1) UNRELEASED; urgency=low
+nvidia-settings (346.35-0ubuntu1) vivid; urgency=low
 
-  * 
+  * New upstream release:
+    - Updated nvidia-settings to take advantage of GTK+ 3, when
+      available. This is implemented by building the nvidia-settings
+      user interface into separate shared libraries (libnvidia-
+      gtk2.so, libnvidia-gtk3.so), and loading the correct one at
+      run-time.
+    - Added the nvidia-settings option --gtk-library to allow
+      specifying the path of the directory containing the user
+      interface library or the path and filename of the specific
+      library to use.
+    - Added support in nvidia-settings for a GTK+ 3 user interface on
+      x86 and x86_64.
+    - Added the nvidia-settings option --use-gtk2 to force the use of
+      the GTK+ 2 UI library.
+  * debian/control:
+    - Fix up build dependencies.
+  * debian/patches/10_legacy_vdpau.patch:
+   - Make it possible to build with VDPAU releases older than 0.9.
+  * debian/patches/04_nvidia-settings_natty_ftbs.patch:
+   - Drop the patch.
+  * debian/patches/07_remove_features_for_legacy.patch,
+    debian/patches/09_do_not_complain_if_nvidia_is_missing.patch:
+   - Refresh the patches.
 
- -- Alberto Milone <alberto.milone@canonical.com>  Mon, 10 Mar 2014 15:35:01 +0100
+ -- Alberto Milone <alberto.milone@canonical.com>  Fri, 16 Jan 2015 18:21:44 +0100
 
 nvidia-settings (331.20-0ubuntu8) trusty; urgency=low
 
