@@ -1,0 +1,13 @@
+Description: Install unstripped binaries, dh_strip takes care of this.
+Author: Andreas Beckmann <debian@abeckmann.de>
+
+--- a/utils.mk
++++ b/utils.mk
+@@ -53,6 +53,7 @@
+   STRIP_CMD           ?= true
+   CFLAGS              += -O0 -g
+ else
++  STRIP_CMD           ?= true # let dh_strip do the stripping
+   STRIP_CMD           ?= strip
+ endif
+ 

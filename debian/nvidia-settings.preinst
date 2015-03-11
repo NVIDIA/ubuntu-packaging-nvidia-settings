@@ -1,0 +1,37 @@
+#!/bin/sh
+# preinst script for nvidia-settings
+#
+# see: dh_installdeb(1)
+#
+# Copyright (C) 2013 Canonical Ltd
+# Authors: Alberto Milone
+
+set -e
+
+# summary of how this script can be called:
+#        * <new-preinst> `install'
+#        * <new-preinst> `install' <old-version>
+#        * <new-preinst> `upgrade' <old-version>
+#        * <old-preinst> `abort-upgrade' <new-version>
+#
+# For details see /usr/share/doc/packaging-manual/
+
+case "$1" in
+    install|upgrade)
+    # Remove leftover from alternatives based nvidia-settings
+    if [ -e /etc/alternatives/nvidia_settings_conf ]; then
+        update-alternatives --quiet --remove-all nvidia_settings_conf || true
+        rm -Rf /usr/lib/nvidia-settings
+    fi
+    ;;
+
+    abort-upgrade)
+    ;;
+
+    *)
+        echo "preinst called with unknown argument \`$1'" >&2
+        exit 0
+    ;;
+esac
+
+#DEBHELPER#

@@ -1,0 +1,11 @@
+Author: Andreas Beckmann <anbe@debian.org>
+Description: use gzip -n to avoid package-contains-timestamped-gzip
+
+--- a/doc/Makefile
++++ b/doc/Makefile
+@@ -114,4 +114,4 @@
+ 	  $< > $@
+ 
+ $(MANPAGE_gzipped): $(MANPAGE_not_gzipped)
+-	$(GZIP_CMD) -9f < $< > $@
++	$(GZIP_CMD) -9fn < $< > $@

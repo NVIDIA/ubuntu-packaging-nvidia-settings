@@ -4,3 +4,9 @@
 08_add_prime_support.patch
 09_do_not_complain_if_nvidia_is_missing.patch
 10_legacy_vdpau.patch
+11_link_as-needed.patch
+12_nostrip.patch
+13_libxnvctrl_so_0.patch
+14_nvidia-settings.desktop.patch
+15_clean.patch
+16_gzip-n.patch

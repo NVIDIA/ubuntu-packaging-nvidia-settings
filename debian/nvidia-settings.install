@@ -1,0 +1,3 @@
+debian/nvidia-settings.desktop               /usr/share/applications
+debian/nvidia-settings-autostart.desktop     /etc/xdg/autostart
+doc/nvidia-settings.png                      /usr/share/pixmaps

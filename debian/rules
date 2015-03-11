@@ -9,6 +9,8 @@ url                  := http://cgit.freedesktop.org/~aplattner/nvidia-settings/s
 tarball              := nvidia-settings-$(PKG_version).tar.gz
 file_url             := $(url)/$(tarball)
 
+export NV_USE_BUNDLED_LIBJANSSON = 0
+
 .PHONY: download-sources
 download-sources:
 	# Remove any previous extracted tarball
@@ -42,9 +44,6 @@ clean:
 binary-arch:
 	#dh_auto_install -- prefix=$(CURDIR)/debian/$(PKG_name)$(PKG_libdir)
 	$(MAKE) PREFIX=$(CURDIR)/debian/$(PKG_name)/usr install
-	dh_install -p$(PKG_name) src/libXNVCtrl/libXNVCtrl.a    "$(libdir)"
-	dh_install -p$(PKG_name) src/libXNVCtrl/NVCtrl.h        "$(includedir)/NVCtrl"
-	dh_install -p$(PKG_name) src/libXNVCtrl/NVCtrlLib.h     "$(includedir)/NVCtrl"
 
 	#Run the normal stuff
 	dh binary-arch

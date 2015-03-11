@@ -1,21 +1,23 @@
 Source: nvidia-settings
-Section: contrib/x11
+Section: x11
 Priority: optional
 XSBC-Original-Maintainer: Debian NVIDIA Maintainers <pkg-nvidia-devel@lists.alioth.debian.org>
 Maintainer: Ubuntu MOTU Developers <ubuntu-motu@lists.ubuntu.com>
 Uploaders: Randall Donald <rdonald@debian.org>
 Build-Depends: debhelper (>= 7), m4, libgtk2.0-dev, libgtk-3-dev, libxext-dev, xutils-dev, libxrandr-dev,
- libgl1-mesa-dev | libgl-dev, libxxf86vm-dev, libxv-dev, libvdpau-dev, quilt
+ libgl1-mesa-dev | libgl-dev, libxxf86vm-dev, libxv-dev, libvdpau-dev, quilt, libjansson-dev (>= 2.2)
+Build-Conflicts: libxnvctrl-dev
 Standards-Version: 3.8.0
 Vcs-Git: git://github.com/tseliot/nvidia-settings.git
 Vcs-Browser: http://github.com/tseliot/nvidia-settings
 
 Package: nvidia-settings
-Architecture: i386 amd64
+Section: contrib/x11
+Architecture: i386 amd64 armhf
 Depends: pkg-config, screen-resolution-extra (>= 0.12),
  libvdpau1, ${shlibs:Depends}, ${misc:Depends}
-Conflicts: libxnvctrl-dev, nvidia-settings-binary
-Replaces: libxnvctrl-dev, nvidia-settings-binary
+Conflicts: nvidia-settings-binary
+Replaces: nvidia-settings-binary
 Provides: nvidia-settings-binary
 Description:  Tool for configuring the NVIDIA graphics driver
  The nvidia-settings utility is a tool for configuring the NVIDIA
@@ -26,3 +28,31 @@ Description:  Tool for configuring the NVIDIA graphics driver
  Values such as brightness and gamma, XVideo attributes, temperature,
  and OpenGL settings can be queried and configured via nvidia-settings.
 
+Package: libxnvctrl0
+Section: libs
+Architecture: i386 amd64 armhf
+Depends:
+ ${shlibs:Depends}, ${misc:Depends}
+Description: NV-CONTROL X extension (runtime library)
+ The NV-CONTROL X extension provides a mechanism for X clients to
+ query and set configuration parameters of the NVIDIA X driver.
+ State set by the NV-CONTROL X extension is assumed to be persistent
+ only for the current server generation.
+ .
+ This package contains the shared library.
+
+Package: libxnvctrl-dev
+Section: libdevel
+Architecture: i386 amd64 armhf
+Depends:
+ libxnvctrl0 (= ${binary:Version}),
+ ${misc:Depends}
+Breaks:
+ nvidia-settings (<< 346.35-0ubuntu2~),
+Replaces:
+ nvidia-settings (<< 346.35-0ubuntu2~),
+Description: NV-CONTROL X extension (development files)
+ The NV-CONTROL X extension provides a mechanism for X clients to
+ query and set configuration parameters of the NVIDIA X driver.
+ State set by the NV-CONTROL X extension is assumed to be persistent
+ only for the current server generation.

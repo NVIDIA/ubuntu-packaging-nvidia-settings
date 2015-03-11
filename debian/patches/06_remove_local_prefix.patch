@@ -7,18 +7,14 @@ Subject: [PATCH 1/1] utils.mk: remove local from prefix
  utils.mk |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/utils.mk b/utils.mk
-index b912f98..336007f 100644
 --- a/utils.mk
 +++ b/utils.mk
-@@ -126,7 +126,7 @@ endif
+@@ -169,7 +169,7 @@
  # the source tarball
  ##############################################################################
-
+ 
 -PREFIX ?= /usr/local
 +PREFIX ?= /usr
-
+ 
  BINDIR = $(DESTDIR)$(PREFIX)/bin
- MANDIR = $(DESTDIR)$(PREFIX)/share/man/man1
---
-1.7.9.5
+ LIBDIR = $(DESTDIR)$(PREFIX)/lib

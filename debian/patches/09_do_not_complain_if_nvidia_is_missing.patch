@@ -9,11 +9,9 @@ driver anyway. That would also break hybrid graphics.
  src/gtk+-2.x/ctkui.c |    4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/src/gtk+-2.x/ctkui.c b/src/gtk+-2.x/ctkui.c
-index 3ee395f..69b67c7 100644
 --- a/src/gtk+-2.x/ctkui.c
 +++ b/src/gtk+-2.x/ctkui.c
-@@ -56,7 +56,7 @@ void ctk_main(ParsedAttribute *p,
+@@ -57,7 +57,7 @@
              break;
          }
      }
@@ -22,7 +20,7 @@ index 3ee395f..69b67c7 100644
      if (!has_nv_control) {
          GtkWidget *dlg;
          dlg = gtk_message_dialog_new (NULL,
-@@ -70,7 +70,7 @@ void ctk_main(ParsedAttribute *p,
+@@ -71,7 +71,7 @@
          gtk_dialog_run(GTK_DIALOG(dlg));
          gtk_widget_destroy (dlg);
      }
@@ -31,6 +29,3 @@ index 3ee395f..69b67c7 100644
      ctk_window_set_active_page(CTK_WINDOW(window), page);
  
      gtk_main();
--- 
-1.7.9.5
-

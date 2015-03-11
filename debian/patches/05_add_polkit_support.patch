@@ -1,8 +1,7 @@
-diff -Nurp nvidia-settings-190.53.orig/src/gtk+-2.x/ctkdisplayconfig-utils.c nvidia-settings-190.53/src/gtk+-2.x/ctkdisplayconfig-utils.c
---- nvidia-settings-190.53.orig/src/gtk+-2.x/ctkdisplayconfig-utils.c	2009-12-09 06:18:39.000000000 +0100
-+++ nvidia-settings-190.53/src/gtk+-2.x/ctkdisplayconfig-utils.c	2009-12-30 15:04:53.089702717 +0100
-@@ -2762,6 +2762,77 @@ static void update_banner(XConfigPtr con
-     
+--- a/src/gtk+-2.x/ctkdisplayconfig-utils.c
++++ b/src/gtk+-2.x/ctkdisplayconfig-utils.c
+@@ -3856,6 +3856,77 @@
+ 
  } /* update_banner() */
  
 +/** ubuntu save_xconfig_file() ******************************
@@ -79,7 +78,7 @@ diff -Nurp nvidia-settings-190.53.orig/src/gtk+-2.x/ctkdisplayconfig-utils.c nvi
  
  
  /** save_xconfig_file() **********************************************
-@@ -2782,6 +2853,9 @@ static int save_xconfig_file(SaveXConfDl
+@@ -3876,6 +3947,9 @@
  
      int ret = 0;
  

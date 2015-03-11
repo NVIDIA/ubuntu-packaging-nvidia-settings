@@ -1,0 +1,13 @@
+Author: Andreas Beckmann <debian@abeckmann.de>
+Description: let clean recurse into libXNVCtrl
+
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -323,6 +323,7 @@
+ 	@$(MAKE) -C $(XNVCTRL_DIR) -f $(XNVCTRL_MAKEFILE)
+ 
+ clean clobber:
++	$(MAKE) -C $(XNVCTRL_DIR) clean
+ 	rm -rf $(NVIDIA_SETTINGS) *~ $(STAMP_C) \
+ 		$(OUTPUTDIR)/*.o $(OUTPUTDIR)/*.d \
+ 		$(GTK2LIB) $(GTK3LIB) $(GTK2LIB_DIR) $(GTK3LIB_DIR)
