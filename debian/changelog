@@ -1,8 +1,13 @@
-nvidia-settings (346.47-0ubuntu1) UNRELEASED; urgency=medium
+nvidia-settings (346.47-0ubuntu1) vivid; urgency=medium
 
-  * 
+  [ Graham Inggs ]
+  * Enable building for armhf.
+  * New packages libxnvtrl0 and libxnvctrl-dev. (LP: #1327753)
+  * Sync all patches from 343.22-1 in Debian experimental.
+  * Merge debian/copyright from 343.22-1 in Debian experimental,
+    add Ubuntu contributors, update copyright years. (LP: #1429974)
 
- -- Alberto Milone <alberto.milone@canonical.com>  Tue, 10 Mar 2015 12:54:56 +0100
+ -- Alberto Milone <alberto.milone@canonical.com>  Wed, 18 Mar 2015 12:41:58 +0100
 
 nvidia-settings (346.35-0ubuntu1) vivid; urgency=low
 
