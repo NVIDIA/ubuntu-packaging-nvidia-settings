@@ -1,3 +1,9 @@
+nvidia-settings (346.72-0ubuntu1) UNRELEASED; urgency=medium
+
+  * 
+
+ -- Alberto Milone <alberto.milone@canonical.com>  Tue, 19 May 2015 15:46:14 +0200
+
 nvidia-settings (346.59-0ubuntu1) vivid; urgency=medium
 
   * New upstream release:
