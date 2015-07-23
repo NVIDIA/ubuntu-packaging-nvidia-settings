@@ -1,8 +1,22 @@
-nvidia-settings (352.21-0ubuntu1) UNRELEASED; urgency=medium
+nvidia-settings (352.21-0ubuntu1) wily; urgency=medium
 
-  * 
+  * debian/rules:
+    - Remove a character that was accidentally introduced in the
+      sources' link, which was causing the download-sources target
+      to fail.
+  * New upstream release:
+    - Fixed a bug that caused the Display Configuration page of the
+      nvidia-settings control panel to automatically generate layouts
+      with multiple displays occupying the same position when
+      enabling or disabling Base Mosaic.
+    - Updated nvidia-settings to allow the use of the standard
+      Display Configuration page when SLI Mosaic is enabled.
+    - Added reporting of ECC error counts to the nvidia-settings
+      control panel.
+    - Fixed a bug in nvidia-settings that caused the application to
+      crash when saving the EDID to a file.
 
- -- Alberto Milone <alberto.milone@canonical.com>  Thu, 23 Jul 2015 12:47:01 +0200
+ -- Alberto Milone <alberto.milone@canonical.com>  Thu, 23 Jul 2015 12:57:28 +0200
 
 nvidia-settings (346.82-0ubuntu1) wily; urgency=medium
 
