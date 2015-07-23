@@ -4,7 +4,7 @@
 
 PKG_name    := nvidia-settings
 PKG_version          := $(shell dpkg-parsechangelog | awk -F' ' '/^Version:/ {print $$2}' | awk -F- '{print $$1}')
-PKG_version          := $(shell echo $(PKG_version) | sed s/.*\.really\.//g)
+PKG_version          := $(shell echo $(PKG_version) | sed s/.*\.really\.//g)
 libdir      := /usr/lib
 includedir  := /usr/include
 url                  := http://cgit.freedesktop.org/~aplattner/nvidia-settings/snapshot
