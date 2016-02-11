@@ -1,3 +1,9 @@
+nvidia-settings (361.28-0ubuntu1) UNRELEASED; urgency=medium
+
+  * 
+
+ -- Alberto Milone <alberto.milone@canonical.com>  Thu, 11 Feb 2016 11:48:46 +0100
+
 nvidia-settings (352.21-0ubuntu1) wily; urgency=medium
 
   * debian/rules:
