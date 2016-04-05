@@ -1,8 +1,11 @@
-nvidia-settings (361.42-0ubuntu1) UNRELEASED; urgency=medium
+nvidia-settings (361.42-0ubuntu1) xenial; urgency=medium
 
-  * 
+  * New upstream release:
+    - Limited the default concurrency level in nvidia-settings to 32,
+      to avoid hitting the maximum tasks limit on systems with many
+      CPUs.
 
- -- Alberto Milone <alberto.milone@canonical.com>  Tue, 05 Apr 2016 11:34:31 +0200
+ -- Alberto Milone <alberto.milone@canonical.com>  Tue, 05 Apr 2016 11:42:18 +0200
 
 nvidia-settings (361.28-0ubuntu1) xenial; urgency=medium
 
