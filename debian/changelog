@@ -1,3 +1,9 @@
+nvidia-settings (361.42-0ubuntu1) UNRELEASED; urgency=medium
+
+  * 
+
+ -- Alberto Milone <alberto.milone@canonical.com>  Tue, 05 Apr 2016 11:34:31 +0200
+
 nvidia-settings (361.28-0ubuntu1) xenial; urgency=medium
 
   * New upstream release.
