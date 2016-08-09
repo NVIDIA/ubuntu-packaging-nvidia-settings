@@ -13,7 +13,7 @@ Vcs-Browser: http://github.com/tseliot/nvidia-settings
 
 Package: nvidia-settings
 Section: contrib/x11
-Architecture: i386 amd64 armhf
+Architecture: i386 amd64 armhf arm64 ppc64el
 Depends: pkg-config, screen-resolution-extra (>= 0.12),
  libvdpau1, ${shlibs:Depends}, ${misc:Depends}
 Conflicts: nvidia-settings-binary
@@ -30,7 +30,7 @@ Description:  Tool for configuring the NVIDIA graphics driver
 
 Package: libxnvctrl0
 Section: libs
-Architecture: i386 amd64 armhf
+Architecture: i386 amd64 armhf arm64 ppc64el
 Depends:
  ${shlibs:Depends}, ${misc:Depends}
 Description: NV-CONTROL X extension (runtime library)
@@ -43,7 +43,7 @@ Description: NV-CONTROL X extension (runtime library)
 
 Package: libxnvctrl-dev
 Section: libdevel
-Architecture: i386 amd64 armhf
+Architecture: i386 amd64 armhf arm64 ppc64el
 Depends:
  libxnvctrl0 (= ${binary:Version}),
  ${misc:Depends}
