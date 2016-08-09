@@ -1,13 +1,22 @@
 Description: Install unstripped binaries, dh_strip takes care of this.
-Author: Andreas Beckmann <debian@abeckmann.de>
+Author: Michael Marley <michael@michaelmarley.com>
 
---- a/utils.mk
-+++ b/utils.mk
-@@ -53,6 +53,7 @@
-   STRIP_CMD           ?= true
+--- nvidia-settings-367.18.orig/utils.mk
++++ nvidia-settings-367.18/utils.mk
+@@ -55,13 +55,11 @@ HOST_BIN_LDFLAGS      ?=
+ CFLAGS                += -Wno-unused-parameter -Wno-format-zero-length
+ HOST_CFLAGS           += -Wno-unused-parameter -Wno-format-zero-length
+ 
++STRIP_CMD           ?= true
++DO_STRIP            ?=      # let dh_strip do the stripping
++
+ ifeq ($(DEBUG),1)
+-  STRIP_CMD           ?= true
+-  DO_STRIP            ?=
    CFLAGS              += -O0 -g
- else
-+  STRIP_CMD           ?= true # let dh_strip do the stripping
-   STRIP_CMD           ?= strip
+-else
+-  STRIP_CMD           ?= strip
+-  DO_STRIP            ?= 1
  endif
  
+ INSTALL               ?= install

@@ -11,33 +11,33 @@
  COMMON_UTILS_DIR        ?= common-utils
  COMMON_UNIX_DIR         ?= common-unix
 @@ -280,14 +283,17 @@
- 	$(MKDIR) $(BINDIR)
  	$(INSTALL) $(INSTALL_BIN_ARGS) $< $(BINDIR)/$(notdir $<)
  
--$(NVIDIA_SETTINGS): $(OBJS) $(XNVCTRL_ARCHIVE)
+ $(eval $(call DEBUG_INFO_RULES, $(NVIDIA_SETTINGS)))
+-$(NVIDIA_SETTINGS).unstripped: $(OBJS) $(XNVCTRL_ARCHIVE)
 +$(XNVCTRL_ARCHIVE) $(XNVCTRL_SHARED):
 +	$(MAKE) -C $(XNVCTRL_DIR)
 +
-+$(NVIDIA_SETTINGS): $(OBJS) $(XNVCTRL_LIB)
++$(NVIDIA_SETTINGS).unstripped: $(OBJS) $(XNVCTRL_LIB)
  	$(call quiet_cmd,LINK) $(CFLAGS) $(LDFLAGS) $(BIN_LDFLAGS) \
 -	    -rdynamic -o $@ $(OBJS) $(XNVCTRL_ARCHIVE) $(LIBS)
 +	    -rdynamic -o $@ $(OBJS) $(XNVCTRL_LIB) $(LIBS)
- 	$(call quiet_cmd,STRIP_CMD) $@
  
- $(GTK2LIB): $(GTK2_OBJS) $(XCP_OBJS) $(VERSION_MK)
+ $(eval $(call DEBUG_INFO_RULES, $(GTK2LIB)))
+ $(GTK2LIB).unstripped: $(GTK2_OBJS) $(XCP_OBJS) $(VERSION_MK)
  	$(call quiet_cmd,LINK) -shared $(CFLAGS) $(LDFLAGS) $(BIN_LDFLAGS) \
 -	    $(XNVCTRL_ARCHIVE) $(LIBS) $(GTK2_LIBS) \
 +	    $(XNVCTRL_LIB) $(LIBS) $(GTK2_LIBS) \
- 	    -Wl,--unresolved-symbols=ignore-all -o $(GTK2LIB) \
+ 	    -Wl,--unresolved-symbols=ignore-all -o $@ \
  	    -Wl,-soname -Wl,$(GTK2LIB_SONAME) \
  	    $(GTK2_OBJS) $(XCP_OBJS)
 @@ -296,7 +302,7 @@
- ifdef BUILD_GTK3LIB
- $(GTK3LIB): $(GTK3_OBJS) $(XCP_OBJS) $(VERSION_MK)
+ $(eval $(call DEBUG_INFO_RULES, $(GTK3LIB)))
+ $(GTK3LIB).unstripped: $(GTK3_OBJS) $(XCP_OBJS) $(VERSION_MK)
  	$(call quiet_cmd,LINK) -shared $(CFLAGS) $(LDFLAGS)  $(BIN_LDFLAGS) \
 -	    $(XNVCTRL_ARCHIVE) $(LIBS) $(GTK3_LIBS) \
 +	    $(XNVCTRL_LIB) $(LIBS) $(GTK3_LIBS) \
- 	    -Wl,--unresolved-symbols=ignore-all -o $(GTK3LIB) \
+ 	    -Wl,--unresolved-symbols=ignore-all -o $@ \
  	    -Wl,-soname -Wl,$(GTK3LIB_SONAME) \
  	    $(GTK3_OBJS) $(XCP_OBJS)
 --- a/src/libXNVCtrl/Makefile
