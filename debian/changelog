@@ -1,8 +1,13 @@
-nvidia-settings (361.42-0ubuntu2) UNRELEASED; urgency=medium
+nvidia-settings (367.35-0ubuntu1) yakkety; urgency=medium
 
-  * 
+  * debian/control:
+    - Build for arm64 and ppc64el, even though we don't provide the
+      driver for these architectures yet.
+  * debian/patches/12_nostrip.patch,
+    debian/patches/13_libxnvctrl_so_0.patch:
+    - Refresh patches.
 
- -- Alberto Milone <alberto.milone@canonical.com>  Tue, 02 Aug 2016 15:45:14 +0200
+ -- Alberto Milone <alberto.milone@canonical.com>  Tue, 09 Aug 2016 11:10:31 +0200
 
 nvidia-settings (361.42-0ubuntu1) xenial; urgency=medium
 
