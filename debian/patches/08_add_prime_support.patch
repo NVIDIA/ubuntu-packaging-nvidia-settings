@@ -811,6 +811,7 @@ Refreshed for the 410 series
  GTK_SRC += gtk+-2.x/ctkcolorcontrols.c
  GTK_SRC += gtk+-2.x/ctk3dvisionpro.c
  GTK_SRC += gtk+-2.x/ctkvdpau.c
+ GTK_SRC += gtk+-2.x/ctkgridlicense.c
 +GTK_SRC += gtk+-2.x/ctkprime.c
  GTK_SRC += gtk+-2.x/ctkgridlicense.c
  GTK_SRC += gtk+-2.x/ctkglwidget.c
@@ -819,6 +820,7 @@ Refreshed for the 410 series
  GTK_EXTRA_DIST += gtk+-2.x/ctkcolorcontrols.h
  GTK_EXTRA_DIST += gtk+-2.x/ctk3dvisionpro.h
  GTK_EXTRA_DIST += gtk+-2.x/ctkvdpau.h
+ GTK_EXTRA_DIST += gtk+-2.x/ctkgridlicense.h
 +GTK_EXTRA_DIST += gtk+-2.x/ctkprime.h
  GTK_EXTRA_DIST += gtk+-2.x/ctkgridlicense.h
  GTK_EXTRA_DIST += gtk+-2.x/ctkglwidget.h
