@@ -1,17 +1,21 @@
-From 127e3ca40d062c1b91ea0431d0c4715a8e624827 Mon Sep 17 00:00:00 2001
+From 92cb07acb3a3e16e7330a7bed8960ca943e251c0 Mon Sep 17 00:00:00 2001
 From: Alberto Milone <alberto.milone@canonical.com>
-Date: Mon, 21 Oct 2013 15:20:18 +0200
+Date: Mon, 9 Oct 2017 11:22:01 +0200
 Subject: [PATCH 1/1] Add support for PRIME GPU switching
 
+Refreshed for the 384 series
 ---
- src/gtk+-2.x/ctkprime.c  |  518 ++++++++++++++++++++++++++++++++++++++++++++++
- src/gtk+-2.x/ctkprime.h  |   77 +++++++
- src/gtk+-2.x/ctkwindow.c |   10 +
- src/src.mk               |    2 +
+ src/gtk+-2.x/ctkprime.c  | 518 +++++++++++++++++++++++++++++++++++++++++++++++
+ src/gtk+-2.x/ctkprime.h  |  77 +++++++
+ src/gtk+-2.x/ctkwindow.c |  10 +
+ src/src.mk               |   2 +
  4 files changed, 607 insertions(+)
  create mode 100644 src/gtk+-2.x/ctkprime.c
  create mode 100644 src/gtk+-2.x/ctkprime.h
 
+diff --git a/src/gtk+-2.x/ctkprime.c b/src/gtk+-2.x/ctkprime.c
+new file mode 100644
+index 0000000..1ed4c2c
 --- /dev/null
 +++ b/src/gtk+-2.x/ctkprime.c
 @@ -0,0 +1,518 @@
@@ -533,6 +537,9 @@ Subject: [PATCH 1/1] Add support for PRIME GPU switching
 +    return b;
 +}
 +
+diff --git a/src/gtk+-2.x/ctkprime.h b/src/gtk+-2.x/ctkprime.h
+new file mode 100644
+index 0000000..b6312a9
 --- /dev/null
 +++ b/src/gtk+-2.x/ctkprime.h
 @@ -0,0 +1,77 @@
@@ -613,6 +620,8 @@ Subject: [PATCH 1/1] Add support for PRIME GPU switching
 +
 +#endif /* __CTK_PRIME_H__ */
 +
+diff --git a/src/gtk+-2.x/ctkwindow.c b/src/gtk+-2.x/ctkwindow.c
+index 83afb24..0109726 100644
 --- a/src/gtk+-2.x/ctkwindow.c
 +++ b/src/gtk+-2.x/ctkwindow.c
 @@ -46,6 +46,7 @@
@@ -623,7 +632,7 @@ Subject: [PATCH 1/1] Add support for PRIME GPU switching
  #include "ctkopengl.h"
  #include "ctkglx.h"
  #include "ctkmultisample.h"
-@@ -1104,6 +1105,15 @@
+@@ -1105,6 +1106,15 @@ GtkWidget *ctk_window_new(ParsedAttribute *p, ConfigProperties *conf,
       */
      if (driver_major == 0 || driver_major >= 319) {
  
@@ -639,21 +648,26 @@ Subject: [PATCH 1/1] Add support for PRIME GPU switching
      /* app profile configuration */
      widget = ctk_app_profile_new(server_target, ctk_config);
      if (widget) {
+diff --git a/src/src.mk b/src/src.mk
+index 0e56ca6..55eb5a6 100644
 --- a/src/src.mk
 +++ b/src/src.mk
-@@ -219,6 +219,7 @@
+@@ -221,6 +221,7 @@ GTK_SRC += gtk+-2.x/ctkapcrulemodel.c
  GTK_SRC += gtk+-2.x/ctkcolorcontrols.c
  GTK_SRC += gtk+-2.x/ctk3dvisionpro.c
  GTK_SRC += gtk+-2.x/ctkvdpau.c
 +GTK_SRC += gtk+-2.x/ctkprime.c
+ GTK_SRC += gtk+-2.x/ctkgridlicense.c
  
  
- GTK_EXTRA_DIST += gtk+-2.x/ctkxvideo.h
-@@ -266,6 +267,7 @@
+@@ -269,6 +270,7 @@ GTK_EXTRA_DIST += gtk+-2.x/ctkapcrulemodel.h
  GTK_EXTRA_DIST += gtk+-2.x/ctkcolorcontrols.h
  GTK_EXTRA_DIST += gtk+-2.x/ctk3dvisionpro.h
  GTK_EXTRA_DIST += gtk+-2.x/ctkvdpau.h
 +GTK_EXTRA_DIST += gtk+-2.x/ctkprime.h
+ GTK_EXTRA_DIST += gtk+-2.x/ctkgridlicense.h
  
  NVIDIA_SETTINGS_EXTRA_DIST += $(GTK_EXTRA_DIST)
- 
+-- 
+2.7.4
+
