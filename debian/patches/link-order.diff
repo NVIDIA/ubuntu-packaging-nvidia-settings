@@ -1,0 +1,52 @@
+Author: Andreas Beckmann <anbe@debian.org>
+Description: link libraries after object files
+ to allow proper dependency resolution
+ drop now superfluous --no-as-needed flag
+ fail on unresolved symbols
+
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -49,7 +49,7 @@
+ endif
+ 
+ ifndef GTK2_LDFLAGS
+-  GTK2_LDFLAGS         := -Wl,--no-as-needed $(shell $(PKG_CONFIG) --libs gtk+-2.0)
++  GTK2_LDFLAGS         := $(shell $(PKG_CONFIG) --libs gtk+-2.0)
+ endif
+ 
+ ifndef GTK3_AVAILABLE
+@@ -62,7 +62,7 @@
+   endif
+ 
+   ifndef GTK3_LDFLAGS
+-    GTK3_LDFLAGS         := -Wl,--no-as-needed $(shell $(PKG_CONFIG) --libs gtk+-3.0)
++    GTK3_LDFLAGS         := $(shell $(PKG_CONFIG) --libs gtk+-3.0)
+   endif
+ else
+   GTK3_CFLAGS ?=
+@@ -284,19 +284,19 @@
+ $(eval $(call DEBUG_INFO_RULES, $(GTK2LIB)))
+ $(GTK2LIB).unstripped: $(GTK2_OBJS) $(XCP_OBJS) $(VERSION_MK)
+ 	$(call quiet_cmd,LINK) -shared $(CFLAGS) $(LDFLAGS) $(BIN_LDFLAGS) \
+-	    $(XNVCTRL_ARCHIVE) $(LIBS) $(GTK2_LIBS) \
+-	    -Wl,--unresolved-symbols=ignore-all -o $@ \
++	    -o $@ \
+ 	    -Wl,-soname -Wl,$(GTK2LIB_SONAME) \
+-	    $(GTK2_OBJS) $(XCP_OBJS)
++	    $(GTK2_OBJS) $(XCP_OBJS) \
++	    $(XNVCTRL_ARCHIVE) $(LIBS) $(GTK2_LIBS)
+ 
+ ifdef BUILD_GTK3LIB
+ $(eval $(call DEBUG_INFO_RULES, $(GTK3LIB)))
+ $(GTK3LIB).unstripped: $(GTK3_OBJS) $(XCP_OBJS) $(VERSION_MK)
+ 	$(call quiet_cmd,LINK) -shared $(CFLAGS) $(LDFLAGS)  $(BIN_LDFLAGS) \
+-	    $(XNVCTRL_ARCHIVE) $(LIBS) $(GTK3_LIBS) \
+-	    -Wl,--unresolved-symbols=ignore-all -o $@ \
++	    -o $@ \
+ 	    -Wl,-soname -Wl,$(GTK3LIB_SONAME) \
+-	    $(GTK3_OBJS) $(XCP_OBJS)
++	    $(GTK3_OBJS) $(XCP_OBJS) \
++	    $(XNVCTRL_ARCHIVE) $(LIBS) $(GTK3_LIBS)
+ endif
+ 
+ # define the rule to build each object file

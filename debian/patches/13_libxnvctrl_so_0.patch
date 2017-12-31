@@ -1,6 +1,10 @@
+Author: Andreas Beckmann <debian@abeckmann.de>
+Description: build a shared library for libXNVCtrl
+Bug-Debian: https://bugs.debian.org/666909
+
 --- a/src/Makefile
 +++ b/src/Makefile
-@@ -106,6 +106,9 @@
+@@ -113,6 +113,9 @@
  XNVCTRL_DIR             ?= libXNVCtrl
  XNVCTRL_MAKEFILE        ?= Makefile
  XNVCTRL_ARCHIVE         ?= $(XNVCTRL_DIR)/libXNVCtrl.a
@@ -10,14 +14,11 @@
  XCONFIG_PARSER_DIR      ?= XF86Config-parser
  COMMON_UTILS_DIR        ?= common-utils
  COMMON_UNIX_DIR         ?= common-unix
-@@ -280,14 +283,17 @@
+@@ -277,9 +280,9 @@
  	$(INSTALL) $(INSTALL_BIN_ARGS) $< $(BINDIR)/$(notdir $<)
  
  $(eval $(call DEBUG_INFO_RULES, $(NVIDIA_SETTINGS)))
 -$(NVIDIA_SETTINGS).unstripped: $(OBJS) $(XNVCTRL_ARCHIVE)
-+$(XNVCTRL_ARCHIVE) $(XNVCTRL_SHARED):
-+	$(MAKE) -C $(XNVCTRL_DIR)
-+
 +$(NVIDIA_SETTINGS).unstripped: $(OBJS) $(XNVCTRL_LIB)
  	$(call quiet_cmd,LINK) $(CFLAGS) $(LDFLAGS) $(BIN_LDFLAGS) \
 -	    -rdynamic -o $@ $(OBJS) $(XNVCTRL_ARCHIVE) $(LIBS)
@@ -25,24 +26,36 @@
  
  $(eval $(call DEBUG_INFO_RULES, $(GTK2LIB)))
  $(GTK2LIB).unstripped: $(GTK2_OBJS) $(XCP_OBJS) $(VERSION_MK)
- 	$(call quiet_cmd,LINK) -shared $(CFLAGS) $(LDFLAGS) $(BIN_LDFLAGS) \
--	    $(XNVCTRL_ARCHIVE) $(LIBS) $(GTK2_LIBS) \
-+	    $(XNVCTRL_LIB) $(LIBS) $(GTK2_LIBS) \
- 	    -Wl,--unresolved-symbols=ignore-all -o $@ \
+@@ -287,7 +290,7 @@
+ 	    -o $@ \
  	    -Wl,-soname -Wl,$(GTK2LIB_SONAME) \
- 	    $(GTK2_OBJS) $(XCP_OBJS)
-@@ -296,7 +302,7 @@
+ 	    $(GTK2_OBJS) $(XCP_OBJS) \
+-	    $(XNVCTRL_ARCHIVE) $(LIBS) $(GTK2_LIBS)
++	    $(XNVCTRL_LIB) $(LIBS) $(GTK2_LIBS)
+ 
+ ifdef BUILD_GTK3LIB
  $(eval $(call DEBUG_INFO_RULES, $(GTK3LIB)))
- $(GTK3LIB).unstripped: $(GTK3_OBJS) $(XCP_OBJS) $(VERSION_MK)
- 	$(call quiet_cmd,LINK) -shared $(CFLAGS) $(LDFLAGS)  $(BIN_LDFLAGS) \
--	    $(XNVCTRL_ARCHIVE) $(LIBS) $(GTK3_LIBS) \
-+	    $(XNVCTRL_LIB) $(LIBS) $(GTK3_LIBS) \
- 	    -Wl,--unresolved-symbols=ignore-all -o $@ \
+@@ -296,7 +299,7 @@
+ 	    -o $@ \
  	    -Wl,-soname -Wl,$(GTK3LIB_SONAME) \
- 	    $(GTK3_OBJS) $(XCP_OBJS)
+ 	    $(GTK3_OBJS) $(XCP_OBJS) \
+-	    $(XNVCTRL_ARCHIVE) $(LIBS) $(GTK3_LIBS)
++	    $(XNVCTRL_LIB) $(LIBS) $(GTK3_LIBS)
+ endif
+ 
+ # define the rule to build each object file
+@@ -307,7 +310,7 @@
+ $(eval $(call DEFINE_STAMP_C_RULE, $(OBJS),$(NVIDIA_SETTINGS_PROGRAM_NAME)))
+ 
+ # define the rule to build $(XNVCTRL_ARCHIVE)
+-$(XNVCTRL_ARCHIVE): build-xnvctrl
++$(XNVCTRL_ARCHIVE) $(XNVCTRL_SHARED): build-xnvctrl
+ 
+ build-xnvctrl:
+ 	@$(MAKE) -C $(XNVCTRL_DIR) -f $(XNVCTRL_MAKEFILE)
 --- a/src/libXNVCtrl/Makefile
 +++ b/src/libXNVCtrl/Makefile
-@@ -55,10 +55,17 @@
+@@ -58,10 +58,17 @@
  .PHONY: clean
  
  all: $(LIBXNVCTRL)
@@ -60,7 +73,7 @@
  # define the rule to build each object file
  $(foreach src,$(SRC),$(eval $(call DEFINE_OBJECT_RULE,TARGET,$(src))))
  
-@@ -68,3 +75,4 @@
+@@ -71,3 +78,4 @@
  clean:
  	rm -rf $(LIBXNVCTRL) *~ $(STAMP_C) \
  		$(OUTPUTDIR)/*.o $(OUTPUTDIR)/*.d
