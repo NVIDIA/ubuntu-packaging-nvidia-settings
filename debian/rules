@@ -57,6 +57,17 @@ binary: binary-arch binary-indep ;
 override_dh_compress:
 	dh_compress --exclude=.c --exclude=.mk
 
+override_dh_gencontrol:
+	set -ex; \
+	if [ -f debian/nvidia-settings.substvars ]; then \
+		sed -ri -e 's/(^[^:]*:Depends=)/\1 GTK3 | GTK2, /' \
+			-e 's/(GTK2)(.*)(libgtk2.0-0 \([^\)]*\))/\3\2/' \
+			-e 's/(GTK3)(.*)(libgtk-3-0 \([^\)]*\))/\3\2/' \
+			debian/nvidia-settings.substvars ; \
+		! grep GTK debian/nvidia-settings.substvars ; \
+	fi
+	dh_gencontrol
+
 override_dh_installexamples:
 	dh_installexamples -X"_out" -a
 
