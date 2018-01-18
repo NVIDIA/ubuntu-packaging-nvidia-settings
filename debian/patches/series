@@ -1,3 +1,4 @@
+link-order.diff
 05_add_polkit_support.patch
 06_remove_local_prefix.patch
 07_remove_features_for_legacy.patch
