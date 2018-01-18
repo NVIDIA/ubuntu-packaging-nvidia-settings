@@ -4,6 +4,8 @@
 
 PKG_name    := nvidia-settings
 
+DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
+
 export NV_USE_BUNDLED_LIBJANSSON = 0
 
 build: build-arch

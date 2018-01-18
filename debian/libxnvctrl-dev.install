@@ -1,4 +1,5 @@
+#! /usr/bin/dh-exec
 src/libXNVCtrl/NVCtrl.h /usr/include/NVCtrl/
 src/libXNVCtrl/NVCtrlLib.h /usr/include/NVCtrl/
-src/libXNVCtrl/libXNVCtrl.a /usr/lib/
-src/libXNVCtrl/libXNVCtrl.so /usr/lib/
+src/libXNVCtrl/libXNVCtrl.a /usr/lib/${DEB_HOST_MULTIARCH}/
+src/libXNVCtrl/libXNVCtrl.so /usr/lib/${DEB_HOST_MULTIARCH}/
