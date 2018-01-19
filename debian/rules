@@ -23,8 +23,6 @@ download-sources:
 
 build: build-arch
 build-arch:
-	dh_quilt_patch
-
 	$(MAKE) -C src/libXNVCtrl EXTINCSRC=/usr/include/X11/extensions \
 		CFLAGS="$(CFLAGS) -fPIC"
 	$(MAKE)
@@ -38,8 +36,6 @@ clean:
 	fi
 
 	rm -Rf $(CURDIR)/_out */_out
-
-	dh_quilt_unpatch
 
 	dh clean
 
@@ -67,5 +63,4 @@ override_dh_usrlocal:
 	rm -Rf $(CURDIR)/debian/$(PKG_name)/usr/local
 
 %:
-	dh $@ --with quilt
-
+	dh $@

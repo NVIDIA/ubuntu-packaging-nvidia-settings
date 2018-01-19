@@ -3,7 +3,7 @@ Description: link with -Wl,--as-needed to reduce library footprint
 
 --- a/utils.mk
 +++ b/utils.mk
-@@ -36,6 +36,9 @@
+@@ -42,6 +42,9 @@
  LDFLAGS               ?=
  BIN_LDFLAGS           ?=
  
