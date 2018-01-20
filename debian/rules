@@ -11,7 +11,6 @@ build-arch:
 	$(MAKE) -C src/libXNVCtrl EXTINCSRC=/usr/include/X11/extensions \
 		CFLAGS="$(CFLAGS) -fPIC"
 	$(MAKE)
-	dh build
 
 clean:
 	-$(MAKE) -C src/libXNVCtrl clean 2>/dev/null
