@@ -1,25 +1,34 @@
 #!/usr/bin/make -f
 #
 # Copyright (C) 2009 Canonical Ltd.
-include /usr/share/dpkg/pkg-info.mk
-
-include debian/rules.defs
-
-NVIDIA_RELEASE	 = $(DEB_VERSION_UPSTREAM)
 
 PKG_name    := nvidia-settings
-
-DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
-
-get_download_url	= $(HTTPURL_PREFIX)/$(NVIDIA_FILENAME)
+PKG_version          := $(shell dpkg-parsechangelog | awk -F' ' '/^Version:/ {print $$2}' | awk -F- '{print $$1}')
+PKG_version          := $(shell echo $(PKG_version) | sed s/.*\.really\.//g)
+libdir      := /usr/lib
+includedir  := /usr/include
+url                  := http://cgit.freedesktop.org/~aplattner/nvidia-settings/snapshot
+tarball              := nvidia-settings-$(PKG_version).tar.gz
+file_url             := $(url)/$(tarball)
 
 export NV_USE_BUNDLED_LIBJANSSON = 0
 
+.PHONY: download-sources
+download-sources:
+	# Remove any previous extracted tarball
+	find . -maxdepth 1 \( ! -iname 'debian' ! -iname '.*' ! -iname '..*' \) | xargs rm -rf
+	# Downloads the new tarball from NVIDIA's website
+	wget -c $(file_url) -P ../
+	tar -xzvf ../$(tarball) --strip 1
+
 build: build-arch
 build-arch:
+	dh_quilt_patch
+
 	$(MAKE) -C src/libXNVCtrl EXTINCSRC=/usr/include/X11/extensions \
 		CFLAGS="$(CFLAGS) -fPIC"
-	$(MAKE)
+	$(MAKE) DO_STRIP=
+	dh build
 
 clean:
 	-$(MAKE) -C src/libXNVCtrl clean 2>/dev/null
@@ -29,6 +38,8 @@ clean:
 	fi
 
 	rm -Rf $(CURDIR)/_out */_out
+
+	dh_quilt_unpatch
 
 	dh clean
 
@@ -46,17 +57,6 @@ binary: binary-arch binary-indep ;
 override_dh_compress:
 	dh_compress --exclude=.c --exclude=.mk
 
-override_dh_gencontrol:
-	set -ex; \
-	if [ -f debian/nvidia-settings.substvars ]; then \
-		sed -ri -e 's/(^[^:]*:Depends=)/\1 GTK3 | GTK2, /' \
-			-e 's/(GTK2)(.*)(libgtk2.0-0 \([^\)]*\))/\3\2/' \
-			-e 's/(GTK3)(.*)(libgtk-3-0 \([^\)]*\))/\3\2/' \
-			debian/nvidia-settings.substvars ; \
-		! grep GTK debian/nvidia-settings.substvars ; \
-	fi
-	dh_gencontrol
-
 override_dh_installexamples:
 	dh_installexamples -X"_out" -a
 
@@ -67,8 +67,5 @@ override_dh_usrlocal:
 	rm -Rf $(CURDIR)/debian/$(PKG_name)/usr/local
 
 %:
-	dh $@
+	dh $@ --with quilt
 
-.PHONY: get-orig-source
-get-orig-source:
-	wget $(call get_download_url) -O ../$(NVIDIA_TARBALL)
