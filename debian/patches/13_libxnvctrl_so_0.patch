@@ -44,8 +44,6 @@ diff -ruN a/src/Makefile b/src/Makefile
 @@ -277,9 +280,9 @@
  	$(INSTALL) $(INSTALL_BIN_ARGS) $< $(BINDIR)/$(notdir $<)
  
- $(eval $(call DEBUG_INFO_RULES, $(NVIDIA_SETTINGS)))
--$(NVIDIA_SETTINGS).unstripped: $(OBJS) $(XNVCTRL_ARCHIVE)
 +$(NVIDIA_SETTINGS).unstripped: $(OBJS) $(XNVCTRL_LIB)
  	$(call quiet_cmd,LINK) $(CFLAGS) $(LDFLAGS) $(BIN_LDFLAGS) \
 -	    -rdynamic -o $@ $(OBJS) $(XNVCTRL_ARCHIVE) $(LIBS)
