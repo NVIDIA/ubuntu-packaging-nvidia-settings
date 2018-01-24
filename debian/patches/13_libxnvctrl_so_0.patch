@@ -52,7 +52,7 @@ diff -ruN a/src/Makefile b/src/Makefile
 +	    -rdynamic -o $@ $(OBJS) $(XNVCTRL_LIB) $(LIBS)
  
  $(eval $(call DEBUG_INFO_RULES, $(GTK2LIB)))
- $(GTK2LIB).unstripped: $(GTK2_OBJS) $(XCP_OBJS) $(VERSION_MK)
+ $(GTK2LIB).unstripped: $(GTK2_OBJS) $(XCP_OBJS) $(IMAGE_OBJS) $(VERSION_MK)
 @@ -287,7 +290,7 @@
  	    -o $@ \
  	    -Wl,-soname -Wl,$(GTK2LIB_SONAME) \
@@ -65,7 +65,7 @@ diff -ruN a/src/Makefile b/src/Makefile
 @@ -296,7 +299,7 @@
  	    -o $@ \
  	    -Wl,-soname -Wl,$(GTK3LIB_SONAME) \
- 	    $(GTK3_OBJS) $(XCP_OBJS) \
+ 	    $(GTK3_OBJS) $(XCP_OBJS) $(IMAGE_OBJS) \
 -	    $(XNVCTRL_ARCHIVE) $(LIBS) $(GTK3_LIBS)
 +	    $(XNVCTRL_LIB) $(LIBS) $(GTK3_LIBS)
  endif
