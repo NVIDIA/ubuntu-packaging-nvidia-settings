@@ -1,7 +1,7 @@
 Author: Andreas Beckmann <debian@abeckmann.de>
 Description: build a shared library for libXNVCtrl
 Bug-Debian: https://bugs.debian.org/666909
-
+ 
 diff -ruN a/src/libXNVCtrl/Makefile b/src/libXNVCtrl/Makefile
 --- a/src/libXNVCtrl/Makefile	2016-08-17 23:13:48.000000000 -0700
 +++ b/src/libXNVCtrl/Makefile	2016-08-23 16:07:43.518915311 -0700
@@ -44,6 +44,8 @@ diff -ruN a/src/Makefile b/src/Makefile
 @@ -277,9 +280,9 @@
  	$(INSTALL) $(INSTALL_BIN_ARGS) $< $(BINDIR)/$(notdir $<)
  
+ $(eval $(call DEBUG_INFO_RULES, $(NVIDIA_SETTINGS)))
+-$(NVIDIA_SETTINGS).unstripped: $(OBJS) $(XNVCTRL_ARCHIVE)
 +$(NVIDIA_SETTINGS).unstripped: $(OBJS) $(XNVCTRL_LIB)
  	$(call quiet_cmd,LINK) $(CFLAGS) $(LDFLAGS) $(BIN_LDFLAGS) \
 -	    -rdynamic -o $@ $(OBJS) $(XNVCTRL_ARCHIVE) $(LIBS)
@@ -51,24 +53,6 @@ diff -ruN a/src/Makefile b/src/Makefile
  
  $(eval $(call DEBUG_INFO_RULES, $(GTK2LIB)))
  $(GTK2LIB).unstripped: $(GTK2_OBJS) $(XCP_OBJS) $(IMAGE_OBJS) $(VERSION_MK)
-@@ -287,7 +290,7 @@
- 	    -o $@ \
- 	    -Wl,-soname -Wl,$(GTK2LIB_SONAME) \
- 	    $(GTK2_OBJS) $(XCP_OBJS) \
--	    $(XNVCTRL_ARCHIVE) $(LIBS) $(GTK2_LIBS)
-+	    $(XNVCTRL_LIB) $(LIBS) $(GTK2_LIBS)
- 
- ifdef BUILD_GTK3LIB
- $(eval $(call DEBUG_INFO_RULES, $(GTK3LIB)))
-@@ -296,7 +299,7 @@
- 	    -o $@ \
- 	    -Wl,-soname -Wl,$(GTK3LIB_SONAME) \
- 	    $(GTK3_OBJS) $(XCP_OBJS) $(IMAGE_OBJS) \
--	    $(XNVCTRL_ARCHIVE) $(LIBS) $(GTK3_LIBS)
-+	    $(XNVCTRL_LIB) $(LIBS) $(GTK3_LIBS)
- endif
- 
- # define the rule to build each object file
 @@ -307,7 +310,7 @@
  $(eval $(call DEFINE_STAMP_C_RULE, $(OBJS),$(NVIDIA_SETTINGS_PROGRAM_NAME)))
  
