@@ -5,7 +5,7 @@ XSBC-Original-Maintainer: Debian NVIDIA Maintainers <pkg-nvidia-devel@lists.alio
 Maintainer: Ubuntu MOTU Developers <ubuntu-motu@lists.ubuntu.com>
 Uploaders: Randall Donald <rdonald@debian.org>
 Build-Depends: debhelper (>= 7), m4, libgtk2.0-dev, libgtk-3-dev, libxext-dev, xutils-dev, libxrandr-dev,
- libgl1-mesa-dev | libgl-dev, libxxf86vm-dev, libxv-dev, libvdpau-dev, quilt, libjansson-dev (>= 2.2)
+ libgl1-mesa-dev | libgl-dev, libxxf86vm-dev, libxv-dev, libvdpau-dev, libjansson-dev (>= 2.2)
 Build-Conflicts: libxnvctrl-dev
 Standards-Version: 3.8.0
 Vcs-Git: git://github.com/tseliot/nvidia-settings.git

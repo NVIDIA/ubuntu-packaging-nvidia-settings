@@ -13,9 +13,6 @@ Refreshed for the 384 series
  create mode 100644 src/gtk+-2.x/ctkprime.c
  create mode 100644 src/gtk+-2.x/ctkprime.h
 
-diff --git a/src/gtk+-2.x/ctkprime.c b/src/gtk+-2.x/ctkprime.c
-new file mode 100644
-index 0000000..1ed4c2c
 --- /dev/null
 +++ b/src/gtk+-2.x/ctkprime.c
 @@ -0,0 +1,518 @@
@@ -537,9 +534,6 @@ index 0000000..1ed4c2c
 +    return b;
 +}
 +
-diff --git a/src/gtk+-2.x/ctkprime.h b/src/gtk+-2.x/ctkprime.h
-new file mode 100644
-index 0000000..b6312a9
 --- /dev/null
 +++ b/src/gtk+-2.x/ctkprime.h
 @@ -0,0 +1,77 @@
@@ -620,8 +614,6 @@ index 0000000..b6312a9
 +
 +#endif /* __CTK_PRIME_H__ */
 +
-diff --git a/src/gtk+-2.x/ctkwindow.c b/src/gtk+-2.x/ctkwindow.c
-index 83afb24..0109726 100644
 --- a/src/gtk+-2.x/ctkwindow.c
 +++ b/src/gtk+-2.x/ctkwindow.c
 @@ -46,6 +46,7 @@
@@ -632,7 +624,7 @@ index 83afb24..0109726 100644
  #include "ctkopengl.h"
  #include "ctkglx.h"
  #include "ctkmultisample.h"
-@@ -1105,6 +1106,15 @@ GtkWidget *ctk_window_new(ParsedAttribute *p, ConfigProperties *conf,
+@@ -1105,6 +1106,15 @@
       */
      if (driver_major == 0 || driver_major >= 319) {
  
@@ -648,11 +640,9 @@ index 83afb24..0109726 100644
      /* app profile configuration */
      widget = ctk_app_profile_new(server_target, ctk_config);
      if (widget) {
-diff --git a/src/src.mk b/src/src.mk
-index 0e56ca6..55eb5a6 100644
 --- a/src/src.mk
 +++ b/src/src.mk
-@@ -221,6 +221,7 @@ GTK_SRC += gtk+-2.x/ctkapcrulemodel.c
+@@ -221,6 +221,7 @@
  GTK_SRC += gtk+-2.x/ctkcolorcontrols.c
  GTK_SRC += gtk+-2.x/ctk3dvisionpro.c
  GTK_SRC += gtk+-2.x/ctkvdpau.c
@@ -660,7 +650,7 @@ index 0e56ca6..55eb5a6 100644
  GTK_SRC += gtk+-2.x/ctkgridlicense.c
  
  
-@@ -269,6 +270,7 @@ GTK_EXTRA_DIST += gtk+-2.x/ctkapcrulemodel.h
+@@ -269,6 +270,7 @@
  GTK_EXTRA_DIST += gtk+-2.x/ctkcolorcontrols.h
  GTK_EXTRA_DIST += gtk+-2.x/ctk3dvisionpro.h
  GTK_EXTRA_DIST += gtk+-2.x/ctkvdpau.h
@@ -668,6 +658,3 @@ index 0e56ca6..55eb5a6 100644
  GTK_EXTRA_DIST += gtk+-2.x/ctkgridlicense.h
  
  NVIDIA_SETTINGS_EXTRA_DIST += $(GTK_EXTRA_DIST)
--- 
-2.7.4
-

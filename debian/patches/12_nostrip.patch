@@ -1,9 +1,9 @@
 Description: Install unstripped binaries, dh_strip takes care of this.
 Author: Michael Marley <michael@michaelmarley.com>
 
---- nvidia-settings-367.18.orig/utils.mk
-+++ nvidia-settings-367.18/utils.mk
-@@ -55,13 +55,11 @@ HOST_BIN_LDFLAGS      ?=
+--- a/utils.mk
++++ b/utils.mk
+@@ -55,13 +55,11 @@
  CFLAGS                += -Wno-unused-parameter -Wno-format-zero-length
  HOST_CFLAGS           += -Wno-unused-parameter -Wno-format-zero-length
  
