@@ -3,23 +3,8 @@
 # Copyright (C) 2009 Canonical Ltd.
 
 PKG_name    := nvidia-settings
-PKG_version          := $(shell dpkg-parsechangelog | awk -F' ' '/^Version:/ {print $$2}' | awk -F- '{print $$1}')
-PKG_version          := $(shell echo $(PKG_version) | sed s/.*\.really\.//g)
-libdir      := /usr/lib
-includedir  := /usr/include
-url                  := http://cgit.freedesktop.org/~aplattner/nvidia-settings/snapshot
-tarball              := nvidia-settings-$(PKG_version).tar.gz
-file_url             := $(url)/$(tarball)
 
 export NV_USE_BUNDLED_LIBJANSSON = 0
-
-.PHONY: download-sources
-download-sources:
-	# Remove any previous extracted tarball
-	find . -maxdepth 1 \( ! -iname 'debian' ! -iname '.*' ! -iname '..*' \) | xargs rm -rf
-	# Downloads the new tarball from NVIDIA's website
-	wget -c $(file_url) -P ../
-	tar -xzvf ../$(tarball) --strip 1
 
 build: build-arch
 build-arch:
