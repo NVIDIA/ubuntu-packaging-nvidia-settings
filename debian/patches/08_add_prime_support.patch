@@ -206,7 +206,7 @@ Refreshed for the 384 series
 +static gboolean set_mode(gchar *mode, gchar **error_msg, gint *exit_status) {
 +
 +    gchar *command = NULL;
-+    command = g_strconcat("python3 /usr/share/screen-resolution-extra/nvidia-prime.py ",
++    command = g_strconcat("/usr/bin/pkexec /usr/bin/prime-select ",
 +                          mode, NULL);
 +    gboolean status;
 +    gchar *output = NULL;
@@ -383,7 +383,7 @@ Refreshed for the 384 series
 +            if (status == 0) {
 +                /* Show a dialog to suggest to log out */
 +                ctk_display_info_msg(parent,
-+                    "Please log out and log back in to apply the changes");
++                    "Please restart your computer to apply the changes");
 +            } else {
 +                if (status != 5) {
 +                    /* Show an error only if the user did not
@@ -627,7 +627,7 @@ Refreshed for the 384 series
 @@ -1107,6 +1108,15 @@
       */
      if (driver_major == 0 || driver_major >= 319) {
- 
+
 +
 +    /* PRIME settings  */
 +    widget = ctk_prime_new(ctk_config);
