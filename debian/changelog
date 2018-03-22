@@ -1,8 +1,40 @@
-nvidia-settings (390.42-0ubuntu1) UNRELEASED; urgency=medium
+nvidia-settings (390.42-0ubuntu1) bionic; urgency=medium
 
-  * 
+  * New upstream release.
 
- -- Alberto Milone <alberto.milone@canonical.com>  Thu, 22 Mar 2018 17:03:30 +0100
+  [ Alberto Milone ]
+  * debian/patches/08_add_prime_support.patch:
+    - Use pkexec to call prime-select (LP: #1757180).
+    - Recommend a computer restart, rather than
+      a simple log out (LP: #1704781).
+
+  [ Graham Inggs ]
+  * debian/patches/05_add_polkit_support.patch,
+    debian/patches/06_remove_local_prefix.patch,
+    debian/patches/07_remove_features_for_legacy.patch,
+    debian/patches/08_add_prime_support.patch,
+    debian/patches/10_legacy_vdpau.patch,
+    debian/patches/11_link_as-needed.patch,
+    debian/patches/12_nostrip.patch,
+    debian/patches/15_clean.patch:
+    - Refresh all patches for new upstream 390.42
+  * debian/patches/13_libxnvctrl_so_0.patch,
+    debian/patches/link-order.diff:
+    - Reorder libraries and object files to allow proper
+      dependency resolution.
+  * debian/control,
+    debian/libxnvctrl0.install,
+    debian/rules,
+    debian/source/format:
+    - Switch to debhelper 9.
+    - Switch to source format 3.0 (quilt).
+    - Depend on libgtk-3-0 | libgtk2.0-0, don't require both.
+    - Switch to debian/watch.
+    - Drop download-sources target with obsolete URL.
+    - Change libxnvctrl0 and libxnvctrl-dev Architecture
+      to any (LP: #1690669).
+
+ -- Alberto Milone <alberto.milone@canonical.com>  Thu, 22 Mar 2018 18:29:24 +0100
 
 nvidia-settings (384.69-0ubuntu1) artful; urgency=medium
 
