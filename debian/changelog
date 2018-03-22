@@ -1,3 +1,9 @@
+nvidia-settings (390.42-0ubuntu1) UNRELEASED; urgency=medium
+
+  * 
+
+ -- Alberto Milone <alberto.milone@canonical.com>  Thu, 22 Mar 2018 17:03:30 +0100
+
 nvidia-settings (384.69-0ubuntu1) artful; urgency=medium
 
   * New upstream release (to match the 384 series in the archive).
