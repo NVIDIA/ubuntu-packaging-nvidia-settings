@@ -1,1 +1,2 @@
-src/libXNVCtrl/libXNVCtrl.so.*	usr/lib/
+#! /usr/bin/dh-exec
+src/libXNVCtrl/libXNVCtrl.so.*	usr/lib/${DEB_HOST_MULTIARCH}/
