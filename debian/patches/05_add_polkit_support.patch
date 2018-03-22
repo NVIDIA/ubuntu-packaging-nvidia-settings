@@ -1,6 +1,6 @@
 --- a/src/gtk+-2.x/ctkdisplayconfig-utils.c
 +++ b/src/gtk+-2.x/ctkdisplayconfig-utils.c
-@@ -4196,6 +4196,77 @@
+@@ -4185,6 +4185,77 @@
  
  } /* update_banner() */
  
@@ -78,7 +78,7 @@
  
  
  /** save_xconfig_file() **********************************************
-@@ -4216,6 +4287,9 @@
+@@ -4205,6 +4276,9 @@
  
      int ret = 0;
  

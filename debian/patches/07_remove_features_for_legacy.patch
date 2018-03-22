@@ -9,7 +9,7 @@ Subject: [PATCH 1/1] Remove some features in the legacy drivers
 
 --- a/src/gtk+-2.x/ctkwindow.c
 +++ b/src/gtk+-2.x/ctkwindow.c
-@@ -408,6 +408,50 @@
+@@ -410,6 +410,50 @@
      return ((ret == NvCtrlSuccess) && (val == 1));
  }
  
@@ -60,7 +60,7 @@ Subject: [PATCH 1/1] Remove some features in the legacy drivers
  /*
   * ctk_window_new() - create a new CtkWindow widget
   */
-@@ -597,6 +641,9 @@
+@@ -599,6 +643,9 @@
      ctk_window->page = NULL;
  
  
@@ -70,7 +70,7 @@ Subject: [PATCH 1/1] Remove some features in the legacy drivers
      /* X Server info & configuration */
  
      if (system->targets[X_SCREEN_TARGET]) {
-@@ -611,6 +658,8 @@
+@@ -613,6 +660,8 @@
  
          server_target = NvCtrlGetDefaultTargetByType(system, X_SCREEN_TARGET);
          if (server_target) {
@@ -79,7 +79,7 @@ Subject: [PATCH 1/1] Remove some features in the legacy drivers
  
              /* X Server information */
  
-@@ -749,6 +798,7 @@
+@@ -751,6 +800,7 @@
          }
  
  
@@ -87,7 +87,7 @@ Subject: [PATCH 1/1] Remove some features in the legacy drivers
          /* VDPAU Information */
          child = ctk_vdpau_new(screen_target, ctk_config, ctk_event);
          if (child) {
-@@ -756,6 +806,7 @@
+@@ -758,6 +808,7 @@
              add_page(child, help, ctk_window, &iter, NULL, "VDPAU Information",
                       NULL, NULL, NULL);
          }
@@ -95,7 +95,7 @@ Subject: [PATCH 1/1] Remove some features in the legacy drivers
  
          /* gvo (Graphics To Video Out) */
  
-@@ -1047,6 +1098,13 @@
+@@ -1049,6 +1100,13 @@
                   ctk_3d_vision_pro_select, ctk_3d_vision_pro_unselect);
      }
  
@@ -109,7 +109,7 @@ Subject: [PATCH 1/1] Remove some features in the legacy drivers
      /* app profile configuration */
      widget = ctk_app_profile_new(server_target, ctk_config);
      if (widget) {
-@@ -1068,6 +1126,8 @@
+@@ -1070,6 +1128,8 @@
          }
      }
  

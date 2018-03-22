@@ -14,7 +14,7 @@ Bug-Debian: https://bugs.debian.org/666909
  XCONFIG_PARSER_DIR      ?= XF86Config-parser
  COMMON_UTILS_DIR        ?= common-utils
  COMMON_UNIX_DIR         ?= common-unix
-@@ -277,9 +280,9 @@
+@@ -286,9 +289,9 @@
  	$(INSTALL) $(INSTALL_BIN_ARGS) $< $(BINDIR)/$(notdir $<)
  
  $(eval $(call DEBUG_INFO_RULES, $(NVIDIA_SETTINGS)))
@@ -25,26 +25,26 @@ Bug-Debian: https://bugs.debian.org/666909
 +	    -rdynamic -o $@ $(OBJS) $(XNVCTRL_LIB) $(LIBS)
  
  $(eval $(call DEBUG_INFO_RULES, $(GTK2LIB)))
- $(GTK2LIB).unstripped: $(GTK2_OBJS) $(XCP_OBJS) $(VERSION_MK)
-@@ -287,7 +290,7 @@
+ $(GTK2LIB).unstripped: $(GTK2_OBJS) $(XCP_OBJS) $(IMAGE_OBJS) $(VERSION_MK)
+@@ -296,7 +299,7 @@
  	    -o $@ \
  	    -Wl,-soname -Wl,$(GTK2LIB_SONAME) \
- 	    $(GTK2_OBJS) $(XCP_OBJS) \
+ 	    $(GTK2_OBJS) $(IMAGE_OBJS) $(XCP_OBJS) \
 -	    $(XNVCTRL_ARCHIVE) $(LIBS) $(GTK2_LIBS)
 +	    $(XNVCTRL_LIB) $(LIBS) $(GTK2_LIBS)
  
  ifdef BUILD_GTK3LIB
  $(eval $(call DEBUG_INFO_RULES, $(GTK3LIB)))
-@@ -296,7 +299,7 @@
+@@ -305,7 +308,7 @@
  	    -o $@ \
  	    -Wl,-soname -Wl,$(GTK3LIB_SONAME) \
- 	    $(GTK3_OBJS) $(XCP_OBJS) \
+ 	    $(GTK3_OBJS) $(XCP_OBJS) $(IMAGE_OBJS) \
 -	    $(XNVCTRL_ARCHIVE) $(LIBS) $(GTK3_LIBS)
 +	    $(XNVCTRL_LIB) $(LIBS) $(GTK3_LIBS)
  endif
  
  # define the rule to build each object file
-@@ -307,7 +310,7 @@
+@@ -316,7 +319,7 @@
  $(eval $(call DEFINE_STAMP_C_RULE, $(OBJS),$(NVIDIA_SETTINGS_PROGRAM_NAME)))
  
  # define the rule to build $(XNVCTRL_ARCHIVE)

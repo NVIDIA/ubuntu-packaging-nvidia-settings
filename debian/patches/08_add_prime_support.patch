@@ -616,7 +616,7 @@ Refreshed for the 384 series
 +
 --- a/src/gtk+-2.x/ctkwindow.c
 +++ b/src/gtk+-2.x/ctkwindow.c
-@@ -46,6 +46,7 @@
+@@ -47,6 +47,7 @@
  #include "ctkcolorcorrection.h"
  #include "ctkcolorcorrectionpage.h"
  #include "ctkxvideo.h"
@@ -624,7 +624,7 @@ Refreshed for the 384 series
  #include "ctkopengl.h"
  #include "ctkglx.h"
  #include "ctkmultisample.h"
-@@ -1105,6 +1106,15 @@
+@@ -1107,6 +1108,15 @@
       */
      if (driver_major == 0 || driver_major >= 319) {
  
@@ -642,19 +642,19 @@ Refreshed for the 384 series
      if (widget) {
 --- a/src/src.mk
 +++ b/src/src.mk
-@@ -221,6 +221,7 @@
+@@ -182,6 +182,7 @@
  GTK_SRC += gtk+-2.x/ctkcolorcontrols.c
  GTK_SRC += gtk+-2.x/ctk3dvisionpro.c
  GTK_SRC += gtk+-2.x/ctkvdpau.c
 +GTK_SRC += gtk+-2.x/ctkprime.c
  GTK_SRC += gtk+-2.x/ctkgridlicense.c
- 
- 
-@@ -269,6 +270,7 @@
+ GTK_SRC += gtk+-2.x/ctkglwidget.c
+ GTK_SRC += gtk+-2.x/ctkglstereo.c
+@@ -235,6 +236,7 @@
  GTK_EXTRA_DIST += gtk+-2.x/ctkcolorcontrols.h
  GTK_EXTRA_DIST += gtk+-2.x/ctk3dvisionpro.h
  GTK_EXTRA_DIST += gtk+-2.x/ctkvdpau.h
 +GTK_EXTRA_DIST += gtk+-2.x/ctkprime.h
  GTK_EXTRA_DIST += gtk+-2.x/ctkgridlicense.h
- 
- NVIDIA_SETTINGS_EXTRA_DIST += $(GTK_EXTRA_DIST)
+ GTK_EXTRA_DIST += gtk+-2.x/ctkglwidget.h
+ GTK_EXTRA_DIST += gtk+-2.x/ctkglstereo.h
