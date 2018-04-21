@@ -1,4 +1,6 @@
-samples/README
-samples/Makefile
+#! /usr/bin/dh-exec
+#samples/README
+#samples/Makefile
 utils.mk
-samples/*.c
+#samples/*.c
+samples/

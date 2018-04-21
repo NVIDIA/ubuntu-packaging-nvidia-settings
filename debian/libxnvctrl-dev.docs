@@ -1,2 +1,3 @@
+#! /usr/bin/dh-exec
 doc/NV-CONTROL-API.txt
 doc/FRAMELOCK.txt
