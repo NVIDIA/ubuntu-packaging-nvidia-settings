@@ -1,8 +1,10 @@
-nvidia-settings (390.77-0ubuntu1) UNRELEASED; urgency=medium
+nvidia-settings (390.77-0ubuntu1) cosmic; urgency=medium
 
-  * 
+  * New upstream release.
+  * 08_add_prime_support.patch:
+    - Recommend a simple log out (LP: #1778011).
 
- -- Alberto Milone <alberto.milone@canonical.com>  Thu, 02 Aug 2018 16:19:59 +0200
+ -- Alberto Milone <alberto.milone@canonical.com>  Thu, 02 Aug 2018 16:30:52 +0200
 
 nvidia-settings (390.42-0ubuntu1) bionic; urgency=medium
 
