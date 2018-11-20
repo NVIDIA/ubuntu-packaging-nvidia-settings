@@ -1,5 +1,4 @@
 libXNVCtrl.so.0 #PACKAGE# #MINVER#
- NV_ID@Base 337
  XNVCTRLBindWarpPixmapName@Base 313
  XNVCTRLIsNvScreen@Base 0
  XNVCTRLQueryAttribute@Base 0
@@ -30,4 +29,3 @@ libXNVCtrl.so.0 #PACKAGE# #MINVER#
  XNVCTRLStringOperation@Base 0
  XNVCtrlSelectNotify@Base 0
  XNVCtrlSelectTargetNotify@Base 0
- pNV_ID@Base 337
