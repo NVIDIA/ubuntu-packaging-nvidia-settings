@@ -1,13 +1,15 @@
 Author: Andreas Beckmann <debian@abeckmann.de>
 Description: let clean recurse into libXNVCtrl
 
---- a/src/Makefile
-+++ b/src/Makefile
-@@ -325,6 +325,7 @@
+Index: nvidia-settings-410.57/src/Makefile
+===================================================================
+--- nvidia-settings-410.57.orig/src/Makefile
++++ nvidia-settings-410.57/src/Makefile
+@@ -318,6 +318,7 @@ build-xnvctrl:
  	@$(MAKE) -C $(XNVCTRL_DIR) -f $(XNVCTRL_MAKEFILE)
  
  clean clobber:
 +	$(MAKE) -C $(XNVCTRL_DIR) clean
- 	rm -rf $(NVIDIA_SETTINGS) *~ $(STAMP_C) \
+ 	rm -rf $(NVIDIA_SETTINGS) *~ \
  		$(OUTPUTDIR)/*.o $(OUTPUTDIR)/*.d \
  		$(GTK2LIB) $(GTK3LIB) $(GTK2LIB_DIR) $(GTK3LIB_DIR) \
