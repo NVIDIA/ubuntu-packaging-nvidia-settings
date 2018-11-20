@@ -2,9 +2,11 @@ Author: Andreas Beckmann <debian@abeckmann.de>
 Description: build a shared library for libXNVCtrl
 Bug-Debian: https://bugs.debian.org/666909
 
---- a/src/Makefile
-+++ b/src/Makefile
-@@ -113,6 +113,9 @@
+Index: nvidia-settings-410.57/src/Makefile
+===================================================================
+--- nvidia-settings-410.57.orig/src/Makefile
++++ nvidia-settings-410.57/src/Makefile
+@@ -113,6 +113,9 @@ endif
  XNVCTRL_DIR             ?= libXNVCtrl
  XNVCTRL_MAKEFILE        ?= Makefile
  XNVCTRL_ARCHIVE         ?= $(XNVCTRL_DIR)/libXNVCtrl.a
@@ -14,7 +16,7 @@ Bug-Debian: https://bugs.debian.org/666909
  XCONFIG_PARSER_DIR      ?= XF86Config-parser
  COMMON_UTILS_DIR        ?= common-utils
  COMMON_UNIX_DIR         ?= common-unix
-@@ -286,9 +289,9 @@
+@@ -282,9 +285,9 @@ NVIDIA_SETTINGS_install: $(NVIDIA_SETTIN
  	$(INSTALL) $(INSTALL_BIN_ARGS) $< $(BINDIR)/$(notdir $<)
  
  $(eval $(call DEBUG_INFO_RULES, $(NVIDIA_SETTINGS)))
@@ -26,7 +28,7 @@ Bug-Debian: https://bugs.debian.org/666909
  
  $(eval $(call DEBUG_INFO_RULES, $(GTK2LIB)))
  $(GTK2LIB).unstripped: $(GTK2_OBJS) $(XCP_OBJS) $(IMAGE_OBJS) $(VERSION_MK)
-@@ -296,7 +299,7 @@
+@@ -292,7 +295,7 @@ $(GTK2LIB).unstripped: $(GTK2_OBJS) $(XC
  	    -o $@ \
  	    -Wl,-soname -Wl,$(GTK2LIB_SONAME) \
  	    $(GTK2_OBJS) $(IMAGE_OBJS) $(XCP_OBJS) \
@@ -35,7 +37,7 @@ Bug-Debian: https://bugs.debian.org/666909
  
  ifdef BUILD_GTK3LIB
  $(eval $(call DEBUG_INFO_RULES, $(GTK3LIB)))
-@@ -305,7 +308,7 @@
+@@ -301,7 +304,7 @@ $(GTK3LIB).unstripped: $(GTK3_OBJS) $(XC
  	    -o $@ \
  	    -Wl,-soname -Wl,$(GTK3LIB_SONAME) \
  	    $(GTK3_OBJS) $(XCP_OBJS) $(IMAGE_OBJS) \
@@ -44,8 +46,8 @@ Bug-Debian: https://bugs.debian.org/666909
  endif
  
  # define the rule to build each object file
-@@ -316,7 +319,7 @@
- $(eval $(call DEFINE_STAMP_C_RULE, $(OBJS),$(NVIDIA_SETTINGS_PROGRAM_NAME)))
+@@ -309,7 +312,7 @@ $(foreach src,$(SRC),$(eval $(call DEFIN
+ $(foreach src,$(XCP_SRC),$(eval $(call DEFINE_OBJECT_RULE,TARGET,$(src))))
  
  # define the rule to build $(XNVCTRL_ARCHIVE)
 -$(XNVCTRL_ARCHIVE): build-xnvctrl
@@ -53,9 +55,11 @@ Bug-Debian: https://bugs.debian.org/666909
  
  build-xnvctrl:
  	@$(MAKE) -C $(XNVCTRL_DIR) -f $(XNVCTRL_MAKEFILE)
---- a/src/libXNVCtrl/Makefile
-+++ b/src/libXNVCtrl/Makefile
-@@ -58,10 +58,17 @@
+Index: nvidia-settings-410.57/src/libXNVCtrl/Makefile
+===================================================================
+--- nvidia-settings-410.57.orig/src/libXNVCtrl/Makefile
++++ nvidia-settings-410.57/src/libXNVCtrl/Makefile
+@@ -57,13 +57,21 @@ OBJS = $(call BUILD_OBJECT_LIST,$(SRC))
  .PHONY: clean
  
  all: $(LIBXNVCTRL)
@@ -73,8 +77,7 @@ Bug-Debian: https://bugs.debian.org/666909
  # define the rule to build each object file
  $(foreach src,$(SRC),$(eval $(call DEFINE_OBJECT_RULE,TARGET,$(src))))
  
-@@ -71,3 +78,4 @@
  clean:
- 	rm -rf $(LIBXNVCTRL) *~ $(STAMP_C) \
+ 	rm -rf $(LIBXNVCTRL) *~ \
  		$(OUTPUTDIR)/*.o $(OUTPUTDIR)/*.d
 +	rm -f libXNVCtrl.so libXNVCtrl.so.*
