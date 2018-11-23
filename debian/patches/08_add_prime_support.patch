@@ -3,7 +3,7 @@ From: Alberto Milone <alberto.milone@canonical.com>
 Date: Mon, 9 Oct 2017 11:22:01 +0200
 Subject: [PATCH 1/1] Add support for PRIME GPU switching
 
-Refreshed for the 384 series
+Refreshed for the 410 series
 ---
  src/gtk+-2.x/ctkprime.c  | 518 +++++++++++++++++++++++++++++++++++++++++++++++
  src/gtk+-2.x/ctkprime.h  |  77 +++++++
@@ -13,8 +13,10 @@ Refreshed for the 384 series
  create mode 100644 src/gtk+-2.x/ctkprime.c
  create mode 100644 src/gtk+-2.x/ctkprime.h
 
+Index: nvidia-settings/src/gtk+-2.x/ctkprime.c
+===================================================================
 --- /dev/null
-+++ b/src/gtk+-2.x/ctkprime.c
++++ nvidia-settings/src/gtk+-2.x/ctkprime.c
 @@ -0,0 +1,518 @@
 +/*
 + * nvidia-settings: A tool for configuring the NVIDIA X driver on Unix
@@ -534,8 +536,10 @@ Refreshed for the 384 series
 +    return b;
 +}
 +
+Index: nvidia-settings/src/gtk+-2.x/ctkprime.h
+===================================================================
 --- /dev/null
-+++ b/src/gtk+-2.x/ctkprime.h
++++ nvidia-settings/src/gtk+-2.x/ctkprime.h
 @@ -0,0 +1,77 @@
 +/*
 + * nvidia-settings: A tool for configuring the NVIDIA X driver on Unix
@@ -614,8 +618,10 @@ Refreshed for the 384 series
 +
 +#endif /* __CTK_PRIME_H__ */
 +
---- a/src/gtk+-2.x/ctkwindow.c
-+++ b/src/gtk+-2.x/ctkwindow.c
+Index: nvidia-settings/src/gtk+-2.x/ctkwindow.c
+===================================================================
+--- nvidia-settings.orig/src/gtk+-2.x/ctkwindow.c
++++ nvidia-settings/src/gtk+-2.x/ctkwindow.c
 @@ -47,6 +47,7 @@
  #include "ctkcolorcorrection.h"
  #include "ctkcolorcorrectionpage.h"
@@ -624,25 +630,67 @@ Refreshed for the 384 series
  #include "ctkopengl.h"
  #include "ctkglx.h"
  #include "ctkmultisample.h"
-@@ -1107,6 +1108,15 @@
-      */
-     if (driver_major == 0 || driver_major >= 319) {
-
-+
-+    /* PRIME settings  */
-+    widget = ctk_prime_new(ctk_config);
-+    if (widget) {
-+        help = ctk_prime_create_help(tag_table, CTK_PRIME(widget));
-+        add_page(widget, help, ctk_window, NULL, NULL, "PRIME Profiles",
-+                 NULL, NULL, NULL);
-+    }
-+
+@@ -647,7 +648,8 @@ GtkWidget *ctk_window_new(ParsedAttribut
+     driver_major = driver_minor = 0;
+ 
+     /* X Server info & configuration */
+-
++    /* Skip if nvidia is not loaded */
++    if (system) {
+     if (system->targets[X_SCREEN_TARGET]) {
+ 
+         GtkWidget *child;
+@@ -1101,13 +1103,6 @@ GtkWidget *ctk_window_new(ParsedAttribut
+                  ctk_3d_vision_pro_select, ctk_3d_vision_pro_unselect);
+     }
+ 
+-
+-    /* We show this section in two cases:
+-     * 1) when the driver is not in use (hybrid graphics)
+-     * 2) when the driver release >= 319
+-     */
+-    if (driver_major == 0 || driver_major >= 319) {
+-
      /* app profile configuration */
      widget = ctk_app_profile_new(server_target, ctk_config);
      if (widget) {
---- a/src/src.mk
-+++ b/src/src.mk
-@@ -182,6 +182,7 @@
+@@ -1129,8 +1124,6 @@ GtkWidget *ctk_window_new(ParsedAttribut
+         }
+     }
+ 
+-    }
+-
+     /* nvidia-settings configuration */
+ 
+     add_page(GTK_WIDGET(ctk_window->ctk_config),
+@@ -1138,6 +1131,22 @@ GtkWidget *ctk_window_new(ParsedAttribut
+              ctk_window, NULL, NULL, "nvidia-settings Configuration",
+              NULL, NULL, NULL);
+ 
++    }/* End skipping when nvidia is not loaded */
++
++    /* We show this section in two cases:
++     * 1) when the driver is not in use (hybrid graphics)
++     * 2) when the driver release >= 319
++     */
++    if (driver_major == 0 || driver_major >= 319) {
++        /* PRIME settings  */
++        widget = ctk_prime_new(ctk_config);
++        if (widget) {
++            help = ctk_prime_create_help(tag_table, CTK_PRIME(widget));
++            add_page(widget, help, ctk_window, NULL, NULL, "PRIME Profiles",
++                     NULL, NULL, NULL);
++        }
++    }
++
+     /*
+      * we're done with the current data in the parsed attribute list,
+      * so clean it out
+Index: nvidia-settings/src/src.mk
+===================================================================
+--- nvidia-settings.orig/src/src.mk
++++ nvidia-settings/src/src.mk
+@@ -183,6 +183,7 @@ GTK_SRC += gtk+-2.x/ctkapcrulemodel.c
  GTK_SRC += gtk+-2.x/ctkcolorcontrols.c
  GTK_SRC += gtk+-2.x/ctk3dvisionpro.c
  GTK_SRC += gtk+-2.x/ctkvdpau.c
@@ -650,7 +698,7 @@ Refreshed for the 384 series
  GTK_SRC += gtk+-2.x/ctkgridlicense.c
  GTK_SRC += gtk+-2.x/ctkglwidget.c
  GTK_SRC += gtk+-2.x/ctkglstereo.c
-@@ -235,6 +236,7 @@
+@@ -236,6 +237,7 @@ GTK_EXTRA_DIST += gtk+-2.x/ctkapcrulemod
  GTK_EXTRA_DIST += gtk+-2.x/ctkcolorcontrols.h
  GTK_EXTRA_DIST += gtk+-2.x/ctk3dvisionpro.h
  GTK_EXTRA_DIST += gtk+-2.x/ctkvdpau.h
@@ -658,3 +706,58 @@ Refreshed for the 384 series
  GTK_EXTRA_DIST += gtk+-2.x/ctkgridlicense.h
  GTK_EXTRA_DIST += gtk+-2.x/ctkglwidget.h
  GTK_EXTRA_DIST += gtk+-2.x/ctkglstereo.h
+Index: nvidia-settings/src/config-file.c
+===================================================================
+--- nvidia-settings.orig/src/config-file.c
++++ nvidia-settings/src/config-file.c
+@@ -241,6 +241,10 @@ int nv_write_config_file(const char *fil
+     char *prefix, scratch[4];
+     char *locale = "C";
+ 
++    /* Skip if nvidia is not loaded */
++    if (!system)
++        return NV_TRUE;
++
+     if (!filename) {
+         nv_error_msg("Unable to open configuration file for writing.");
+         return NV_FALSE;
+Index: nvidia-settings/src/gtk+-2.x/ctkui.c
+===================================================================
+--- nvidia-settings.orig/src/gtk+-2.x/ctkui.c
++++ nvidia-settings/src/gtk+-2.x/ctkui.c
+@@ -51,6 +51,8 @@ void ctk_main(ParsedAttribute *p,
+     gtk_window_set_default_icon_list(list);
+     window = ctk_window_new(p, conf, system);
+ 
++    /* Skip if nvidia is not loaded */
++    if (system) {
+     for (node = system->targets[X_SCREEN_TARGET]; node; node = node->next) {
+         if (node->t->h) {
+             has_nv_control = TRUE;
+@@ -71,7 +73,7 @@ void ctk_main(ParsedAttribute *p,
+         gtk_dialog_run(GTK_DIALOG(dlg));
+         gtk_widget_destroy (dlg);
+     }
+-
++    }
+     ctk_window_set_active_page(CTK_WINDOW(window), page);
+ 
+     gtk_main();
+Index: nvidia-settings/src/nvidia-settings.c
+===================================================================
+--- nvidia-settings.orig/src/nvidia-settings.c
++++ nvidia-settings/src/nvidia-settings.c
+@@ -366,11 +366,11 @@ int main(int argc, char **argv)
+     /* Get the CtrlSystem for this X screen */
+ 
+     system = NvCtrlGetSystem(op->ctrl_display, &systems);
+-
++#if 0
+     if (!system || !system->dpy) {
+         return 1;
+     }
+-
++#endif
+     /* pass control to the gui */
+ 
+     libdata.fn_ctk_main(p, &conf, system, op->page);
