@@ -1,8 +1,19 @@
-nvidia-settings (410.78-0ubuntu1) UNRELEASED; urgency=medium
+nvidia-settings (410.78-0ubuntu1) disco; urgency=medium
 
-  * 
+  * New upstream release.
+  * debian/patches/series:
+    - Drop 09_do_not_complain_if_nvidia_is_missing.patch
+      This is now included in the main prime patch.
+  * debian/patches/08_add_prime_support.patch:
+    - Rebase against 410.78 sources. This restores the
+      previous behaviour with hybrid graphics.
+  * debian/libxnvctrl0.symbols:
+    - Update symbols.
+  * debian/patches/13_libxnvctrl_so_0.patch,
+    debian/patches/15_clean.patch:
+    - Refresh patches.
 
- -- Alberto Milone <alberto.milone@canonical.com>  Mon, 19 Nov 2018 17:19:48 +0100
+ -- Alberto Milone <alberto.milone@canonical.com>  Fri, 23 Nov 2018 17:09:45 +0100
 
 nvidia-settings (390.77-0ubuntu1) cosmic; urgency=medium
 
