@@ -1,3 +1,9 @@
+nvidia-settings (418.43-0ubuntu1) UNRELEASED; urgency=medium
+
+  * 
+
+ -- Alberto Milone <alberto.milone@canonical.com>  Mon, 11 Mar 2019 16:02:05 +0100
+
 nvidia-settings (410.78-0ubuntu2) disco; urgency=medium
 
   * debian/control:
