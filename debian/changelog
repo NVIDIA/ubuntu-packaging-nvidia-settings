@@ -1,8 +1,8 @@
-nvidia-settings (418.43-0ubuntu1) UNRELEASED; urgency=medium
+nvidia-settings (418.43-0ubuntu1) disco; urgency=medium
 
-  * 
+  * New upstream release.
 
- -- Alberto Milone <alberto.milone@canonical.com>  Mon, 11 Mar 2019 16:02:05 +0100
+ -- Alberto Milone <alberto.milone@canonical.com>  Wed, 13 Mar 2019 13:01:17 +0100
 
 nvidia-settings (410.78-0ubuntu2) disco; urgency=medium
 
