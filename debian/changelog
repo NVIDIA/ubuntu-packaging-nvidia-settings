@@ -1,8 +1,15 @@
-nvidia-settings (418.56-0ubuntu1) UNRELEASED; urgency=medium
+nvidia-settings (418.56-0ubuntu1) disco; urgency=medium
 
-  * 
+  * New upstream release:
+    - Updated nvidia-settings to disable line wrapping when
+      outputting to a non-terminal in command-line mode.
+      From GitHub pull request:
+      https://github.com/NVIDIA/nvidia-settings/pull/37
+    - Updated the nvidia-settings control panel to more accurately
+      reflect the current availability of G-SYNC or G-SYNC
+      compatible display settings.
 
- -- Alberto Milone <alberto.milone@canonical.com>  Tue, 26 Mar 2019 13:16:34 +0100
+ -- Alberto Milone <alberto.milone@canonical.com>  Tue, 26 Mar 2019 17:00:03 +0100
 
 nvidia-settings (418.43-0ubuntu1) disco; urgency=medium
 
