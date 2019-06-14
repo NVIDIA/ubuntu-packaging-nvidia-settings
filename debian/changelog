@@ -1,3 +1,9 @@
+nvidia-settings (430.26-0ubuntu1) UNRELEASED; urgency=medium
+
+  * 
+
+ -- Alberto Milone <alberto.milone@canonical.com>  Fri, 14 Jun 2019 12:57:46 +0200
+
 nvidia-settings (418.56-0ubuntu2) eoan; urgency=medium
 
   * debian/patches/05_add_polkit_support.patch:
