@@ -1,8 +1,11 @@
-nvidia-settings (430.26-0ubuntu1) UNRELEASED; urgency=medium
+nvidia-settings (430.26-0ubuntu1) eoan; urgency=medium
 
-  * 
+  * New upstream release.
 
- -- Alberto Milone <alberto.milone@canonical.com>  Fri, 14 Jun 2019 12:57:46 +0200
+  [ Rico Tzschichholz ]
+  * Update 13_libxnvctrl_so_0.patch, and refresh the other patches.
+
+ -- Alberto Milone <alberto.milone@canonical.com>  Fri, 14 Jun 2019 13:01:49 +0200
 
 nvidia-settings (418.56-0ubuntu2) eoan; urgency=medium
 
