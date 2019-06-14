@@ -7,9 +7,11 @@ Subject: [PATCH 1/1] Remove some features in the legacy drivers
  src/gtk+-2.x/ctkwindow.c |   60 ++++++++++++++++++++++++++++++++++++++++++++++
  1 file changed, 60 insertions(+)
 
---- a/src/gtk+-2.x/ctkwindow.c
-+++ b/src/gtk+-2.x/ctkwindow.c
-@@ -410,6 +410,50 @@
+Index: nvidia-settings-430.09/src/gtk+-2.x/ctkwindow.c
+===================================================================
+--- nvidia-settings-430.09.orig/src/gtk+-2.x/ctkwindow.c
++++ nvidia-settings-430.09/src/gtk+-2.x/ctkwindow.c
+@@ -410,6 +410,50 @@ static gboolean has_randr_gamma(CtrlTarg
      return ((ret == NvCtrlSuccess) && (val == 1));
  }
  
@@ -60,7 +62,7 @@ Subject: [PATCH 1/1] Remove some features in the legacy drivers
  /*
   * ctk_window_new() - create a new CtkWindow widget
   */
-@@ -599,6 +643,9 @@
+@@ -599,6 +643,9 @@ GtkWidget *ctk_window_new(ParsedAttribut
      ctk_window->page = NULL;
  
  
@@ -70,7 +72,7 @@ Subject: [PATCH 1/1] Remove some features in the legacy drivers
      /* X Server info & configuration */
  
      if (system->targets[X_SCREEN_TARGET]) {
-@@ -613,6 +660,8 @@
+@@ -613,6 +660,8 @@ GtkWidget *ctk_window_new(ParsedAttribut
  
          server_target = NvCtrlGetDefaultTargetByType(system, X_SCREEN_TARGET);
          if (server_target) {
@@ -79,7 +81,7 @@ Subject: [PATCH 1/1] Remove some features in the legacy drivers
  
              /* X Server information */
  
-@@ -751,6 +800,7 @@
+@@ -752,6 +801,7 @@ GtkWidget *ctk_window_new(ParsedAttribut
          }
  
  
@@ -87,7 +89,7 @@ Subject: [PATCH 1/1] Remove some features in the legacy drivers
          /* VDPAU Information */
          child = ctk_vdpau_new(screen_target, ctk_config, ctk_event);
          if (child) {
-@@ -758,6 +808,7 @@
+@@ -759,6 +809,7 @@ GtkWidget *ctk_window_new(ParsedAttribut
              add_page(child, help, ctk_window, &iter, NULL, "VDPAU Information",
                       NULL, NULL, NULL);
          }
@@ -95,7 +97,7 @@ Subject: [PATCH 1/1] Remove some features in the legacy drivers
  
          /* gvo (Graphics To Video Out) */
  
-@@ -1049,6 +1100,13 @@
+@@ -1050,6 +1101,13 @@ GtkWidget *ctk_window_new(ParsedAttribut
                   ctk_3d_vision_pro_select, ctk_3d_vision_pro_unselect);
      }
  
@@ -109,7 +111,7 @@ Subject: [PATCH 1/1] Remove some features in the legacy drivers
      /* app profile configuration */
      widget = ctk_app_profile_new(server_target, ctk_config);
      if (widget) {
-@@ -1070,6 +1128,8 @@
+@@ -1071,6 +1129,8 @@ GtkWidget *ctk_window_new(ParsedAttribut
          }
      }
  

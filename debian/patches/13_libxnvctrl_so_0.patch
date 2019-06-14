@@ -1,83 +1,86 @@
-Author: Andreas Beckmann <debian@abeckmann.de>
+Author: Andreas Beckmann <debian@abeckmann.de>,
+ Rico Tzschichholz <ricotz@ubuntu.com>
 Description: build a shared library for libXNVCtrl
 Bug-Debian: https://bugs.debian.org/666909
 
-Index: nvidia-settings-410.57/src/Makefile
+Index: b/src/Makefile
 ===================================================================
---- nvidia-settings-410.57.orig/src/Makefile
-+++ nvidia-settings-410.57/src/Makefile
-@@ -113,6 +113,9 @@ endif
- XNVCTRL_DIR             ?= libXNVCtrl
- XNVCTRL_MAKEFILE        ?= Makefile
- XNVCTRL_ARCHIVE         ?= $(XNVCTRL_DIR)/libXNVCtrl.a
-+XNVCTRL_SHARED          ?= $(XNVCTRL_DIR)/libXNVCtrl.so.0
-+#XNVCTRL_LIB            ?= $(XNVCTRL_ARCHIVE)
-+XNVCTRL_LIB             ?= $(XNVCTRL_SHARED)
- XCONFIG_PARSER_DIR      ?= XF86Config-parser
- COMMON_UTILS_DIR        ?= common-utils
- COMMON_UNIX_DIR         ?= common-unix
-@@ -282,9 +285,9 @@ NVIDIA_SETTINGS_install: $(NVIDIA_SETTIN
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -273,9 +273,9 @@
  	$(INSTALL) $(INSTALL_BIN_ARGS) $< $(BINDIR)/$(notdir $<)
  
  $(eval $(call DEBUG_INFO_RULES, $(NVIDIA_SETTINGS)))
--$(NVIDIA_SETTINGS).unstripped: $(OBJS) $(XNVCTRL_ARCHIVE)
-+$(NVIDIA_SETTINGS).unstripped: $(OBJS) $(XNVCTRL_LIB)
+-$(NVIDIA_SETTINGS).unstripped: $(OBJS) $(LIBXNVCTRL)
++$(NVIDIA_SETTINGS).unstripped: $(OBJS) $(LIBXNVCTRL_SHARED)
  	$(call quiet_cmd,LINK) $(CFLAGS) $(LDFLAGS) $(BIN_LDFLAGS) \
--	    -rdynamic -o $@ $(OBJS) $(XNVCTRL_ARCHIVE) $(LIBS)
-+	    -rdynamic -o $@ $(OBJS) $(XNVCTRL_LIB) $(LIBS)
+-	    -rdynamic -o $@ $(OBJS) $(LIBXNVCTRL) $(LIBS)
++	    -rdynamic -o $@ $(OBJS) $(LIBXNVCTRL_SHARED) $(LIBS)
  
  $(eval $(call DEBUG_INFO_RULES, $(GTK2LIB)))
  $(GTK2LIB).unstripped: $(GTK2_OBJS) $(XCP_OBJS) $(IMAGE_OBJS) $(VERSION_MK)
-@@ -292,7 +295,7 @@ $(GTK2LIB).unstripped: $(GTK2_OBJS) $(XC
+@@ -283,7 +283,7 @@
  	    -o $@ \
  	    -Wl,-soname -Wl,$(GTK2LIB_SONAME) \
  	    $(GTK2_OBJS) $(IMAGE_OBJS) $(XCP_OBJS) \
--	    $(XNVCTRL_ARCHIVE) $(LIBS) $(GTK2_LIBS)
-+	    $(XNVCTRL_LIB) $(LIBS) $(GTK2_LIBS)
+-	    $(LIBXNVCTRL) $(LIBS) $(GTK2_LIBS)
++	    $(LIBXNVCTRL_SHARED) $(LIBS) $(GTK2_LIBS)
  
  ifdef BUILD_GTK3LIB
  $(eval $(call DEBUG_INFO_RULES, $(GTK3LIB)))
-@@ -301,7 +304,7 @@ $(GTK3LIB).unstripped: $(GTK3_OBJS) $(XC
+@@ -292,7 +292,7 @@
  	    -o $@ \
  	    -Wl,-soname -Wl,$(GTK3LIB_SONAME) \
  	    $(GTK3_OBJS) $(XCP_OBJS) $(IMAGE_OBJS) \
--	    $(XNVCTRL_ARCHIVE) $(LIBS) $(GTK3_LIBS)
-+	    $(XNVCTRL_LIB) $(LIBS) $(GTK3_LIBS)
+-	    $(LIBXNVCTRL) $(LIBS) $(GTK3_LIBS)
++	    $(LIBXNVCTRL_SHARED) $(LIBS) $(GTK3_LIBS)
  endif
  
  # define the rule to build each object file
-@@ -309,7 +312,7 @@ $(foreach src,$(SRC),$(eval $(call DEFIN
- $(foreach src,$(XCP_SRC),$(eval $(call DEFINE_OBJECT_RULE,TARGET,$(src))))
+@@ -303,7 +303,7 @@
+ 	rm -rf $(NVIDIA_SETTINGS) *~ \
+ 		$(OUTPUTDIR)/*.o $(OUTPUTDIR)/*.d \
+ 		$(GTK2LIB) $(GTK3LIB) $(GTK2LIB_DIR) $(GTK3LIB_DIR) \
+-		$(IMAGE_HEADERS) $(LIBXNVCTRL)
++		$(IMAGE_HEADERS) $(LIBXNVCTRL_SHARED)
  
- # define the rule to build $(XNVCTRL_ARCHIVE)
--$(XNVCTRL_ARCHIVE): build-xnvctrl
-+$(XNVCTRL_ARCHIVE) $(XNVCTRL_SHARED): build-xnvctrl
- 
- build-xnvctrl:
- 	@$(MAKE) -C $(XNVCTRL_DIR) -f $(XNVCTRL_MAKEFILE)
-Index: nvidia-settings-410.57/src/libXNVCtrl/Makefile
+ $(foreach src,$(GTK_SRC), \
+     $(eval $(call DEFINE_OBJECT_RULE_WITH_DIR,TARGET,$(src),$(GTK2LIB_DIR))))
+Index: b/src/libXNVCtrl/Makefile
 ===================================================================
---- nvidia-settings-410.57.orig/src/libXNVCtrl/Makefile
-+++ nvidia-settings-410.57/src/libXNVCtrl/Makefile
-@@ -57,13 +57,21 @@ OBJS = $(call BUILD_OBJECT_LIST,$(SRC))
+--- a/src/libXNVCtrl/Makefile
++++ b/src/libXNVCtrl/Makefile
+@@ -51,7 +51,9 @@
  .PHONY: clean
  
  all: $(LIBXNVCTRL)
-+all: libXNVCtrl.so
- 
- $(LIBXNVCTRL) : $(OBJS)
- 	$(AR) ru $@ $(OBJS)
- 
-+libXNVCtrl.so: $(OBJS)
-+	$(RM) $@ $@.*
-+	$(CC) -shared -Wl,-soname=$@.0 -o $@.0.0.0 $(LDFLAGS) $^ -lXext -lX11
-+	ln -s $@.0.0.0 $@.0
-+	ln -s $@.0 $@
-+
- # define the rule to build each object file
- $(foreach src,$(SRC),$(eval $(call DEFINE_OBJECT_RULE,TARGET,$(src))))
++all: $(LIBXNVCTRL_SHARED)
  
  clean:
  	rm -rf $(LIBXNVCTRL) *~ \
  		$(OUTPUTDIR)/*.o $(OUTPUTDIR)/*.d
-+	rm -f libXNVCtrl.so libXNVCtrl.so.*
++	rm -f $(LIBXNVCTRL_SHARED) $(LIBXNVCTRL_SHARED).*
+Index: b/src/libXNVCtrl/xnvctrl.mk
+===================================================================
+--- a/src/libXNVCtrl/xnvctrl.mk
++++ b/src/libXNVCtrl/xnvctrl.mk
+@@ -37,7 +37,8 @@
+ XNVCTRL_CFLAGS ?=
+ 
+ 
+-LIBXNVCTRL = $(OUTPUTDIR)/libXNVCtrl.a
++LIBXNVCTRL = libXNVCtrl.a
++LIBXNVCTRL_SHARED = libXNVCtrl.so
+ 
+ LIBXNVCTRL_SRC = $(XNVCTRL_DIR)/NVCtrl.c
+ 
+@@ -47,3 +48,9 @@
+ 
+ $(LIBXNVCTRL) : $(LIBXNVCTRL_OBJ)
+ 	$(call quiet_cmd,AR) ru $@ $(LIBXNVCTRL_OBJ)
++
++$(LIBXNVCTRL_SHARED): $(LIBXNVCTRL_OBJ)
++	$(RM) $@ $@.*
++	$(CC) -shared -Wl,-soname=$@.0 -o $@.0.0.0 $(LDFLAGS) $^ -lXext -lX11
++	ln -s $@.0.0.0 $@.0
++	ln -s $@.0 $@

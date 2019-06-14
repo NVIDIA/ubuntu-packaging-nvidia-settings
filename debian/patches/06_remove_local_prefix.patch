@@ -7,9 +7,11 @@ Subject: [PATCH 1/1] utils.mk: remove local from prefix
  utils.mk |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/utils.mk
-+++ b/utils.mk
-@@ -182,7 +182,7 @@
+Index: nvidia-settings-430.09/utils.mk
+===================================================================
+--- nvidia-settings-430.09.orig/utils.mk
++++ nvidia-settings-430.09/utils.mk
+@@ -180,7 +180,7 @@ endif
  # the source tarball
  ##############################################################################
  

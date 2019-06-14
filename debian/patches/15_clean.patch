@@ -6,7 +6,7 @@ Index: nvidia-settings-410.57/src/Makefile
 --- nvidia-settings-410.57.orig/src/Makefile
 +++ nvidia-settings-410.57/src/Makefile
 @@ -318,6 +318,7 @@ build-xnvctrl:
- 	@$(MAKE) -C $(XNVCTRL_DIR) -f $(XNVCTRL_MAKEFILE)
+ $(foreach src,$(XCP_SRC),$(eval $(call DEFINE_OBJECT_RULE,TARGET,$(src))))
  
  clean clobber:
 +	$(MAKE) -C $(XNVCTRL_DIR) clean

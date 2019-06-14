@@ -1,9 +1,11 @@
 Author: Andreas Beckmann <anbe@debian.org>
 Description: use gzip -n to avoid package-contains-timestamped-gzip
 
---- a/doc/Makefile
-+++ b/doc/Makefile
-@@ -114,4 +114,4 @@
+Index: nvidia-settings-430.09/doc/Makefile
+===================================================================
+--- nvidia-settings-430.09.orig/doc/Makefile
++++ nvidia-settings-430.09/doc/Makefile
+@@ -113,4 +113,4 @@ $(MANPAGE_not_gzipped): nvidia-settings.
  	  $< > $@
  
  $(MANPAGE_gzipped): $(MANPAGE_not_gzipped)
