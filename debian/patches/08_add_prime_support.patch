@@ -13,11 +13,9 @@ Refreshed for the 410 series
  create mode 100644 src/gtk+-2.x/ctkprime.c
  create mode 100644 src/gtk+-2.x/ctkprime.h
 
-Index: nvidia-settings/src/gtk+-2.x/ctkprime.c
-===================================================================
 --- /dev/null
-+++ nvidia-settings/src/gtk+-2.x/ctkprime.c
-@@ -0,0 +1,518 @@
++++ b/src/gtk+-2.x/ctkprime.c
+@@ -0,0 +1,543 @@
 +/*
 + * nvidia-settings: A tool for configuring the NVIDIA X driver on Unix
 + * and Linux systems.
@@ -344,6 +342,22 @@ Index: nvidia-settings/src/gtk+-2.x/ctkprime.c
 +    }
 +}
 +
++/* get button value for gpu mode
++ *   nvidia: 0
++ *   on-demand: 1
++ *   intel: 2
++ */
++static int mode_to_button_value(gchar *current_gpu) {
++    int current_button;
++    if (strcmp(current_gpu, "nvidia") == 0) {
++        current_button = 0;
++    } else if (strcmp(current_gpu, "on-demand") == 0) {
++        current_button = 1;
++    } else {
++        current_button = 2;
++    }
++    return current_button;
++}
 +
 +/*
 + * Callback function for changes to the
@@ -384,6 +398,8 @@ Index: nvidia-settings/src/gtk+-2.x/ctkprime.c
 +
 +            if (status == 0) {
 +                /* Show a dialog to suggest to log out */
++
++                ctk_prime->current_button = mode_to_button_value(value);
 +                ctk_display_info_msg(parent,
 +                    "Please log out, and log back in to apply the changes");
 +            } else {
@@ -395,8 +411,7 @@ Index: nvidia-settings/src/gtk+-2.x/ctkprime.c
 +                }
 +
 +                /* Set the radio button to the previous position */
-+                number = (strcmp(value, "nvidia") == 0 ? 1 : 0);
-+                prime_update_radio_buttons(ctk_prime, number);
++                prime_update_radio_buttons(ctk_prime, ctk_prime->current_button);
 +            }
 +        } else {
 +            /* Something's wrong with gspawn */
@@ -405,15 +420,12 @@ Index: nvidia-settings/src/gtk+-2.x/ctkprime.c
 +            ctk_display_error_msg(parent, error_msg);
 +
 +            /* Set the radio button to the previous position */
-+            number = (strcmp(value, "nvidia") == 0 ? 1 : 0);
-+            prime_update_radio_buttons(ctk_prime, number);
++            prime_update_radio_buttons(ctk_prime, ctk_prime->current_button);
 +        }
 +
 +        /* Free any error output */
 +        if (error_msg)
 +            g_free(error_msg);
-+
-+
 +    }
 +}
 +
@@ -473,14 +485,26 @@ Index: nvidia-settings/src/gtk+-2.x/ctkprime.c
 +                           "graphics performance. This option is "
 +                           "applied after a log out.");
 +
-+
-+    /* Button for Intel */
++    /* Button for NVIDIA On Demand */
 +    radio[1] = prime_radio_button_add(ctk_prime,
 +                                      radio[0],
++                                      "NVIDIA On-Demand",
++                                      "on-demand",
++                                      1);
++
++    /* Set the tooltip for ON-Demand */
++    ctk_config_set_tooltip(ctk_config, radio[1],
++                           "Enabling this option allows using the Nvidia GPU"
++                           " in on-demand mode. This option is "
++                           "applied after a log out.");
++
++    /* Button for Intel */
++    radio[2] = prime_radio_button_add(ctk_prime,
++                                      radio[1],
 +                                      "Intel (Power Saving Mode)",
 +                                      "intel",
-+                                      1);
-+    /* Set the tooltip for NVIDIA */
++                                      2);
++    /* Set the tooltip for Intel */
 +    ctk_config_set_tooltip(ctk_config, radio[1],
 +                           "Enabling this option ensures the best "
 +                           "battery life. This option is "
@@ -490,9 +514,9 @@ Index: nvidia-settings/src/gtk+-2.x/ctkprime.c
 +    gchar *current_gpu = NULL;
 +    get_active_gpu(&current_gpu);
 +
-+    int current_button = (strcmp(current_gpu, "nvidia") == 0) ?
-+                         0 : 1;
++    int current_button = mode_to_button_value(current_gpu);
 +    g_free(current_gpu);
++    ctk_prime->current_button = current_button;
 +
 +    /* Enable the button which matches the current
 +     * configuration
@@ -507,7 +531,6 @@ Index: nvidia-settings/src/gtk+-2.x/ctkprime.c
 +    gtk_widget_show_all(GTK_WIDGET(ctk_prime));
 +
 +    return GTK_WIDGET(ctk_prime);
-+
 +}
 +
 +
@@ -536,11 +559,9 @@ Index: nvidia-settings/src/gtk+-2.x/ctkprime.c
 +    return b;
 +}
 +
-Index: nvidia-settings/src/gtk+-2.x/ctkprime.h
-===================================================================
 --- /dev/null
-+++ nvidia-settings/src/gtk+-2.x/ctkprime.h
-@@ -0,0 +1,77 @@
++++ b/src/gtk+-2.x/ctkprime.h
+@@ -0,0 +1,78 @@
 +/*
 + * nvidia-settings: A tool for configuring the NVIDIA X driver on Unix
 + * and Linux systems.
@@ -602,6 +623,7 @@ Index: nvidia-settings/src/gtk+-2.x/ctkprime.h
 +
 +    GtkWidget *prime_buttons[24];
 +    GtkWidget *prime_button_box;
++    int current_button;
 +};
 +
 +struct _CtkPrimeClass
@@ -618,10 +640,8 @@ Index: nvidia-settings/src/gtk+-2.x/ctkprime.h
 +
 +#endif /* __CTK_PRIME_H__ */
 +
-Index: nvidia-settings/src/gtk+-2.x/ctkwindow.c
-===================================================================
---- nvidia-settings.orig/src/gtk+-2.x/ctkwindow.c
-+++ nvidia-settings/src/gtk+-2.x/ctkwindow.c
+--- a/src/gtk+-2.x/ctkwindow.c
++++ b/src/gtk+-2.x/ctkwindow.c
 @@ -47,6 +47,7 @@
  #include "ctkcolorcorrection.h"
  #include "ctkcolorcorrectionpage.h"
@@ -630,20 +650,20 @@ Index: nvidia-settings/src/gtk+-2.x/ctkwindow.c
  #include "ctkopengl.h"
  #include "ctkglx.h"
  #include "ctkmultisample.h"
-@@ -647,7 +648,8 @@ GtkWidget *ctk_window_new(ParsedAttribut
+@@ -647,7 +648,8 @@
      driver_major = driver_minor = 0;
- 
+
      /* X Server info & configuration */
 -
 +    /* Skip if nvidia is not loaded */
 +    if (system) {
      if (system->targets[X_SCREEN_TARGET]) {
- 
+
          GtkWidget *child;
-@@ -1101,13 +1103,6 @@ GtkWidget *ctk_window_new(ParsedAttribut
+@@ -1101,13 +1103,6 @@
                   ctk_3d_vision_pro_select, ctk_3d_vision_pro_unselect);
      }
- 
+
 -
 -    /* We show this section in two cases:
 -     * 1) when the driver is not in use (hybrid graphics)
@@ -654,19 +674,19 @@ Index: nvidia-settings/src/gtk+-2.x/ctkwindow.c
      /* app profile configuration */
      widget = ctk_app_profile_new(server_target, ctk_config);
      if (widget) {
-@@ -1129,8 +1124,6 @@ GtkWidget *ctk_window_new(ParsedAttribut
+@@ -1129,8 +1124,6 @@
          }
      }
- 
+
 -    }
 -
      /* nvidia-settings configuration */
- 
+
      add_page(GTK_WIDGET(ctk_window->ctk_config),
-@@ -1138,6 +1131,22 @@ GtkWidget *ctk_window_new(ParsedAttribut
+@@ -1138,6 +1131,22 @@
               ctk_window, NULL, NULL, "nvidia-settings Configuration",
               NULL, NULL, NULL);
- 
+
 +    }/* End skipping when nvidia is not loaded */
 +
 +    /* We show this section in two cases:
@@ -686,11 +706,9 @@ Index: nvidia-settings/src/gtk+-2.x/ctkwindow.c
      /*
       * we're done with the current data in the parsed attribute list,
       * so clean it out
-Index: nvidia-settings/src/src.mk
-===================================================================
---- nvidia-settings.orig/src/src.mk
-+++ nvidia-settings/src/src.mk
-@@ -183,6 +183,7 @@ GTK_SRC += gtk+-2.x/ctkapcrulemodel.c
+--- a/src/src.mk
++++ b/src/src.mk
+@@ -183,6 +183,7 @@
  GTK_SRC += gtk+-2.x/ctkcolorcontrols.c
  GTK_SRC += gtk+-2.x/ctk3dvisionpro.c
  GTK_SRC += gtk+-2.x/ctkvdpau.c
@@ -698,7 +716,7 @@ Index: nvidia-settings/src/src.mk
  GTK_SRC += gtk+-2.x/ctkgridlicense.c
  GTK_SRC += gtk+-2.x/ctkglwidget.c
  GTK_SRC += gtk+-2.x/ctkglstereo.c
-@@ -236,6 +237,7 @@ GTK_EXTRA_DIST += gtk+-2.x/ctkapcrulemod
+@@ -236,6 +237,7 @@
  GTK_EXTRA_DIST += gtk+-2.x/ctkcolorcontrols.h
  GTK_EXTRA_DIST += gtk+-2.x/ctk3dvisionpro.h
  GTK_EXTRA_DIST += gtk+-2.x/ctkvdpau.h
@@ -706,14 +724,12 @@ Index: nvidia-settings/src/src.mk
  GTK_EXTRA_DIST += gtk+-2.x/ctkgridlicense.h
  GTK_EXTRA_DIST += gtk+-2.x/ctkglwidget.h
  GTK_EXTRA_DIST += gtk+-2.x/ctkglstereo.h
-Index: nvidia-settings/src/config-file.c
-===================================================================
---- nvidia-settings.orig/src/config-file.c
-+++ nvidia-settings/src/config-file.c
-@@ -241,6 +241,10 @@ int nv_write_config_file(const char *fil
+--- a/src/config-file.c
++++ b/src/config-file.c
+@@ -241,6 +241,10 @@
      char *prefix, scratch[4];
      char *locale = "C";
- 
+
 +    /* Skip if nvidia is not loaded */
 +    if (!system)
 +        return NV_TRUE;
@@ -721,35 +737,31 @@ Index: nvidia-settings/src/config-file.c
      if (!filename) {
          nv_error_msg("Unable to open configuration file for writing.");
          return NV_FALSE;
-Index: nvidia-settings/src/gtk+-2.x/ctkui.c
-===================================================================
---- nvidia-settings.orig/src/gtk+-2.x/ctkui.c
-+++ nvidia-settings/src/gtk+-2.x/ctkui.c
-@@ -51,6 +51,8 @@ void ctk_main(ParsedAttribute *p,
+--- a/src/gtk+-2.x/ctkui.c
++++ b/src/gtk+-2.x/ctkui.c
+@@ -51,6 +51,8 @@
      gtk_window_set_default_icon_list(list);
      window = ctk_window_new(p, conf, system);
- 
+
 +    /* Skip if nvidia is not loaded */
 +    if (system) {
      for (node = system->targets[X_SCREEN_TARGET]; node; node = node->next) {
          if (node->t->h) {
              has_nv_control = TRUE;
-@@ -71,7 +73,7 @@ void ctk_main(ParsedAttribute *p,
+@@ -71,7 +73,7 @@
          gtk_dialog_run(GTK_DIALOG(dlg));
          gtk_widget_destroy (dlg);
      }
 -
 +    }
      ctk_window_set_active_page(CTK_WINDOW(window), page);
- 
+
      gtk_main();
-Index: nvidia-settings/src/nvidia-settings.c
-===================================================================
---- nvidia-settings.orig/src/nvidia-settings.c
-+++ nvidia-settings/src/nvidia-settings.c
-@@ -366,11 +366,11 @@ int main(int argc, char **argv)
+--- a/src/nvidia-settings.c
++++ b/src/nvidia-settings.c
+@@ -366,11 +366,11 @@
      /* Get the CtrlSystem for this X screen */
- 
+
      system = NvCtrlGetSystem(op->ctrl_display, &systems);
 -
 +#if 0
@@ -759,5 +771,5 @@ Index: nvidia-settings/src/nvidia-settings.c
 -
 +#endif
      /* pass control to the gui */
- 
+
      libdata.fn_ctk_main(p, &conf, system, op->page);
