@@ -1,4 +1,4 @@
-nvidia-settings (430.26-0ubuntu2) UNRELEASED; urgency=medium
+nvidia-settings (430.34-0ubuntu1) UNRELEASED; urgency=medium
 
   [ Yuan-Chen Cheng ]
   * debian/patches/08_add_prime_support.patch:
