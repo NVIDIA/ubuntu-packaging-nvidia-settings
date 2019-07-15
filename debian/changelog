@@ -2,11 +2,15 @@ nvidia-settings (430.34-0ubuntu1) eoan; urgency=medium
 
   * New upstream release.
 
+  [ Alberto Milone ]
+  * debian/patches/05_add_polkit_support.patch:
+    - Refresh patch.
+
   [ Yuan-Chen Cheng ]
   * debian/patches/08_add_prime_support.patch:
     - Add on-demand mode. (LP: #1824282)
 
- -- Alberto Milone <alberto.milone@canonical.com>  Mon, 15 Jul 2019 16:29:44 +0200
+ -- Alberto Milone <alberto.milone@canonical.com>  Mon, 15 Jul 2019 18:04:09 +0200
 
 nvidia-settings (430.26-0ubuntu1) eoan; urgency=medium
 
