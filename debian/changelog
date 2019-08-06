@@ -1,8 +1,8 @@
-nvidia-settings (430.40-0ubuntu1) UNRELEASED; urgency=medium
+nvidia-settings (430.40-0ubuntu1) eoan; urgency=medium
 
-  * 
+  * New upstream release.
 
- -- Alberto Milone <alberto.milone@canonical.com>  Tue, 06 Aug 2019 10:13:13 +0200
+ -- Alberto Milone <alberto.milone@canonical.com>  Tue, 06 Aug 2019 10:13:49 +0200
 
 nvidia-settings (430.34-0ubuntu1) eoan; urgency=medium
 
