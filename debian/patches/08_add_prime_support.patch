@@ -397,11 +397,11 @@ Refreshed for the 410 series
 +            status = WEXITSTATUS(exit_status);
 +
 +            if (status == 0) {
-+                /* Show a dialog to suggest to log out */
++                /* Show a dialog to suggest restarting the computer */
 +
 +                ctk_prime->current_button = mode_to_button_value(value);
 +                ctk_display_info_msg(parent,
-+                    "Please log out, and log back in to apply the changes");
++                    "Please restart the system to apply the changes");
 +            } else {
 +                if (status != 5) {
 +                    /* Show an error only if the user did not
@@ -483,7 +483,7 @@ Refreshed for the 410 series
 +    ctk_config_set_tooltip(ctk_config, radio[0],
 +                           "Enabling this option ensures the best "
 +                           "graphics performance. This option is "
-+                           "applied after a log out.");
++                           "applied after a system restart.");
 +
 +    /* Button for NVIDIA On Demand */
 +    radio[1] = prime_radio_button_add(ctk_prime,
@@ -496,7 +496,7 @@ Refreshed for the 410 series
 +    ctk_config_set_tooltip(ctk_config, radio[1],
 +                           "Enabling this option allows using the Nvidia GPU"
 +                           " in on-demand mode. This option is "
-+                           "applied after a log out.");
++                           "applied after a system restart.");
 +
 +    /* Button for Intel */
 +    radio[2] = prime_radio_button_add(ctk_prime,
@@ -508,7 +508,7 @@ Refreshed for the 410 series
 +    ctk_config_set_tooltip(ctk_config, radio[1],
 +                           "Enabling this option ensures the best "
 +                           "battery life. This option is "
-+                           "applied after a log out.");
++                           "applied after a system restart.");
 +
 +    /* Get the current GPU in use from the switcher*/
 +    gchar *current_gpu = NULL;
