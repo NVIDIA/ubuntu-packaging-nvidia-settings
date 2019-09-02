@@ -652,18 +652,18 @@ Refreshed for the 410 series
  #include "ctkmultisample.h"
 @@ -647,7 +648,8 @@
      driver_major = driver_minor = 0;
-
+ 
      /* X Server info & configuration */
 -
 +    /* Skip if nvidia is not loaded */
 +    if (system) {
      if (system->targets[X_SCREEN_TARGET]) {
-
+ 
          GtkWidget *child;
 @@ -1101,13 +1103,6 @@
                   ctk_3d_vision_pro_select, ctk_3d_vision_pro_unselect);
      }
-
+ 
 -
 -    /* We show this section in two cases:
 -     * 1) when the driver is not in use (hybrid graphics)
@@ -677,16 +677,16 @@ Refreshed for the 410 series
 @@ -1129,8 +1124,6 @@
          }
      }
-
+ 
 -    }
 -
      /* nvidia-settings configuration */
-
+ 
      add_page(GTK_WIDGET(ctk_window->ctk_config),
 @@ -1138,6 +1131,22 @@
               ctk_window, NULL, NULL, "nvidia-settings Configuration",
               NULL, NULL, NULL);
-
+ 
 +    }/* End skipping when nvidia is not loaded */
 +
 +    /* We show this section in two cases:
@@ -729,7 +729,7 @@ Refreshed for the 410 series
 @@ -241,6 +241,10 @@
      char *prefix, scratch[4];
      char *locale = "C";
-
+ 
 +    /* Skip if nvidia is not loaded */
 +    if (!system)
 +        return NV_TRUE;
@@ -739,29 +739,29 @@ Refreshed for the 410 series
          return NV_FALSE;
 --- a/src/gtk+-2.x/ctkui.c
 +++ b/src/gtk+-2.x/ctkui.c
-@@ -51,6 +51,8 @@
+@@ -49,6 +49,8 @@
      gtk_window_set_default_icon_list(list);
      window = ctk_window_new(p, conf, system);
-
+ 
 +    /* Skip if nvidia is not loaded */
 +    if (system) {
-     for (node = system->targets[X_SCREEN_TARGET]; node; node = node->next) {
-         if (node->t->h) {
-             has_nv_control = TRUE;
-@@ -71,7 +73,7 @@
+     if (!system->has_nv_control) {
+         GtkWidget *dlg;
+         dlg = gtk_message_dialog_new (NULL,
+@@ -62,7 +64,7 @@
          gtk_dialog_run(GTK_DIALOG(dlg));
          gtk_widget_destroy (dlg);
      }
 -
 +    }
      ctk_window_set_active_page(CTK_WINDOW(window), page);
-
+ 
      gtk_main();
 --- a/src/nvidia-settings.c
 +++ b/src/nvidia-settings.c
 @@ -366,11 +366,11 @@
      /* Get the CtrlSystem for this X screen */
-
+ 
      system = NvCtrlGetSystem(op->ctrl_display, &systems);
 -
 +#if 0
@@ -771,5 +771,5 @@ Refreshed for the 410 series
 -
 +#endif
      /* pass control to the gui */
-
+ 
      libdata.fn_ctk_main(p, &conf, system, op->page);
