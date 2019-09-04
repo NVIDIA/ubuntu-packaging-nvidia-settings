@@ -1,8 +1,23 @@
-nvidia-settings (435.21-0ubuntu1) UNRELEASED; urgency=medium
+nvidia-settings (435.21-0ubuntu1) eoan; urgency=medium
 
-  * 
+  * New upstream release:
+    - Fixed the "Image Settings" options in the "OpenGL Settings"
+      page of nvidia-settings for Quadro GPUs.  Previously, OpenGL
+      rendering on Quadro would behave as if the "High Quality"
+      option were selected regardless of the selection.  Now, the
+      setting will default to "High Quality" for Quadro but selecting
+      a lower option will affect rendering accordingly. (Other GPUs
+      are unchanged: the default remains "Quality", but other options
+      can be selected if desired.)
+    - Fixed display color range handling on pre-Turing GPUs, such
+      that when limited color range is selected through the display
+      controls page in nvidia-settings, output pixel values will be
+      correctly clamped to Consumer Technology Association (CTA)
+      range.
+  - debian/patches/08_add_prime_support.patch:
+    - Refresh patch.
 
- -- Alberto Milone <alberto.milone@canonical.com>  Mon, 02 Sep 2019 21:15:18 +0200
+ -- Alberto Milone <alberto.milone@canonical.com>  Wed, 04 Sep 2019 11:30:19 +0200
 
 nvidia-settings (430.34-0ubuntu1) eoan; urgency=medium
 
