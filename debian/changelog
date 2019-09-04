@@ -19,6 +19,20 @@ nvidia-settings (435.21-0ubuntu1) eoan; urgency=medium
 
  -- Alberto Milone <alberto.milone@canonical.com>  Wed, 04 Sep 2019 11:30:19 +0200
 
+nvidia-settings (430.40-0ubuntu2) eoan; urgency=medium
+
+  * debian/patches/08_add_prime_support.patch:
+    - Recommend a system restart in the dialogs.
+      This matches the changes in the nvidia-prime package.
+
+ -- Alberto Milone <alberto.milone@canonical.com>  Wed, 21 Aug 2019 20:35:46 +0200
+
+nvidia-settings (430.40-0ubuntu1) eoan; urgency=medium
+
+  * New upstream release.
+
+ -- Alberto Milone <alberto.milone@canonical.com>  Tue, 06 Aug 2019 10:13:49 +0200
+
 nvidia-settings (430.34-0ubuntu1) eoan; urgency=medium
 
   * New upstream release.
