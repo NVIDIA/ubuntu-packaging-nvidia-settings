@@ -3,11 +3,9 @@ Author: Andreas Beckmann <debian@abeckmann.de>,
 Description: build a shared library for libXNVCtrl
 Bug-Debian: https://bugs.debian.org/666909
 
-Index: b/src/Makefile
-===================================================================
 --- a/src/Makefile
 +++ b/src/Makefile
-@@ -273,9 +273,9 @@
+@@ -273,9 +273,9 @@ NVIDIA_SETTINGS_install: $(NVIDIA_SETTIN
  	$(INSTALL) $(INSTALL_BIN_ARGS) $< $(BINDIR)/$(notdir $<)
  
  $(eval $(call DEBUG_INFO_RULES, $(NVIDIA_SETTINGS)))
@@ -19,7 +17,7 @@ Index: b/src/Makefile
  
  $(eval $(call DEBUG_INFO_RULES, $(GTK2LIB)))
  $(GTK2LIB).unstripped: $(GTK2_OBJS) $(XCP_OBJS) $(IMAGE_OBJS) $(VERSION_MK)
-@@ -283,7 +283,7 @@
+@@ -283,7 +283,7 @@ $(GTK2LIB).unstripped: $(GTK2_OBJS) $(XC
  	    -o $@ \
  	    -Wl,-soname -Wl,$(GTK2LIB_SONAME) \
  	    $(GTK2_OBJS) $(IMAGE_OBJS) $(XCP_OBJS) \
@@ -28,7 +26,7 @@ Index: b/src/Makefile
  
  ifdef BUILD_GTK3LIB
  $(eval $(call DEBUG_INFO_RULES, $(GTK3LIB)))
-@@ -292,7 +292,7 @@
+@@ -292,7 +292,7 @@ $(GTK3LIB).unstripped: $(GTK3_OBJS) $(XC
  	    -o $@ \
  	    -Wl,-soname -Wl,$(GTK3LIB_SONAME) \
  	    $(GTK3_OBJS) $(XCP_OBJS) $(IMAGE_OBJS) \
@@ -37,7 +35,7 @@ Index: b/src/Makefile
  endif
  
  # define the rule to build each object file
-@@ -303,7 +303,7 @@
+@@ -303,7 +303,7 @@ clean clobber:
  	rm -rf $(NVIDIA_SETTINGS) *~ \
  		$(OUTPUTDIR)/*.o $(OUTPUTDIR)/*.d \
  		$(GTK2LIB) $(GTK3LIB) $(GTK2LIB_DIR) $(GTK3LIB_DIR) \
@@ -46,11 +44,9 @@ Index: b/src/Makefile
  
  $(foreach src,$(GTK_SRC), \
      $(eval $(call DEFINE_OBJECT_RULE_WITH_DIR,TARGET,$(src),$(GTK2LIB_DIR))))
-Index: b/src/libXNVCtrl/Makefile
-===================================================================
 --- a/src/libXNVCtrl/Makefile
 +++ b/src/libXNVCtrl/Makefile
-@@ -51,7 +51,9 @@
+@@ -51,7 +51,9 @@ LDFLAGS += $(XNVCTRL_LDFLAGS)
  .PHONY: clean
  
  all: $(LIBXNVCTRL)
@@ -60,11 +56,9 @@ Index: b/src/libXNVCtrl/Makefile
  	rm -rf $(LIBXNVCTRL) *~ \
  		$(OUTPUTDIR)/*.o $(OUTPUTDIR)/*.d
 +	rm -f $(LIBXNVCTRL_SHARED) $(LIBXNVCTRL_SHARED).*
-Index: b/src/libXNVCtrl/xnvctrl.mk
-===================================================================
 --- a/src/libXNVCtrl/xnvctrl.mk
 +++ b/src/libXNVCtrl/xnvctrl.mk
-@@ -37,7 +37,8 @@
+@@ -37,7 +37,8 @@ endif
  XNVCTRL_CFLAGS ?=
  
  
@@ -74,7 +68,7 @@ Index: b/src/libXNVCtrl/xnvctrl.mk
  
  LIBXNVCTRL_SRC = $(XNVCTRL_DIR)/NVCtrl.c
  
-@@ -47,3 +48,9 @@
+@@ -47,3 +48,9 @@ $(eval $(call DEFINE_OBJECT_RULE,TARGET,
  
  $(LIBXNVCTRL) : $(LIBXNVCTRL_OBJ)
  	$(call quiet_cmd,AR) ru $@ $(LIBXNVCTRL_OBJ)

@@ -1,11 +1,9 @@
 Author: Andreas Beckmann <debian@abeckmann.de>
 Description: link with -Wl,--as-needed to reduce library footprint
 
-Index: nvidia-settings-430.09/utils.mk
-===================================================================
---- nvidia-settings-430.09.orig/utils.mk
-+++ nvidia-settings-430.09/utils.mk
-@@ -42,6 +42,9 @@ CC_ONLY_CFLAGS        ?=
+--- a/utils.mk
++++ b/utils.mk
+@@ -43,6 +43,9 @@ CC_ONLY_CFLAGS        ?=
  LDFLAGS               ?=
  BIN_LDFLAGS           ?=
  
@@ -15,11 +13,9 @@ Index: nvidia-settings-430.09/utils.mk
  HOST_CC               ?= $(CC)
  HOST_LD               ?= $(LD)
  HOST_CFLAGS           ?= $(CFLAGS)
-Index: nvidia-settings-430.09/samples/Makefile
-===================================================================
---- nvidia-settings-430.09.orig/samples/Makefile
-+++ nvidia-settings-430.09/samples/Makefile
-@@ -60,6 +60,8 @@ LDFLAGS               += $(X_LDFLAGS)
+--- a/samples/Makefile
++++ b/samples/Makefile
+@@ -49,6 +49,8 @@ CFLAGS                += -I $(OUTPUTDIR)
  LDFLAGS               += $(XNVCTRL_LDFLAGS)
  LIBS                  += -lXext -lX11
  

@@ -3,7 +3,7 @@ Author: Michael Marley <michael@michaelmarley.com>
 
 --- a/utils.mk
 +++ b/utils.mk
-@@ -55,13 +55,11 @@
+@@ -56,13 +56,11 @@ HOST_BIN_LDFLAGS      ?=
  CFLAGS                += -Wno-unused-parameter -Wno-format-zero-length
  HOST_CFLAGS           += -Wno-unused-parameter -Wno-format-zero-length
  

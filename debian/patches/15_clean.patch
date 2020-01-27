@@ -1,11 +1,9 @@
 Author: Andreas Beckmann <debian@abeckmann.de>
 Description: let clean recurse into libXNVCtrl
 
-Index: nvidia-settings-410.57/src/Makefile
-===================================================================
---- nvidia-settings-410.57.orig/src/Makefile
-+++ nvidia-settings-410.57/src/Makefile
-@@ -318,6 +318,7 @@ build-xnvctrl:
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -300,6 +300,7 @@ $(foreach src,$(SRC),$(eval $(call DEFIN
  $(foreach src,$(XCP_SRC),$(eval $(call DEFINE_OBJECT_RULE,TARGET,$(src))))
  
  clean clobber:

@@ -650,7 +650,7 @@ Refreshed for the 410 series
  #include "ctkopengl.h"
  #include "ctkglx.h"
  #include "ctkmultisample.h"
-@@ -647,7 +648,8 @@
+@@ -707,7 +708,8 @@ GtkWidget *ctk_window_new(ParsedAttribut
      driver_major = driver_minor = 0;
  
      /* X Server info & configuration */
@@ -660,7 +660,7 @@ Refreshed for the 410 series
      if (system->targets[X_SCREEN_TARGET]) {
  
          GtkWidget *child;
-@@ -1101,13 +1103,6 @@
+@@ -1161,13 +1163,6 @@ GtkWidget *ctk_window_new(ParsedAttribut
                   ctk_3d_vision_pro_select, ctk_3d_vision_pro_unselect);
      }
  
@@ -674,7 +674,7 @@ Refreshed for the 410 series
      /* app profile configuration */
      widget = ctk_app_profile_new(server_target, ctk_config);
      if (widget) {
-@@ -1129,8 +1124,6 @@
+@@ -1189,8 +1184,6 @@ GtkWidget *ctk_window_new(ParsedAttribut
          }
      }
  
@@ -683,7 +683,7 @@ Refreshed for the 410 series
      /* nvidia-settings configuration */
  
      add_page(GTK_WIDGET(ctk_window->ctk_config),
-@@ -1138,6 +1131,22 @@
+@@ -1198,6 +1191,22 @@ GtkWidget *ctk_window_new(ParsedAttribut
               ctk_window, NULL, NULL, "nvidia-settings Configuration",
               NULL, NULL, NULL);
  
@@ -708,7 +708,7 @@ Refreshed for the 410 series
       * so clean it out
 --- a/src/src.mk
 +++ b/src/src.mk
-@@ -183,6 +183,7 @@
+@@ -183,6 +183,7 @@ GTK_SRC += gtk+-2.x/ctkapcrulemodel.c
  GTK_SRC += gtk+-2.x/ctkcolorcontrols.c
  GTK_SRC += gtk+-2.x/ctk3dvisionpro.c
  GTK_SRC += gtk+-2.x/ctkvdpau.c
@@ -716,7 +716,7 @@ Refreshed for the 410 series
  GTK_SRC += gtk+-2.x/ctkgridlicense.c
  GTK_SRC += gtk+-2.x/ctkglwidget.c
  GTK_SRC += gtk+-2.x/ctkglstereo.c
-@@ -236,6 +237,7 @@
+@@ -236,6 +237,7 @@ GTK_EXTRA_DIST += gtk+-2.x/ctkapcrulemod
  GTK_EXTRA_DIST += gtk+-2.x/ctkcolorcontrols.h
  GTK_EXTRA_DIST += gtk+-2.x/ctk3dvisionpro.h
  GTK_EXTRA_DIST += gtk+-2.x/ctkvdpau.h
@@ -726,7 +726,7 @@ Refreshed for the 410 series
  GTK_EXTRA_DIST += gtk+-2.x/ctkglstereo.h
 --- a/src/config-file.c
 +++ b/src/config-file.c
-@@ -241,6 +241,10 @@
+@@ -241,6 +241,10 @@ int nv_write_config_file(const char *fil
      char *prefix, scratch[4];
      char *locale = "C";
  
@@ -739,7 +739,7 @@ Refreshed for the 410 series
          return NV_FALSE;
 --- a/src/gtk+-2.x/ctkui.c
 +++ b/src/gtk+-2.x/ctkui.c
-@@ -49,6 +49,8 @@
+@@ -49,6 +49,8 @@ void ctk_main(ParsedAttribute *p,
      gtk_window_set_default_icon_list(list);
      window = ctk_window_new(p, conf, system);
  
@@ -748,7 +748,7 @@ Refreshed for the 410 series
      if (!system->has_nv_control) {
          GtkWidget *dlg;
          dlg = gtk_message_dialog_new (NULL,
-@@ -62,7 +64,7 @@
+@@ -62,7 +64,7 @@ void ctk_main(ParsedAttribute *p,
          gtk_dialog_run(GTK_DIALOG(dlg));
          gtk_widget_destroy (dlg);
      }
@@ -759,7 +759,7 @@ Refreshed for the 410 series
      gtk_main();
 --- a/src/nvidia-settings.c
 +++ b/src/nvidia-settings.c
-@@ -366,11 +366,11 @@
+@@ -366,11 +366,11 @@ int main(int argc, char **argv)
      /* Get the CtrlSystem for this X screen */
  
      system = NvCtrlGetSystem(op->ctrl_display, &systems);

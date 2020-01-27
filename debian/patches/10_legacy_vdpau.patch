@@ -1,7 +1,5 @@
-Index: nvidia-settings-430.09/src/gtk+-2.x/ctkvdpau.c
-===================================================================
---- nvidia-settings-430.09.orig/src/gtk+-2.x/ctkvdpau.c
-+++ nvidia-settings-430.09/src/gtk+-2.x/ctkvdpau.c
+--- a/src/gtk+-2.x/ctkvdpau.c
++++ b/src/gtk+-2.x/ctkvdpau.c
 @@ -167,11 +167,13 @@ static int queryBaseInfo(CtkVDPAU *ctk_v
          {"H264",             VDP_DECODER_PROFILE_H264_BASELINE, 0x04},
          {"H264",                 VDP_DECODER_PROFILE_H264_MAIN, 0x04},
@@ -16,7 +14,7 @@ Index: nvidia-settings-430.09/src/gtk+-2.x/ctkvdpau.c
          {"VC1",                 VDP_DECODER_PROFILE_VC1_SIMPLE, 0x08},
          {"VC1"  ,                 VDP_DECODER_PROFILE_VC1_MAIN, 0x08},
          {"VC1",               VDP_DECODER_PROFILE_VC1_ADVANCED, 0x08},
-@@ -491,6 +493,7 @@ static int queryDecoderCaps(CtkVDPAU *ct
+@@ -497,6 +499,7 @@ static int queryDecoderCaps(CtkVDPAU *ct
          {"H264 Baseline",      VDP_DECODER_PROFILE_H264_BASELINE,      0},
          {"H264 Main",          VDP_DECODER_PROFILE_H264_MAIN,          0},
          {"H264 High",          VDP_DECODER_PROFILE_H264_HIGH,          0},
@@ -24,7 +22,7 @@ Index: nvidia-settings-430.09/src/gtk+-2.x/ctkvdpau.c
          {"H264 Constrained Baseline",
                                 VDP_DECODER_PROFILE_H264_CONSTRAINED_BASELINE, 0},
          {"H264 Extended",      VDP_DECODER_PROFILE_H264_EXTENDED,      0},
-@@ -500,6 +503,7 @@ static int queryDecoderCaps(CtkVDPAU *ct
+@@ -506,6 +509,7 @@ static int queryDecoderCaps(CtkVDPAU *ct
                                 VDP_DECODER_PROFILE_H264_CONSTRAINED_HIGH, 0},
          {"H264 High 4:4:4 Predictive",
                                 VDP_DECODER_PROFILE_H264_HIGH_444_PREDICTIVE, 0},
