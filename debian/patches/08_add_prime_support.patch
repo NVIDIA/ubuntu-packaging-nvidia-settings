@@ -15,7 +15,7 @@ Refreshed for the 410 series
 
 --- /dev/null
 +++ b/src/gtk+-2.x/ctkprime.c
-@@ -0,0 +1,543 @@
+@@ -0,0 +1,620 @@
 +/*
 + * nvidia-settings: A tool for configuring the NVIDIA X driver on Unix
 + * and Linux systems.
@@ -65,9 +65,6 @@ Refreshed for the 410 series
 +prime_update_radio_buttons(CtkPrime *ctk_prime, gint value);
 +
 +static void prime_changed(GtkWidget *widget, gpointer user_data);
-+
-+static void prime_radio_button_enabled_add(CtkPrime *ctk_prime,
-+                                                        gint add_device_mask);
 +
 +#define FRAME_PADDING 5
 +
@@ -128,6 +125,55 @@ Refreshed for the 410 series
 +    }
 +
 +    supported = (strcmp(output, "yes") == 0);
++
++    if (output)
++        g_free(output);
++
++    if (error_str)
++        g_free(error_str);
++
++    if (error)
++        g_error_free(error);
++
++    return supported;
++}
++
++
++/* See if the on-demand mode is supported */
++static gboolean is_on_demand_supported(void) {
++    gchar *command = "/usr/bin/prime-select --help";
++    int supported = 0;
++    gboolean status;
++    int exit_status = 0;
++    gchar *output = NULL;
++    gchar *error_str = NULL;
++    GError *error = NULL;
++    status = g_spawn_command_line_sync(command, &output, &error_str, &exit_status, &error);
++
++    if (!status) {
++        g_warning("PRIME: %s", error->message);
++
++        if (output)
++            g_free(output);
++        if (error_str)
++            g_free(error_str);
++        if (error)
++            g_error_free(error);
++
++        return status;
++    }
++
++    if (output)
++        output[strlen(output) - 1] = '\0';
++
++    if (strlen(error_str) > 0) {
++        error_str[strlen(error_str) - 1] = '\0';
++        g_message("PRIME: %s", error_str);
++    }
++
++    supported = (g_strrstr(error_str, "on-demand") != NULL) ? 1 : 0;
++
++    g_message("PRIME: on-demand mode: \"%d\"", supported);
 +
 +    if (output)
 +        g_free(output);
@@ -342,19 +388,28 @@ Refreshed for the 410 series
 +    }
 +}
 +
++
 +/* get button value for gpu mode
-+ *   nvidia: 0
-+ *   on-demand: 1
-+ *   intel: 2
++ *   if ctk_prime->has_on_demand_mode == 1:
++ *     nvidia: 0
++ *     on-demand: 1
++ *     intel: 2
++ *   else:
++ *     nvidia: 0
++ *     intel: 1
 + */
-+static int mode_to_button_value(gchar *current_gpu) {
++static int mode_to_button_value(CtkPrime *ctk_prime, gchar *current_gpu) {
 +    int current_button;
 +    if (strcmp(current_gpu, "nvidia") == 0) {
 +        current_button = 0;
 +    } else if (strcmp(current_gpu, "on-demand") == 0) {
 +        current_button = 1;
 +    } else {
-+        current_button = 2;
++        if (ctk_prime->has_on_demand_mode) {
++            current_button = 2;
++        } else {
++         current_button = 1;
++        }
 +    }
 +    return current_button;
 +}
@@ -399,7 +454,7 @@ Refreshed for the 410 series
 +            if (status == 0) {
 +                /* Show a dialog to suggest restarting the computer */
 +
-+                ctk_prime->current_button = mode_to_button_value(value);
++                ctk_prime->current_button = mode_to_button_value(ctk_prime, value);
 +                ctk_display_info_msg(parent,
 +                    "Please restart the system to apply the changes");
 +            } else {
@@ -456,6 +511,9 @@ Refreshed for the 410 series
 +
 +    ctk_prime->ctk_config = ctk_config;
 +
++    ctk_prime->has_on_demand_mode = is_on_demand_supported();
++    g_message("PRIME: is \"on-demand\" mode supported? %s", (ctk_prime->has_on_demand_mode ? "yes" : "no"));
++
 +    gtk_box_set_spacing(GTK_BOX(ctk_prime), 10);
 +
 +    /* Set the banner */
@@ -485,36 +543,55 @@ Refreshed for the 410 series
 +                           "graphics performance. This option is "
 +                           "applied after a system restart.");
 +
-+    /* Button for NVIDIA On Demand */
-+    radio[1] = prime_radio_button_add(ctk_prime,
-+                                      radio[0],
-+                                      "NVIDIA On-Demand",
-+                                      "on-demand",
-+                                      1);
 +
-+    /* Set the tooltip for ON-Demand */
-+    ctk_config_set_tooltip(ctk_config, radio[1],
-+                           "Enabling this option allows using the Nvidia GPU"
-+                           " in on-demand mode. This option is "
-+                           "applied after a system restart.");
++    /* NOTE: if changing the buttons order, please also
++     *       change the mode_to_button_value() function
++     *       accordingly.
++     */
++    if (ctk_prime->has_on_demand_mode) {
++        /* Button for NVIDIA On Demand */
++        radio[1] = prime_radio_button_add(ctk_prime,
++                                          radio[0],
++                                          "NVIDIA On-Demand",
++                                          "on-demand",
++                                          1);
 +
-+    /* Button for Intel */
-+    radio[2] = prime_radio_button_add(ctk_prime,
-+                                      radio[1],
-+                                      "Intel (Power Saving Mode)",
-+                                      "intel",
-+                                      2);
-+    /* Set the tooltip for Intel */
-+    ctk_config_set_tooltip(ctk_config, radio[1],
-+                           "Enabling this option ensures the best "
-+                           "battery life. This option is "
-+                           "applied after a system restart.");
++        /* Set the tooltip for ON-Demand */
++        ctk_config_set_tooltip(ctk_config, radio[1],
++                               "Enabling this option allows using the Nvidia GPU"
++                               " in on-demand mode. This option is "
++                               "applied after a system restart.");
++
++        /* Button for Intel */
++        radio[2] = prime_radio_button_add(ctk_prime,
++                                          radio[1],
++                                          "Intel (Power Saving Mode)",
++                                          "intel",
++                                          2);
++        /* Set the tooltip for Intel */
++        ctk_config_set_tooltip(ctk_config, radio[2],
++                               "Enabling this option ensures the best "
++                               "battery life. This option is "
++                               "applied after a system restart.");
++    } else {
++        /* Button for Intel */
++        radio[1] = prime_radio_button_add(ctk_prime,
++                                          radio[0],
++                                          "Intel (Power Saving Mode)",
++                                          "intel",
++                                          1);
++        /* Set the tooltip for Intel */
++        ctk_config_set_tooltip(ctk_config, radio[1],
++                               "Enabling this option ensures the best "
++                               "battery life. This option is "
++                               "applied after a system restart.");
++    }
 +
 +    /* Get the current GPU in use from the switcher*/
 +    gchar *current_gpu = NULL;
 +    get_active_gpu(&current_gpu);
 +
-+    int current_button = mode_to_button_value(current_gpu);
++    int current_button = mode_to_button_value(ctk_prime, current_gpu);
 +    g_free(current_gpu);
 +    ctk_prime->current_button = current_button;
 +
@@ -561,7 +638,7 @@ Refreshed for the 410 series
 +
 --- /dev/null
 +++ b/src/gtk+-2.x/ctkprime.h
-@@ -0,0 +1,78 @@
+@@ -0,0 +1,79 @@
 +/*
 + * nvidia-settings: A tool for configuring the NVIDIA X driver on Unix
 + * and Linux systems.
@@ -624,6 +701,7 @@ Refreshed for the 410 series
 +    GtkWidget *prime_buttons[24];
 +    GtkWidget *prime_button_box;
 +    int current_button;
++    int has_on_demand_mode;
 +};
 +
 +struct _CtkPrimeClass
