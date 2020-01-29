@@ -1,8 +1,24 @@
-nvidia-settings (440.44-0ubuntu1) UNRELEASED; urgency=medium
+nvidia-settings (440.44-0ubuntu1) focal; urgency=medium
 
-  * 
+  * New upstream release.
+  * debian/patches/08_add_prime_support.patch:
+    - Refresh and make on-demand mode optional.
+      This makes the same patch work on systems where
+      on-demand mode is not available yet.
+  * debian/patches/05_add_polkit_support.patch,
+    debian/patches/06_remove_local_prefix.patch,
+    debian/patches/07_remove_features_for_legacy.patch,
+    debian/patches/08_add_prime_support.patch,
+    debian/patches/10_legacy_vdpau.patch,
+    debian/patches/11_link_as-needed.patch,
+    debian/patches/12_nostrip.patch,
+    debian/patches/13_libxnvctrl_so_0.patch,
+    debian/patches/15_clean.patch,
+    debian/patches/16_gzip-n.patch,
+    debian/patches/link-order.diff:
+    - Refresh patches.
 
- -- Alberto Milone <alberto.milone@canonical.com>  Mon, 27 Jan 2020 17:16:40 +0100
+ -- Alberto Milone <alberto.milone@canonical.com>  Wed, 29 Jan 2020 12:13:52 +0100
 
 nvidia-settings (435.21-0ubuntu2) eoan; urgency=medium
 
