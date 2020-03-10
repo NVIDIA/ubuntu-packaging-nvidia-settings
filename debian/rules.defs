@@ -1,0 +1,3 @@
+NVIDIA_FILENAME	= nvidia-settings-${NVIDIA_RELEASE}.tar.bz2
+NVIDIA_TARBALL	= nvidia-settings_${NVIDIA_RELEASE}.orig.tar.bz2
+HTTPURL_PREFIX	 = https://download.nvidia.com/XFree86/nvidia-settings/

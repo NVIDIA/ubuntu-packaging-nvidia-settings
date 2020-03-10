@@ -1,10 +1,17 @@
 #!/usr/bin/make -f
 #
 # Copyright (C) 2009 Canonical Ltd.
+include /usr/share/dpkg/pkg-info.mk
+
+include debian/rules.defs
+
+NVIDIA_RELEASE	 = $(DEB_VERSION_UPSTREAM)
 
 PKG_name    := nvidia-settings
 
 DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
+
+get_download_url	= $(HTTPURL_PREFIX)/$(NVIDIA_FILENAME)
 
 export NV_USE_BUNDLED_LIBJANSSON = 0
 
@@ -61,3 +68,7 @@ override_dh_usrlocal:
 
 %:
 	dh $@
+
+.PHONY: get-orig-source
+get-orig-source:
+	wget $(call get_download_url) -O ../$(NVIDIA_TARBALL)
