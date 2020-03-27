@@ -75,6 +75,6 @@ Bug-Debian: https://bugs.debian.org/666909
 +
 +$(LIBXNVCTRL_SHARED): $(LIBXNVCTRL_OBJ)
 +	$(RM) $@ $@.*
-+	$(CC) -shared -Wl,-soname=$@.0 -o $@.0.0.0 $(LDFLAGS) $^ -lXext -lX11
++	$(CC) -shared -fPIC -Wl,-soname=$@.0 -o $@.0.0.0 $(LDFLAGS) $^ -lXext -lX11
 +	ln -s $@.0.0.0 $@.0
 +	ln -s $@.0 $@
