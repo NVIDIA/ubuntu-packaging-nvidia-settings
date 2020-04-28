@@ -1,3 +1,9 @@
+nvidia-settings (440.82-0ubuntu1) UNRELEASED; urgency=medium
+
+  * 
+
+ -- Alberto Milone <alberto.milone@canonical.com>  Tue, 28 Apr 2020 14:42:02 +0200
+
 nvidia-settings (440.64-0ubuntu1) focal; urgency=medium
 
   * New upstream release.
