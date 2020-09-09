@@ -5,7 +5,7 @@ Bug-Debian: https://bugs.debian.org/666909
 
 --- a/src/Makefile
 +++ b/src/Makefile
-@@ -273,9 +273,9 @@ NVIDIA_SETTINGS_install: $(NVIDIA_SETTIN
+@@ -273,23 +273,23 @@
  	$(INSTALL) $(INSTALL_BIN_ARGS) $< $(BINDIR)/$(notdir $<)
  
  $(eval $(call DEBUG_INFO_RULES, $(NVIDIA_SETTINGS)))
@@ -16,26 +16,26 @@ Bug-Debian: https://bugs.debian.org/666909
 +	    -rdynamic -o $@ $(OBJS) $(LIBXNVCTRL_SHARED) $(LIBS)
  
  $(eval $(call DEBUG_INFO_RULES, $(GTK2LIB)))
- $(GTK2LIB).unstripped: $(GTK2_OBJS) $(XCP_OBJS) $(IMAGE_OBJS) $(VERSION_MK)
-@@ -280,7 +280,7 @@
- $(eval $(call DEBUG_INFO_RULES, $(GTK2LIB)))
- $(GTK2LIB).unstripped: $(GTK2_OBJS) $(XCP_OBJS) $(IMAGE_OBJS) $(VERSION_MK)
+-$(GTK2LIB).unstripped: $(LIBXNVCTRL) $(GTK2_OBJS) $(XCP_OBJS) $(IMAGE_OBJS) $(VERSION_MK)
++$(GTK2LIB).unstripped: $(LIBXNVCTRL_SHARED) $(GTK2_OBJS) $(XCP_OBJS) $(IMAGE_OBJS) $(VERSION_MK)
  	$(call quiet_cmd,LINK) -shared $(CFLAGS) $(LDFLAGS) $(BIN_LDFLAGS) \
 -	    $(LIBXNVCTRL) $(LIBS) $(GTK2_LIBS) \
 +	    $(LIBXNVCTRL_SHARED) $(LIBS) $(GTK2_LIBS) \
  	    -Wl,--unresolved-symbols=ignore-all -o $@ \
  	    -Wl,-soname -Wl,$(GTK2LIB_SONAME) \
  	    $(GTK2_OBJS) $(IMAGE_OBJS) $(XCP_OBJS)
-@@ -289,7 +289,7 @@
+ 
+ ifdef BUILD_GTK3LIB
  $(eval $(call DEBUG_INFO_RULES, $(GTK3LIB)))
- $(GTK3LIB).unstripped: $(GTK3_OBJS) $(XCP_OBJS) $(IMAGE_OBJS) $(VERSION_MK)
+-$(GTK3LIB).unstripped: $(LIBXNVCTRL) $(GTK3_OBJS) $(XCP_OBJS) $(IMAGE_OBJS) $(VERSION_MK)
++$(GTK3LIB).unstripped: $(LIBXNVCTRL_SHARED) $(GTK3_OBJS) $(XCP_OBJS) $(IMAGE_OBJS) $(VERSION_MK)
  	$(call quiet_cmd,LINK) -shared $(CFLAGS) $(LDFLAGS)  $(BIN_LDFLAGS) \
 -	    $(LIBXNVCTRL) $(LIBS) $(GTK3_LIBS) \
 +	    $(LIBXNVCTRL_SHARED) $(LIBS) $(GTK3_LIBS) \
  	    -Wl,--unresolved-symbols=ignore-all -o $@ \
  	    -Wl,-soname -Wl,$(GTK3LIB_SONAME) \
  	    $(GTK3_OBJS) $(XCP_OBJS) $(IMAGE_OBJS)
-@@ -303,7 +303,7 @@ clean clobber:
+@@ -303,7 +303,7 @@
  	rm -rf $(NVIDIA_SETTINGS) *~ \
  		$(OUTPUTDIR)/*.o $(OUTPUTDIR)/*.d \
  		$(GTK2LIB) $(GTK3LIB) $(GTK2LIB_DIR) $(GTK3LIB_DIR) \
@@ -75,6 +75,17 @@ Bug-Debian: https://bugs.debian.org/666909
 +
 +$(LIBXNVCTRL_SHARED): $(LIBXNVCTRL_OBJ)
 +	$(RM) $@ $@.*
-+	$(CC) -shared -Wl,-soname=$@.0 -o $@.0.0.0 $(LDFLAGS) $^ -lXext -lX11
++	$(CC) -shared -fPIC -Wl,-soname=$@.0 -o $@.0.0.0 $(LDFLAGS) $^ -lXext -lX11
 +	ln -s $@.0.0.0 $@.0
 +	ln -s $@.0 $@
+--- a/utils.mk
++++ b/utils.mk
+@@ -39,7 +39,7 @@
+ CFLAGS                ?= -Wall -O2
+ # always set these -f CFLAGS
+ CFLAGS                += -fno-strict-aliasing -fno-omit-frame-pointer -Wformat=2
+-CC_ONLY_CFLAGS        ?=
++CC_ONLY_CFLAGS        ?= -fPIC
+ LDFLAGS               ?=
+ BIN_LDFLAGS           ?=
+ 
