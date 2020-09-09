@@ -9,3 +9,4 @@ link-order.diff
 13_libxnvctrl_so_0.patch
 14_nvidia-settings.desktop.patch
 15_clean.patch
+#16_gzip-n.patch
