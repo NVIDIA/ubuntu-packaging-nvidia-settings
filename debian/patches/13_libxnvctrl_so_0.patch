@@ -83,12 +83,14 @@ Bug-Debian: https://bugs.debian.org/666909
 +	ln -s $@.0 $@
 --- a/utils.mk
 +++ b/utils.mk
-@@ -39,7 +39,7 @@
+@@ -39,8 +39,8 @@
  CFLAGS                ?= -Wall -O2
  # always set these -f CFLAGS
  CFLAGS                += -fno-strict-aliasing -fno-omit-frame-pointer -Wformat=2
 -CC_ONLY_CFLAGS        ?=
+-CXX_ONLY_CFLAGS       ?=
 +CC_ONLY_CFLAGS        ?= -fPIC
++CXX_ONLY_CFLAGS       ?= -fPIC
  LDFLAGS               ?=
  BIN_LDFLAGS           ?=
  
