@@ -3,7 +3,7 @@ Description: let clean recurse into libXNVCtrl
 
 --- a/src/Makefile
 +++ b/src/Makefile
-@@ -300,6 +300,7 @@ $(foreach src,$(SRC),$(eval $(call DEFIN
+@@ -299,6 +299,7 @@ $(foreach src,$(SRC),$(eval $(call DEFIN
  $(foreach src,$(XCP_SRC),$(eval $(call DEFINE_OBJECT_RULE,TARGET,$(src))))
  
  clean clobber:
