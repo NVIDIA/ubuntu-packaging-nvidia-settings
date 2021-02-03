@@ -720,7 +720,7 @@ Refreshed for the 410 series
 +
 --- a/src/gtk+-2.x/ctkwindow.c
 +++ b/src/gtk+-2.x/ctkwindow.c
-@@ -47,6 +47,7 @@
+@@ -43,6 +43,7 @@
  #include "ctkcolorcorrection.h"
  #include "ctkcolorcorrectionpage.h"
  #include "ctkxvideo.h"
@@ -728,7 +728,7 @@ Refreshed for the 410 series
  #include "ctkopengl.h"
  #include "ctkglx.h"
  #include "ctkmultisample.h"
-@@ -707,7 +708,8 @@ GtkWidget *ctk_window_new(ParsedAttribut
+@@ -704,7 +705,8 @@ GtkWidget *ctk_window_new(ParsedAttribut
      driver_major = driver_minor = 0;
  
      /* X Server info & configuration */
@@ -738,7 +738,7 @@ Refreshed for the 410 series
      if (system->targets[X_SCREEN_TARGET]) {
  
          GtkWidget *child;
-@@ -1161,13 +1163,6 @@ GtkWidget *ctk_window_new(ParsedAttribut
+@@ -1013,13 +1015,6 @@ GtkWidget *ctk_window_new(ParsedAttribut
                   ctk_3d_vision_pro_select, ctk_3d_vision_pro_unselect);
      }
  
@@ -752,7 +752,7 @@ Refreshed for the 410 series
      /* app profile configuration */
      widget = ctk_app_profile_new(server_target, ctk_config);
      if (widget) {
-@@ -1189,8 +1184,6 @@ GtkWidget *ctk_window_new(ParsedAttribut
+@@ -1041,8 +1036,6 @@ GtkWidget *ctk_window_new(ParsedAttribut
          }
      }
  
@@ -761,7 +761,7 @@ Refreshed for the 410 series
      /* nvidia-settings configuration */
  
      add_page(GTK_WIDGET(ctk_window->ctk_config),
-@@ -1198,6 +1191,22 @@ GtkWidget *ctk_window_new(ParsedAttribut
+@@ -1050,6 +1043,22 @@ GtkWidget *ctk_window_new(ParsedAttribut
               ctk_window, NULL, NULL, "nvidia-settings Configuration",
               NULL, NULL, NULL);
  
@@ -786,7 +786,7 @@ Refreshed for the 410 series
       * so clean it out
 --- a/src/src.mk
 +++ b/src/src.mk
-@@ -183,6 +183,7 @@ GTK_SRC += gtk+-2.x/ctkapcrulemodel.c
+@@ -173,6 +173,7 @@ GTK_SRC += gtk+-2.x/ctkapcrulemodel.c
  GTK_SRC += gtk+-2.x/ctkcolorcontrols.c
  GTK_SRC += gtk+-2.x/ctk3dvisionpro.c
  GTK_SRC += gtk+-2.x/ctkvdpau.c
@@ -794,7 +794,7 @@ Refreshed for the 410 series
  GTK_SRC += gtk+-2.x/ctkgridlicense.c
  GTK_SRC += gtk+-2.x/ctkglwidget.c
  GTK_SRC += gtk+-2.x/ctkglstereo.c
-@@ -236,6 +237,7 @@ GTK_EXTRA_DIST += gtk+-2.x/ctkapcrulemod
+@@ -221,6 +222,7 @@ GTK_EXTRA_DIST += gtk+-2.x/ctkapcrulemod
  GTK_EXTRA_DIST += gtk+-2.x/ctkcolorcontrols.h
  GTK_EXTRA_DIST += gtk+-2.x/ctk3dvisionpro.h
  GTK_EXTRA_DIST += gtk+-2.x/ctkvdpau.h
