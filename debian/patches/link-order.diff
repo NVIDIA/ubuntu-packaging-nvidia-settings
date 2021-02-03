@@ -24,9 +24,9 @@ Description: link libraries after object files
    endif
  else
    GTK3_CFLAGS ?=
-@@ -280,19 +280,19 @@ $(NVIDIA_SETTINGS).unstripped: $(OBJS) $
+@@ -279,19 +279,19 @@ $(NVIDIA_SETTINGS).unstripped: $(OBJS) $
  $(eval $(call DEBUG_INFO_RULES, $(GTK2LIB)))
- $(GTK2LIB).unstripped: $(GTK2_OBJS) $(XCP_OBJS) $(IMAGE_OBJS) $(VERSION_MK)
+ $(GTK2LIB).unstripped: $(LIBXNVCTRL) $(GTK2_OBJS) $(XCP_OBJS) $(IMAGE_OBJS) $(VERSION_MK)
  	$(call quiet_cmd,LINK) -shared $(CFLAGS) $(LDFLAGS) $(BIN_LDFLAGS) \
 -	    $(LIBXNVCTRL) $(LIBS) $(GTK2_LIBS) \
 -	    -Wl,--unresolved-symbols=ignore-all -o $@ \
@@ -38,11 +38,11 @@ Description: link libraries after object files
  
  ifdef BUILD_GTK3LIB
  $(eval $(call DEBUG_INFO_RULES, $(GTK3LIB)))
- $(GTK3LIB).unstripped: $(GTK3_OBJS) $(XCP_OBJS) $(IMAGE_OBJS) $(VERSION_MK)
+ $(GTK3LIB).unstripped: $(LIBXNVCTRL) $(GTK3_OBJS) $(XCP_OBJS) $(IMAGE_OBJS) $(VERSION_MK)
  	$(call quiet_cmd,LINK) -shared $(CFLAGS) $(LDFLAGS)  $(BIN_LDFLAGS) \
 -	    $(LIBXNVCTRL) $(LIBS) $(GTK3_LIBS) \
 -	    -Wl,--unresolved-symbols=ignore-all -o $@ \
-+	    -o $@ \
++ 	    -o $@ \
  	    -Wl,-soname -Wl,$(GTK3LIB_SONAME) \
 -	    $(GTK3_OBJS) $(XCP_OBJS) $(IMAGE_OBJS)
 +	    $(GTK3_OBJS) $(XCP_OBJS) $(IMAGE_OBJS) \
