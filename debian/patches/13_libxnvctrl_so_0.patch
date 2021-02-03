@@ -5,7 +5,7 @@ Bug-Debian: https://bugs.debian.org/666909
 
 --- a/src/Makefile
 +++ b/src/Makefile
-@@ -273,9 +273,9 @@ NVIDIA_SETTINGS_install: $(NVIDIA_SETTIN
+@@ -272,9 +272,9 @@ NVIDIA_SETTINGS_install: $(NVIDIA_SETTIN
  	$(INSTALL) $(INSTALL_BIN_ARGS) $< $(BINDIR)/$(notdir $<)
  
  $(eval $(call DEBUG_INFO_RULES, $(NVIDIA_SETTINGS)))
@@ -16,8 +16,8 @@ Bug-Debian: https://bugs.debian.org/666909
 +	    -rdynamic -o $@ $(OBJS) $(LIBXNVCTRL_SHARED) $(LIBS)
  
  $(eval $(call DEBUG_INFO_RULES, $(GTK2LIB)))
- $(GTK2LIB).unstripped: $(GTK2_OBJS) $(XCP_OBJS) $(IMAGE_OBJS) $(VERSION_MK)
-@@ -283,7 +283,7 @@ $(GTK2LIB).unstripped: $(GTK2_OBJS) $(XC
+ $(GTK2LIB).unstripped: $(LIBXNVCTRL) $(GTK2_OBJS) $(XCP_OBJS) $(IMAGE_OBJS) $(VERSION_MK)
+@@ -282,7 +282,7 @@ $(GTK2LIB).unstripped: $(LIBXNVCTRL) $(G
  	    -o $@ \
  	    -Wl,-soname -Wl,$(GTK2LIB_SONAME) \
  	    $(GTK2_OBJS) $(IMAGE_OBJS) $(XCP_OBJS) \
@@ -26,8 +26,8 @@ Bug-Debian: https://bugs.debian.org/666909
  
  ifdef BUILD_GTK3LIB
  $(eval $(call DEBUG_INFO_RULES, $(GTK3LIB)))
-@@ -292,7 +292,7 @@ $(GTK3LIB).unstripped: $(GTK3_OBJS) $(XC
- 	    -o $@ \
+@@ -291,7 +291,7 @@ $(GTK3LIB).unstripped: $(LIBXNVCTRL) $(G
+  	    -o $@ \
  	    -Wl,-soname -Wl,$(GTK3LIB_SONAME) \
  	    $(GTK3_OBJS) $(XCP_OBJS) $(IMAGE_OBJS) \
 -	    $(LIBXNVCTRL) $(LIBS) $(GTK3_LIBS)
@@ -35,7 +35,7 @@ Bug-Debian: https://bugs.debian.org/666909
  endif
  
  # define the rule to build each object file
-@@ -303,7 +303,7 @@ clean clobber:
+@@ -302,7 +302,7 @@ clean clobber:
  	rm -rf $(NVIDIA_SETTINGS) *~ \
  		$(OUTPUTDIR)/*.o $(OUTPUTDIR)/*.d \
  		$(GTK2LIB) $(GTK3LIB) $(GTK2LIB_DIR) $(GTK3LIB_DIR) \
