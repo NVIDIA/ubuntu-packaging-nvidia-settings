@@ -1,8 +1,22 @@
-nvidia-settings (460.39-0ubuntu1) UNRELEASED; urgency=medium
+nvidia-settings (460.39-0ubuntu1) hirsute; urgency=medium
 
-  * 
+  * New upstream release.
+  * debian/patches/link-order.diff,
+    debian/patches/12_nostrip.patch,
+    debian/patches/05_add_polkit_support.patch,
+    debian/patches/06_remove_local_prefix.patch,
+    debian/patches/07_remove_features_for_legacy.patch
+    debian/patches/10_legacy_vdpau.patch
+    debian/patches/11_link_as-needed.patch
+    debian/patches/13_libxnvctrl_so_0.patch
+    debian/patches/15_clean.patch:
+    - Refresh patches.
+  * debian/patches/series:
+    - Drop 16_gzip-n.patch.
+  * debian/patches/08_add_prime_support.patch:
+    - Refresh and add support for a progress dialog.
 
- -- Alberto Milone <alberto.milone@canonical.com>  Wed, 03 Feb 2021 16:18:31 +0100
+ -- Alberto Milone <alberto.milone@canonical.com>  Wed, 03 Feb 2021 18:09:00 +0100
 
 nvidia-settings (440.82-0ubuntu1) groovy; urgency=medium
 
