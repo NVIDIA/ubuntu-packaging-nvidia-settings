@@ -1,3 +1,9 @@
+nvidia-settings (460.39-0ubuntu1) UNRELEASED; urgency=medium
+
+  * 
+
+ -- Alberto Milone <alberto.milone@canonical.com>  Wed, 03 Feb 2021 16:18:31 +0100
+
 nvidia-settings (440.82-0ubuntu1) groovy; urgency=medium
 
   * New upstream release.
