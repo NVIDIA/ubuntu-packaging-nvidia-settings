@@ -15,7 +15,7 @@ Refreshed for the 410 series
 
 --- /dev/null
 +++ b/src/gtk+-2.x/ctkprime.c
-@@ -0,0 +1,620 @@
+@@ -0,0 +1,639 @@
 +/*
 + * nvidia-settings: A tool for configuring the NVIDIA X driver on Unix
 + * and Linux systems.
@@ -231,70 +231,6 @@ Refreshed for the 410 series
 +}
 +
 +
-+/* Check if a PRIME mode is enabled */
-+static gboolean is_mode_enabled(gchar *mode) {
-+    gboolean status;
-+    gchar *gpu = NULL;
-+
-+    get_active_gpu(&gpu);
-+
-+    g_message("PRIME: detected gpu: \"%s\"", gpu);
-+
-+    status = (strcmp(mode, gpu) == 0);
-+
-+    g_free(gpu);
-+
-+    return status;
-+}
-+
-+
-+/* Set the PRIME profile */
-+static gboolean set_mode(gchar *mode, gchar **error_msg, gint *exit_status) {
-+
-+    gchar *command = NULL;
-+    command = g_strconcat("/usr/bin/pkexec /usr/bin/prime-select ",
-+                          mode, NULL);
-+    gboolean status;
-+    gchar *output = NULL;
-+    gchar *error_str = NULL;
-+    GError *error = NULL;
-+    status = g_spawn_command_line_sync(command, &output, &error_str, exit_status, &error);
-+    g_free(command);
-+
-+    if (!status) {
-+        if (error->message) {
-+            *error_msg = g_strdup(error->message);
-+        }
-+        if (output)
-+            g_free(output);
-+
-+        if (error_str)
-+            g_free(error_str);
-+
-+        if (error)
-+            g_error_free(error);
-+
-+        return status;
-+    }
-+
-+    if (exit_status != 0) {
-+        error_str[strlen(error_str) - 1] = '\0';
-+        *error_msg = g_strdup(error_str);
-+    }
-+
-+    if (output)
-+        g_free(output);
-+
-+    if (error_str)
-+        g_free(error_str);
-+
-+    if (error)
-+        g_error_free(error);
-+
-+    return status;
-+}
-+
-+
 +GType ctk_prime_get_type(void)
 +{
 +    static GType ctk_prime_type = 0;
@@ -414,73 +350,156 @@ Refreshed for the 410 series
 +    return current_button;
 +}
 +
++
++/* Child watch callback function */
++static void
++child_watch_cb (GPid     pid,
++                gint     exit_status,
++                gpointer user_data)
++{
++    gboolean success;
++    gint status;
++
++    g_autoptr(GError) error = NULL;
++    GtkWidget *parent = NULL;
++    CtkPrime *ctk_prime = CTK_PRIME(user_data);
++
++    success = g_spawn_check_exit_status (exit_status, &error);
++
++    /* Get the parent widget */
++    parent = ctk_get_parent_window(GTK_WIDGET(ctk_prime));
++
++    /* Free the progress dialog */
++    gtk_widget_destroy (GTK_WIDGET (ctk_prime->progress_dialog));
++    ctk_prime->progress_dialog = NULL;
++
++    /* if the child succeeded */
++    if (success) {
++        /* Did it really succeed though? */
++        status = WEXITSTATUS(exit_status);
++
++        if (status == 0) {
++            /* Show a dialog to suggest restarting the computer */
++
++            ctk_prime->current_button = mode_to_button_value(ctk_prime, ctk_prime->value);
++            ctk_display_info_msg(parent,
++                "Please restart the system to apply the changes");
++        } else {
++            if (status != 5) {
++                /* Show an error only if the user did not
++                 * cancel the operation
++                 */
++                ctk_display_error_msg(parent, error->message);
++            }
++
++            /* Set the radio button to the previous position */
++            prime_update_radio_buttons(ctk_prime, ctk_prime->current_button);
++        }
++    } else {
++        /* Something's wrong with the child */
++
++        /* Show an error dialog */
++        ctk_display_error_msg(parent, error->message);
++
++        /* Set the radio button to the previous position */
++        prime_update_radio_buttons(ctk_prime, ctk_prime->current_button);
++    }
++
++    /* Free the resources associated with the child */
++    g_spawn_close_pid (pid);
++    g_free(ctk_prime->value);
++}
++
++
++/* Make the progress bar bounce */
++static gboolean
++bounce_bar (gpointer user_data)
++{
++    if (!user_data || !GTK_IS_PROGRESS_BAR(user_data))
++        return FALSE;
++
++    GtkWidget *progress_bar = user_data;
++    gtk_progress_bar_pulse(GTK_PROGRESS_BAR (progress_bar));
++    return TRUE;
++}
++
++
 +/*
 + * Callback function for changes to the
 + * prime radio button group;
 + */
 +static void prime_changed(GtkWidget *widget, gpointer user_data)
 +{
-+    CtkPrime *ctk_prime = CTK_PRIME(user_data);
 +    gboolean enabled;
-+    gchar *value;
-+    gint number;
++    GtkWidget *content_area;
++    GtkWidget *label;
++    GtkWidget *progress_bar;
++    gboolean status;
++    gint child_stdout, child_stderr;
++    GPid child_pid;
 +
-+    gboolean success;
-+    gchar *error_msg = NULL;
-+    gint exit_status = 0;
++    CtkPrime *ctk_prime = CTK_PRIME(user_data);
++    g_autoptr(GError) error = NULL;
 +
++    /* Get the toggle button state */
 +    enabled = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
 +
 +    if (enabled) {
++        /* Get the parent window */
++        GtkWidget *parent;
++        parent = ctk_get_parent_window(GTK_WIDGET(ctk_prime));
 +
 +        user_data = g_object_get_data(G_OBJECT(widget), "prime");
 +
 +        /* We use "value" to know what to select */
-+        value = (gchar*)user_data;
++        ctk_prime->value = g_strdup((gchar*)user_data);
 +
-+        /* Call the switcher */
-+        success = set_mode(value, &error_msg, &exit_status);
 +
-+        /* Get the parent widget */
-+        GtkWidget *parent;
-+        parent = ctk_get_parent_window(GTK_WIDGET(ctk_prime));
++        /* Create the progress dialog */
++        ctk_prime->progress_dialog = gtk_dialog_new_with_buttons ("PRIME",
++                                                                  GTK_WINDOW(parent),
++                                                                  GTK_RESPONSE_NONE,
++                                                                  NULL);
 +
-+        /* if gspawn succeeded */
-+        if (success) {
-+            /* Did it really succeed though? */
-+            int status;
-+            status = WEXITSTATUS(exit_status);
++        /* Create a label */
++        content_area = gtk_dialog_get_content_area (GTK_DIALOG (ctk_prime->progress_dialog));
++        label = gtk_label_new ("Please wait for the operation to complete");
++        gtk_container_add (GTK_CONTAINER (content_area), label);
 +
-+            if (status == 0) {
-+                /* Show a dialog to suggest restarting the computer */
++        /* Create a progress bar */
++        progress_bar = gtk_progress_bar_new();
++        gtk_container_add (GTK_CONTAINER (content_area), progress_bar);
 +
-+                ctk_prime->current_button = mode_to_button_value(ctk_prime, value);
-+                ctk_display_info_msg(parent,
-+                    "Please restart the system to apply the changes");
-+            } else {
-+                if (status != 5) {
-+                    /* Show an error only if the user did not
-+                     * cancel the operation
-+                     */
-+                    ctk_display_error_msg(parent, error_msg);
-+                }
++        /* keep the bar bouncing */
++        g_timeout_add (500, bounce_bar, GTK_PROGRESS_BAR (progress_bar));
 +
-+                /* Set the radio button to the previous position */
-+                prime_update_radio_buttons(ctk_prime, ctk_prime->current_button);
-+            }
-+        } else {
++        gchar * argv[] = {"/usr/bin/pkexec", "/usr/bin/prime-select", ctk_prime->value, NULL };
++
++        status = g_spawn_async_with_pipes (NULL, argv, NULL, G_SPAWN_DO_NOT_REAP_CHILD, NULL,
++                          NULL, &child_pid, NULL, &child_stdout,
++                          &child_stderr, &error);
++
++        if (!status || error != NULL) {
 +            /* Something's wrong with gspawn */
++            g_error ("Spawning child failed: %s", error->message);
++            gtk_widget_destroy(ctk_prime->progress_dialog);
 +
 +            /* Show an error dialog */
-+            ctk_display_error_msg(parent, error_msg);
++            ctk_display_error_msg(parent, error->message);
 +
 +            /* Set the radio button to the previous position */
 +            prime_update_radio_buttons(ctk_prime, ctk_prime->current_button);
++
++            return;
 +        }
 +
-+        /* Free any error output */
-+        if (error_msg)
-+            g_free(error_msg);
++        /* Show the progress dialog */
++        gtk_widget_show_all (ctk_prime->progress_dialog);
++
++        /* Add a child watch function which will be called when the child
++         * process exits
++         */
++        g_child_watch_add (child_pid, child_watch_cb, ctk_prime);
 +    }
 +}
 +
@@ -638,7 +657,7 @@ Refreshed for the 410 series
 +
 --- /dev/null
 +++ b/src/gtk+-2.x/ctkprime.h
-@@ -0,0 +1,79 @@
+@@ -0,0 +1,81 @@
 +/*
 + * nvidia-settings: A tool for configuring the NVIDIA X driver on Unix
 + * and Linux systems.
@@ -700,8 +719,10 @@ Refreshed for the 410 series
 +
 +    GtkWidget *prime_buttons[24];
 +    GtkWidget *prime_button_box;
++    GtkWidget *progress_dialog;
 +    int current_button;
 +    int has_on_demand_mode;
++    gchar *value;
 +};
 +
 +struct _CtkPrimeClass
@@ -738,7 +759,7 @@ Refreshed for the 410 series
      if (system->targets[X_SCREEN_TARGET]) {
  
          GtkWidget *child;
-@@ -1013,13 +1015,6 @@ GtkWidget *ctk_window_new(ParsedAttribut
+@@ -1011,13 +1013,6 @@ GtkWidget *ctk_window_new(ParsedAttribut
                   ctk_3d_vision_pro_select, ctk_3d_vision_pro_unselect);
      }
  
@@ -752,7 +773,7 @@ Refreshed for the 410 series
      /* app profile configuration */
      widget = ctk_app_profile_new(server_target, ctk_config);
      if (widget) {
-@@ -1041,8 +1036,6 @@ GtkWidget *ctk_window_new(ParsedAttribut
+@@ -1039,8 +1034,6 @@ GtkWidget *ctk_window_new(ParsedAttribut
          }
      }
  
@@ -761,7 +782,7 @@ Refreshed for the 410 series
      /* nvidia-settings configuration */
  
      add_page(GTK_WIDGET(ctk_window->ctk_config),
-@@ -1050,6 +1043,22 @@ GtkWidget *ctk_window_new(ParsedAttribut
+@@ -1048,6 +1041,22 @@ GtkWidget *ctk_window_new(ParsedAttribut
               ctk_window, NULL, NULL, "nvidia-settings Configuration",
               NULL, NULL, NULL);
  
