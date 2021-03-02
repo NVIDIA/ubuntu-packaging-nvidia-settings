@@ -1,6 +1,6 @@
 --- a/src/gtk+-2.x/ctkdisplayconfig-utils.c
 +++ b/src/gtk+-2.x/ctkdisplayconfig-utils.c
-@@ -4052,6 +4052,79 @@ static void update_banner(XConfigPtr con
+@@ -4219,6 +4219,79 @@ static void update_banner(XConfigPtr con
  
  } /* update_banner() */
  
@@ -80,7 +80,7 @@
  
  
  /** save_xconfig_file() **********************************************
-@@ -4072,6 +4145,9 @@ static int save_xconfig_file(SaveXConfDl
+@@ -4239,6 +4312,9 @@ static int save_xconfig_file(SaveXConfDl
  
      int ret = 0;
  

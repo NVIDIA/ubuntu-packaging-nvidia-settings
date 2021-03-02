@@ -3,7 +3,7 @@ From: Alberto Milone <alberto.milone@canonical.com>
 Date: Mon, 9 Oct 2017 11:22:01 +0200
 Subject: [PATCH 1/1] Add support for PRIME GPU switching
 
-Refreshed for the 384 series
+Refreshed for the 410 series
 ---
  src/gtk+-2.x/ctkprime.c  | 518 +++++++++++++++++++++++++++++++++++++++++++++++
  src/gtk+-2.x/ctkprime.h  |  77 +++++++
@@ -13,12 +13,9 @@ Refreshed for the 384 series
  create mode 100644 src/gtk+-2.x/ctkprime.c
  create mode 100644 src/gtk+-2.x/ctkprime.h
 
-diff --git a/src/gtk+-2.x/ctkprime.c b/src/gtk+-2.x/ctkprime.c
-new file mode 100644
-index 0000000..1ed4c2c
 --- /dev/null
 +++ b/src/gtk+-2.x/ctkprime.c
-@@ -0,0 +1,518 @@
+@@ -0,0 +1,620 @@
 +/*
 + * nvidia-settings: A tool for configuring the NVIDIA X driver on Unix
 + * and Linux systems.
@@ -68,9 +65,6 @@ index 0000000..1ed4c2c
 +prime_update_radio_buttons(CtkPrime *ctk_prime, gint value);
 +
 +static void prime_changed(GtkWidget *widget, gpointer user_data);
-+
-+static void prime_radio_button_enabled_add(CtkPrime *ctk_prime,
-+                                                        gint add_device_mask);
 +
 +#define FRAME_PADDING 5
 +
@@ -131,6 +125,55 @@ index 0000000..1ed4c2c
 +    }
 +
 +    supported = (strcmp(output, "yes") == 0);
++
++    if (output)
++        g_free(output);
++
++    if (error_str)
++        g_free(error_str);
++
++    if (error)
++        g_error_free(error);
++
++    return supported;
++}
++
++
++/* See if the on-demand mode is supported */
++static gboolean is_on_demand_supported(void) {
++    gchar *command = "/usr/bin/prime-select --help";
++    int supported = 0;
++    gboolean status;
++    int exit_status = 0;
++    gchar *output = NULL;
++    gchar *error_str = NULL;
++    GError *error = NULL;
++    status = g_spawn_command_line_sync(command, &output, &error_str, &exit_status, &error);
++
++    if (!status) {
++        g_warning("PRIME: %s", error->message);
++
++        if (output)
++            g_free(output);
++        if (error_str)
++            g_free(error_str);
++        if (error)
++            g_error_free(error);
++
++        return status;
++    }
++
++    if (output)
++        output[strlen(output) - 1] = '\0';
++
++    if (strlen(error_str) > 0) {
++        error_str[strlen(error_str) - 1] = '\0';
++        g_message("PRIME: %s", error_str);
++    }
++
++    supported = (g_strrstr(error_str, "on-demand") != NULL) ? 1 : 0;
++
++    g_message("PRIME: on-demand mode: \"%d\"", supported);
 +
 +    if (output)
 +        g_free(output);
@@ -209,7 +252,7 @@ index 0000000..1ed4c2c
 +static gboolean set_mode(gchar *mode, gchar **error_msg, gint *exit_status) {
 +
 +    gchar *command = NULL;
-+    command = g_strconcat("python3 /usr/share/screen-resolution-extra/nvidia-prime.py ",
++    command = g_strconcat("/usr/bin/pkexec /usr/bin/prime-select ",
 +                          mode, NULL);
 +    gboolean status;
 +    gchar *output = NULL;
@@ -346,6 +389,31 @@ index 0000000..1ed4c2c
 +}
 +
 +
++/* get button value for gpu mode
++ *   if ctk_prime->has_on_demand_mode == 1:
++ *     nvidia: 0
++ *     on-demand: 1
++ *     intel: 2
++ *   else:
++ *     nvidia: 0
++ *     intel: 1
++ */
++static int mode_to_button_value(CtkPrime *ctk_prime, gchar *current_gpu) {
++    int current_button;
++    if (strcmp(current_gpu, "nvidia") == 0) {
++        current_button = 0;
++    } else if (strcmp(current_gpu, "on-demand") == 0) {
++        current_button = 1;
++    } else {
++        if (ctk_prime->has_on_demand_mode) {
++            current_button = 2;
++        } else {
++         current_button = 1;
++        }
++    }
++    return current_button;
++}
++
 +/*
 + * Callback function for changes to the
 + * prime radio button group;
@@ -384,9 +452,11 @@ index 0000000..1ed4c2c
 +            status = WEXITSTATUS(exit_status);
 +
 +            if (status == 0) {
-+                /* Show a dialog to suggest to log out */
++                /* Show a dialog to suggest restarting the computer */
++
++                ctk_prime->current_button = mode_to_button_value(ctk_prime, value);
 +                ctk_display_info_msg(parent,
-+                    "Please log out and log back in to apply the changes");
++                    "Please restart the system to apply the changes");
 +            } else {
 +                if (status != 5) {
 +                    /* Show an error only if the user did not
@@ -396,8 +466,7 @@ index 0000000..1ed4c2c
 +                }
 +
 +                /* Set the radio button to the previous position */
-+                number = (strcmp(value, "nvidia") == 0 ? 1 : 0);
-+                prime_update_radio_buttons(ctk_prime, number);
++                prime_update_radio_buttons(ctk_prime, ctk_prime->current_button);
 +            }
 +        } else {
 +            /* Something's wrong with gspawn */
@@ -406,15 +475,12 @@ index 0000000..1ed4c2c
 +            ctk_display_error_msg(parent, error_msg);
 +
 +            /* Set the radio button to the previous position */
-+            number = (strcmp(value, "nvidia") == 0 ? 1 : 0);
-+            prime_update_radio_buttons(ctk_prime, number);
++            prime_update_radio_buttons(ctk_prime, ctk_prime->current_button);
 +        }
 +
 +        /* Free any error output */
 +        if (error_msg)
 +            g_free(error_msg);
-+
-+
 +    }
 +}
 +
@@ -445,6 +511,9 @@ index 0000000..1ed4c2c
 +
 +    ctk_prime->ctk_config = ctk_config;
 +
++    ctk_prime->has_on_demand_mode = is_on_demand_supported();
++    g_message("PRIME: is \"on-demand\" mode supported? %s", (ctk_prime->has_on_demand_mode ? "yes" : "no"));
++
 +    gtk_box_set_spacing(GTK_BOX(ctk_prime), 10);
 +
 +    /* Set the banner */
@@ -472,28 +541,59 @@ index 0000000..1ed4c2c
 +    ctk_config_set_tooltip(ctk_config, radio[0],
 +                           "Enabling this option ensures the best "
 +                           "graphics performance. This option is "
-+                           "applied after a log out.");
++                           "applied after a system restart.");
 +
 +
-+    /* Button for Intel */
-+    radio[1] = prime_radio_button_add(ctk_prime,
-+                                      radio[0],
-+                                      "Intel (Power Saving Mode)",
-+                                      "intel",
-+                                      1);
-+    /* Set the tooltip for NVIDIA */
-+    ctk_config_set_tooltip(ctk_config, radio[1],
-+                           "Enabling this option ensures the best "
-+                           "battery life. This option is "
-+                           "applied after a log out.");
++    /* NOTE: if changing the buttons order, please also
++     *       change the mode_to_button_value() function
++     *       accordingly.
++     */
++    if (ctk_prime->has_on_demand_mode) {
++        /* Button for NVIDIA On Demand */
++        radio[1] = prime_radio_button_add(ctk_prime,
++                                          radio[0],
++                                          "NVIDIA On-Demand",
++                                          "on-demand",
++                                          1);
++
++        /* Set the tooltip for ON-Demand */
++        ctk_config_set_tooltip(ctk_config, radio[1],
++                               "Enabling this option allows using the Nvidia GPU"
++                               " in on-demand mode. This option is "
++                               "applied after a system restart.");
++
++        /* Button for Intel */
++        radio[2] = prime_radio_button_add(ctk_prime,
++                                          radio[1],
++                                          "Intel (Power Saving Mode)",
++                                          "intel",
++                                          2);
++        /* Set the tooltip for Intel */
++        ctk_config_set_tooltip(ctk_config, radio[2],
++                               "Enabling this option ensures the best "
++                               "battery life. This option is "
++                               "applied after a system restart.");
++    } else {
++        /* Button for Intel */
++        radio[1] = prime_radio_button_add(ctk_prime,
++                                          radio[0],
++                                          "Intel (Power Saving Mode)",
++                                          "intel",
++                                          1);
++        /* Set the tooltip for Intel */
++        ctk_config_set_tooltip(ctk_config, radio[1],
++                               "Enabling this option ensures the best "
++                               "battery life. This option is "
++                               "applied after a system restart.");
++    }
 +
 +    /* Get the current GPU in use from the switcher*/
 +    gchar *current_gpu = NULL;
 +    get_active_gpu(&current_gpu);
 +
-+    int current_button = (strcmp(current_gpu, "nvidia") == 0) ?
-+                         0 : 1;
++    int current_button = mode_to_button_value(ctk_prime, current_gpu);
 +    g_free(current_gpu);
++    ctk_prime->current_button = current_button;
 +
 +    /* Enable the button which matches the current
 +     * configuration
@@ -508,7 +608,6 @@ index 0000000..1ed4c2c
 +    gtk_widget_show_all(GTK_WIDGET(ctk_prime));
 +
 +    return GTK_WIDGET(ctk_prime);
-+
 +}
 +
 +
@@ -537,12 +636,9 @@ index 0000000..1ed4c2c
 +    return b;
 +}
 +
-diff --git a/src/gtk+-2.x/ctkprime.h b/src/gtk+-2.x/ctkprime.h
-new file mode 100644
-index 0000000..b6312a9
 --- /dev/null
 +++ b/src/gtk+-2.x/ctkprime.h
-@@ -0,0 +1,77 @@
+@@ -0,0 +1,79 @@
 +/*
 + * nvidia-settings: A tool for configuring the NVIDIA X driver on Unix
 + * and Linux systems.
@@ -604,6 +700,8 @@ index 0000000..b6312a9
 +
 +    GtkWidget *prime_buttons[24];
 +    GtkWidget *prime_button_box;
++    int current_button;
++    int has_on_demand_mode;
 +};
 +
 +struct _CtkPrimeClass
@@ -620,11 +718,9 @@ index 0000000..b6312a9
 +
 +#endif /* __CTK_PRIME_H__ */
 +
-diff --git a/src/gtk+-2.x/ctkwindow.c b/src/gtk+-2.x/ctkwindow.c
-index 83afb24..0109726 100644
 --- a/src/gtk+-2.x/ctkwindow.c
 +++ b/src/gtk+-2.x/ctkwindow.c
-@@ -46,6 +46,7 @@
+@@ -47,6 +47,7 @@
  #include "ctkcolorcorrection.h"
  #include "ctkcolorcorrectionpage.h"
  #include "ctkxvideo.h"
@@ -632,39 +728,126 @@ index 83afb24..0109726 100644
  #include "ctkopengl.h"
  #include "ctkglx.h"
  #include "ctkmultisample.h"
-@@ -1105,6 +1106,15 @@ GtkWidget *ctk_window_new(ParsedAttribute *p, ConfigProperties *conf,
-      */
-     if (driver_major == 0 || driver_major >= 319) {
+@@ -707,7 +708,8 @@ GtkWidget *ctk_window_new(ParsedAttribut
+     driver_major = driver_minor = 0;
  
-+
-+    /* PRIME settings  */
-+    widget = ctk_prime_new(ctk_config);
-+    if (widget) {
-+        help = ctk_prime_create_help(tag_table, CTK_PRIME(widget));
-+        add_page(widget, help, ctk_window, NULL, NULL, "PRIME Profiles",
-+                 NULL, NULL, NULL);
-+    }
-+
+     /* X Server info & configuration */
+-
++    /* Skip if nvidia is not loaded */
++    if (system) {
+     if (system->targets[X_SCREEN_TARGET]) {
+ 
+         GtkWidget *child;
+@@ -1161,13 +1163,6 @@ GtkWidget *ctk_window_new(ParsedAttribut
+                  ctk_3d_vision_pro_select, ctk_3d_vision_pro_unselect);
+     }
+ 
+-
+-    /* We show this section in two cases:
+-     * 1) when the driver is not in use (hybrid graphics)
+-     * 2) when the driver release >= 319
+-     */
+-    if (driver_major == 0 || driver_major >= 319) {
+-
      /* app profile configuration */
      widget = ctk_app_profile_new(server_target, ctk_config);
      if (widget) {
-diff --git a/src/src.mk b/src/src.mk
-index 0e56ca6..55eb5a6 100644
+@@ -1189,8 +1184,6 @@ GtkWidget *ctk_window_new(ParsedAttribut
+         }
+     }
+ 
+-    }
+-
+     /* nvidia-settings configuration */
+ 
+     add_page(GTK_WIDGET(ctk_window->ctk_config),
+@@ -1198,6 +1191,22 @@ GtkWidget *ctk_window_new(ParsedAttribut
+              ctk_window, NULL, NULL, "nvidia-settings Configuration",
+              NULL, NULL, NULL);
+ 
++    }/* End skipping when nvidia is not loaded */
++
++    /* We show this section in two cases:
++     * 1) when the driver is not in use (hybrid graphics)
++     * 2) when the driver release >= 319
++     */
++    if (driver_major == 0 || driver_major >= 319) {
++        /* PRIME settings  */
++        widget = ctk_prime_new(ctk_config);
++        if (widget) {
++            help = ctk_prime_create_help(tag_table, CTK_PRIME(widget));
++            add_page(widget, help, ctk_window, NULL, NULL, "PRIME Profiles",
++                     NULL, NULL, NULL);
++        }
++    }
++
+     /*
+      * we're done with the current data in the parsed attribute list,
+      * so clean it out
 --- a/src/src.mk
 +++ b/src/src.mk
-@@ -221,6 +221,7 @@ GTK_SRC += gtk+-2.x/ctkapcrulemodel.c
- GTK_SRC += gtk+-2.x/opengl_loading.c
- GTK_SRC += gtk+-2.x/opengl_wrappers.c
- GTK_SRC += gtk+-2.x/matrix_utils.c
+@@ -183,6 +183,7 @@ GTK_SRC += gtk+-2.x/ctkapcrulemodel.c
+ GTK_SRC += gtk+-2.x/ctkcolorcontrols.c
+ GTK_SRC += gtk+-2.x/ctk3dvisionpro.c
+ GTK_SRC += gtk+-2.x/ctkvdpau.c
 +GTK_SRC += gtk+-2.x/ctkprime.c
- 
-
- GTK_EXTRA_DIST += gtk+-2.x/ctkxvideo.h
-@@ -269,6 +270,7 @@ GTK_EXTRA_DIST += gtk+-2.x/ctkapcrulemodel.h
- GTK_EXTRA_DIST += gtk+-2.x/opengl_loading.h
- GTK_EXTRA_DIST += gtk+-2.x/opengl_wrappers.h
- GTK_EXTRA_DIST += gtk+-2.x/matrix_utils.h
+ GTK_SRC += gtk+-2.x/ctkgridlicense.c
+ GTK_SRC += gtk+-2.x/ctkglwidget.c
+ GTK_SRC += gtk+-2.x/ctkglstereo.c
+@@ -236,6 +237,7 @@ GTK_EXTRA_DIST += gtk+-2.x/ctkapcrulemod
+ GTK_EXTRA_DIST += gtk+-2.x/ctkcolorcontrols.h
+ GTK_EXTRA_DIST += gtk+-2.x/ctk3dvisionpro.h
+ GTK_EXTRA_DIST += gtk+-2.x/ctkvdpau.h
 +GTK_EXTRA_DIST += gtk+-2.x/ctkprime.h
+ GTK_EXTRA_DIST += gtk+-2.x/ctkgridlicense.h
+ GTK_EXTRA_DIST += gtk+-2.x/ctkglwidget.h
+ GTK_EXTRA_DIST += gtk+-2.x/ctkglstereo.h
+--- a/src/config-file.c
++++ b/src/config-file.c
+@@ -241,6 +241,10 @@ int nv_write_config_file(const char *fil
+     char *prefix, scratch[4];
+     char *locale = "C";
  
- NVIDIA_SETTINGS_EXTRA_DIST += $(GTK_EXTRA_DIST)
-
++    /* Skip if nvidia is not loaded */
++    if (!system)
++        return NV_TRUE;
++
+     if (!filename) {
+         nv_error_msg("Unable to open configuration file for writing.");
+         return NV_FALSE;
+--- a/src/gtk+-2.x/ctkui.c
++++ b/src/gtk+-2.x/ctkui.c
+@@ -49,6 +49,8 @@ void ctk_main(ParsedAttribute *p,
+     gtk_window_set_default_icon_list(list);
+     window = ctk_window_new(p, conf, system);
+ 
++    /* Skip if nvidia is not loaded */
++    if (system) {
+     if (!system->has_nv_control) {
+         GtkWidget *dlg;
+         dlg = gtk_message_dialog_new (NULL,
+@@ -62,7 +64,7 @@ void ctk_main(ParsedAttribute *p,
+         gtk_dialog_run(GTK_DIALOG(dlg));
+         gtk_widget_destroy (dlg);
+     }
+-
++    }
+     ctk_window_set_active_page(CTK_WINDOW(window), page);
+ 
+     gtk_main();
+--- a/src/nvidia-settings.c
++++ b/src/nvidia-settings.c
+@@ -366,11 +366,11 @@ int main(int argc, char **argv)
+     /* Get the CtrlSystem for this X screen */
+ 
+     system = NvCtrlGetSystem(op->ctrl_display, &systems);
+-
++#if 0
+     if (!system || !system->dpy) {
+         return 1;
+     }
+-
++#endif
+     /* pass control to the gui */
+ 
+     libdata.fn_ctk_main(p, &conf, system, op->page);

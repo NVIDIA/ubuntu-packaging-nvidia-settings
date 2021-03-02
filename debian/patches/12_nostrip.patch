@@ -3,17 +3,17 @@ Author: Michael Marley <michael@michaelmarley.com>
 
 --- a/utils.mk
 +++ b/utils.mk
-@@ -61,14 +61,11 @@ CFLAGS                += -Wno-unused-par
- HOST_CC_ONLY_CFLAGS   += -Wno-format-zero-length
- HOST_CFLAGS           += -Wno-unused-parameter
+@@ -56,13 +56,11 @@ HOST_BIN_LDFLAGS      ?=
+ CFLAGS                += -Wno-unused-parameter -Wno-format-zero-length
+ HOST_CFLAGS           += -Wno-unused-parameter -Wno-format-zero-length
  
 +STRIP_CMD           ?= true
 +DO_STRIP            ?=      # let dh_strip do the stripping
++
  ifeq ($(DEBUG),1)
 -  STRIP_CMD           ?= true
 -  DO_STRIP            ?=
    CFLAGS              += -O0 -g
-   CFLAGS              += -DDEBUG=1
 -else
 -  STRIP_CMD           ?= strip
 -  DO_STRIP            ?= 1
