@@ -12,7 +12,7 @@ build: build-arch
 build-arch:
 	$(MAKE) -C src/libXNVCtrl EXTINCSRC=/usr/include/X11/extensions \
 		CFLAGS="$(CFLAGS) -fPIC"
-	$(MAKE)
+	$(MAKE) DO_STRIP=
 
 clean:
 	-$(MAKE) -C src/libXNVCtrl clean 2>/dev/null
